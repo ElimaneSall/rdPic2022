@@ -23,8 +23,8 @@ class _AdminFootballState extends State<AdminFootball> {
   Widget build(BuildContext context) {
     Stream<QuerySnapshot> products =
         FirebaseFirestore.instance.collection('Matchs').where(
-      "date",
-      whereIn: [DateTime.now()],
+      "equipe1",
+      whereIn: ["47"],
     ).snapshots();
     return Scaffold(
       appBar: AppBar(
