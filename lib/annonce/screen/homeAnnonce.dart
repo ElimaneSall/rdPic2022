@@ -10,6 +10,7 @@ import 'package:tuto_firebase/annonce/screen/evenementsList.dart';
 
 import 'package:tuto_firebase/annonce/sideBar/sideBar.dart';
 import 'package:tuto_firebase/annonce/widget/annonceCard.dart';
+import 'package:tuto_firebase/utils/color/color.dart';
 
 class HomeAnnonce extends StatefulWidget {
   const HomeAnnonce({Key? key}) : super(key: key);
@@ -37,11 +38,12 @@ class _HomeAnnonceState extends State<HomeAnnonce> {
     return Scaffold(
         drawer: NavBar(),
         appBar: AppBar(
-          backgroundColor: Colors.blue,
+          backgroundColor: AppColors.primary,
           title: Center(
               child: Text(
             "Polytech Info",
             textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.white),
           )),
         ),
         resizeToAvoidBottomInset: false,
@@ -112,6 +114,8 @@ class _HomeAnnonceState extends State<HomeAnnonce> {
                                   width: 135,
                                   height: 100,
                                   child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                          backgroundColor: AppColors.primary),
                                       onPressed: () {
                                         Navigator.push(
                                           context,
@@ -122,7 +126,8 @@ class _HomeAnnonceState extends State<HomeAnnonce> {
                                       },
                                       child: Text(
                                         "Annonce",
-                                        style: TextStyle(fontSize: 20),
+                                        style: TextStyle(
+                                            fontSize: 20, color: Colors.white),
                                       ))),
                               SizedBox(
                                 width: 20,
@@ -131,6 +136,8 @@ class _HomeAnnonceState extends State<HomeAnnonce> {
                                   width: 135,
                                   height: 100,
                                   child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                          backgroundColor: AppColors.primary),
                                       onPressed: () {
                                         Navigator.push(
                                           context,
@@ -141,7 +148,8 @@ class _HomeAnnonceState extends State<HomeAnnonce> {
                                       },
                                       child: Text(
                                         "Evenement",
-                                        style: TextStyle(fontSize: 20),
+                                        style: TextStyle(
+                                            fontSize: 20, color: Colors.white),
                                       )))
                             ],
                           ),

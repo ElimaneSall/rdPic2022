@@ -58,14 +58,8 @@ class _RDState extends State<RD> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => DetailArticle(
-                                document.id,
-                                data["urlPDF"],
-                                data["image"],
-                                data['auteur'],
-                                data['likes'],
-                                data["date"],
-                                data["titre"],
-                                data["commentaires"])));
+                                  document.id,
+                                )));
                   },
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

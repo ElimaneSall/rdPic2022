@@ -180,9 +180,10 @@ class _DetailXossUserState extends State<DetailXossUser> {
                                                     BorderRadius.circular(10),
                                                 color: AppColors.primary),
                                             child: Center(
-                                                child: Text(dataXoss["prix"]
-                                                        .toString() +
-                                                    " FCFA")),
+                                                child: Text(
+                                              dataXoss["prix"].toString() +
+                                                  " FCFA",
+                                            )),
                                           ),
                                         ),
                                         SizedBox(

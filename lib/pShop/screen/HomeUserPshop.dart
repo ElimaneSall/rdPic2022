@@ -29,15 +29,15 @@ class _HomeUserPshopState extends State<HomeUserPshop> {
   }
 
   @override
+  initState() {
+    getTotalPrix();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     CollectionReference xoss = firestore.collection('Xoss');
-    FirebaseFirestore.instance.collection('Xoss').get().then((querySnapshot) {
-      querySnapshot.docs.forEach((result) {
-        somme = somme + int.parse(result['prix']);
-        print("somme" + somme.toString());
-      });
-    });
 
     Stream<QuerySnapshot> products =
         firestore.collection('Xoss').orderBy("date").where(

@@ -324,7 +324,7 @@ class _DetailMatchState extends State<DetailMatch> {
                                               ),
                                               InkWell(
                                                   child: Text(
-                                                    "Comment",
+                                                    "Commenter",
                                                     style: TextStyle(
                                                         color: Colors.white,
                                                         fontSize: 15),
@@ -341,7 +341,7 @@ class _DetailMatchState extends State<DetailMatch> {
                                               ),
                                               InkWell(
                                                   child: Text(
-                                                    "Share",
+                                                    "Partager",
                                                     style: TextStyle(
                                                         color: Colors.white,
                                                         fontSize: 15),

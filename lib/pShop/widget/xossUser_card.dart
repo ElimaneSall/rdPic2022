@@ -11,6 +11,7 @@ import 'package:tuto_firebase/screen/detaitl_screen.dart';
 
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:tuto_firebase/utils/color/color.dart';
 import 'package:tuto_firebase/utils/method.dart';
 
 class XossUserCard extends StatelessWidget {
@@ -98,22 +99,28 @@ class XossUserCard extends StatelessWidget {
                   ],
                 )),
                 SizedBox(width: MediaQuery.of(context).size.width * 0.002),
-                Text(
-                  xoss.prix.toString() + " FCFA",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                    color: Color.fromRGBO(139, 137, 129, 1),
-                    //decoration: TextDecoration.lineThrough
-                  ),
-                ),
-                Text(
-                  timeAgoCustom(DateTime.parse(xoss.date.toDate().toString())),
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w300,
-                    color: Color.fromRGBO(91, 60, 30, 100),
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      timeAgoCustom(
+                          DateTime.parse(xoss.date.toDate().toString())),
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w300,
+                        color: Color.fromRGBO(91, 60, 30, 100),
+                      ),
+                    ),
+                    Text(
+                      xoss.prix.toString() + " FCFA",
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.blue
+                          //decoration: TextDecoration.lineThrough
+                          ),
+                    ),
+                  ],
                 )
               ],
             ),

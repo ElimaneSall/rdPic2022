@@ -5,6 +5,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:tuto_firebase/annonce/model/annonce.dart';
 import 'package:tuto_firebase/annonce/sideBar/sideBar.dart';
 import 'package:tuto_firebase/annonce/widget/annonceCard.dart';
+import 'package:tuto_firebase/utils/color/color.dart';
 
 class AnnonceList extends StatefulWidget {
   const AnnonceList({Key? key}) : super(key: key);
@@ -21,14 +22,14 @@ class _AnnonceListState extends State<AnnonceList> {
     return Scaffold(
         appBar: AppBar(
           title: Center(child: Text("Annonce")),
-          backgroundColor: Colors.blue,
+          backgroundColor: AppColors.primary,
         ),
         drawer: NavBar(),
         //backgroundColor: Colors.blue,
         body: SafeArea(
             child: SingleChildScrollView(
                 child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 32, horizontal: 20),
+          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 2),
           child: Column(
             children: [
               Text(

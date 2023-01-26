@@ -27,6 +27,8 @@ class _PostAdminEvenementState extends State<PostAdminEvenement> {
   final statuscontroller = TextEditingController();
 
   DateTime selectedDate = DateTime.now();
+  List<String> status = ['urgent', 'Moins Urgent', 'Facultatif'];
+  String? selectedStatus = "urgent";
 
   FirebaseStorage firebaseStorage = FirebaseStorage.instance;
   bool loading = false;
@@ -88,83 +90,108 @@ class _PostAdminEvenementState extends State<PostAdminEvenement> {
         body: Padding(
             padding: const EdgeInsets.all(10),
             child: SingleChildScrollView(
-                child: Column(children: [
-              reusableTextField(
-                  "Auteur", Icons.add, false, auteurcontroller, Colors.blue),
-              SizedBox(
-                height: 15,
-              ),
-              reusableTextField(
-                  "Poste", Icons.add, false, postecontroller, Colors.blue),
-              SizedBox(
-                height: 15,
-              ),
-              reusableTextField(
-                  "Titre", Icons.add, false, titrecontroller, Colors.blue),
-              SizedBox(
-                height: 15,
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              reusableTextField(
-                  "Statut", Icons.add, false, statuscontroller, Colors.blue),
-              InputDatePickerFormField(
-                firstDate: DateTime(2015, 8),
-                lastDate: DateTime(2101),
-                initialDate: selectedDate,
-                onDateSubmitted: (date) {
-                  setState(() {
-                    selectedDate = date;
-                  });
-                },
-              ),
-              Row(
-                children: [
-                  ElevatedButton(
-                    onPressed: () => _selectDate(context),
-                    child: Text('Select date'),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                  reusableTextField("Auteur", Icons.add, false,
+                      auteurcontroller, Colors.blue),
+                  SizedBox(
+                    height: 15,
                   ),
-                ],
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              Row(
-                children: [
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      uploadImage();
+                  reusableTextField(
+                      "Poste", Icons.add, false, postecontroller, Colors.blue),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  reusableTextField(
+                      "Titre", Icons.add, false, titrecontroller, Colors.blue),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Text('Statut'),
+                      SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.7,
+                          child: DropdownButton(
+                            value: selectedStatus,
+                            items: status
+                                .map((item) => DropdownMenuItem<String>(
+                                      child: Text(item),
+                                      value: item,
+                                    ))
+                                .toList(),
+                            onChanged: (item) => setState(
+                                () => selectedStatus = item as String?),
+                          )),
+                    ],
+                  ),
+                  InputDatePickerFormField(
+                    firstDate: DateTime(2015, 8),
+                    lastDate: DateTime(2101),
+                    initialDate: selectedDate,
+                    onDateSubmitted: (date) {
+                      setState(() {
+                        selectedDate = date;
+                      });
                     },
-                    icon: Icon(
-                      Icons.library_add,
-                    ),
-                    label: Text("Image"),
                   ),
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              signInSignUpButton(
-                "Poster",
-                context,
-                false,
-                () {
-                  FirebaseFirestore.instance.collection('Evenement').add({
-                    'titre': titrecontroller.value.text,
-                    'auteur': auteurcontroller.value.text,
-                    'description': auteurcontroller.value.text,
-                    'date': selectedDate,
-                    'poste': postecontroller.value.text,
-                    'status': statuscontroller.value.text,
-                    "image": url,
-                    'commentaires': [],
-                    'likes': 0,
-                  });
-                  Navigator.pop(context);
-                },
-              )
-            ]))));
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Center(
+                          child: ElevatedButton.icon(
+                        onPressed: () async {
+                          await uploadImage();
+                        },
+                        icon: Icon(
+                          Icons.library_add,
+                        ),
+                        label: Text("Image"),
+                      )),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Center(
+                          child: ElevatedButton(
+                        onPressed: () => _selectDate(context),
+                        child: Text('Select date'),
+                      )),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  signInSignUpButton(
+                    "Poster",
+                    context,
+                    false,
+                    () async {
+                      await FirebaseFirestore.instance
+                          .collection('Evenement')
+                          .add({
+                        'titre': titrecontroller.value.text,
+                        'auteur': auteurcontroller.value.text,
+                        'description': auteurcontroller.value.text,
+                        'date': selectedDate,
+                        'poste': postecontroller.value.text,
+                        'status': statuscontroller.value.text,
+                        "image": url,
+                        'commentaires': [],
+                        'likes': 0,
+                      });
+                      Navigator.pop(context);
+                    },
+                  )
+                ]))));
   }
 }

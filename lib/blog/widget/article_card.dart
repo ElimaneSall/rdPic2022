@@ -6,6 +6,7 @@ import 'package:tuto_firebase/blog/screen/detail_article.dart';
 import 'package:tuto_firebase/model/menu.dart';
 import 'package:tuto_firebase/screen/detaitl_screen.dart';
 import 'package:tuto_firebase/utils/color/color.dart';
+import 'package:tuto_firebase/utils/method.dart';
 
 class ArticleCard extends StatelessWidget {
   final Article article;
@@ -18,14 +19,8 @@ class ArticleCard extends StatelessWidget {
               context,
               MaterialPageRoute(
                   builder: (context) => DetailArticle(
-                      article.id,
-                      article.urlPDF,
-                      article.image,
-                      article.auteur,
-                      article.likes,
-                      article.date,
-                      article.titre,
-                      article.commentaire)));
+                        article.id,
+                      )));
         },
         child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -72,7 +67,8 @@ class ArticleCard extends StatelessWidget {
                         height: 4,
                       ),
                       Text(
-                        article.date,
+                        dateCustomformat(
+                            DateTime.parse(article.date.toDate().toString())),
                         style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w300,

@@ -4,6 +4,8 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:tuto_firebase/annonce/model/evenement.dart';
 
 import 'package:tuto_firebase/annonce/screen/detailEvenement.dart';
+import 'package:tuto_firebase/utils/color/color.dart';
+import 'package:tuto_firebase/utils/method.dart';
 
 class EvenementCard extends StatelessWidget {
   final Evenement evenement;
@@ -17,57 +19,69 @@ class EvenementCard extends StatelessWidget {
               context,
               MaterialPageRoute(
                   builder: (context) => DetailEvenement(
-                      evenement.image,
-                      evenement.auteur,
-                      evenement.id,
-                      evenement.likes,
-                      evenement.commentaires)));
+                        evenement.id,
+                      )));
         },
         child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                  color: Colors.blue,
+                  width: MediaQuery.of(context).size.width * 0.95,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: AppColors.lightGray,
+                  ),
                   child: Row(
                     children: [
                       ClipRRect(
                           borderRadius: BorderRadius.circular(30),
                           child: Container(
                               margin: EdgeInsets.fromLTRB(5, 5, 5, 5),
-                              width: 130,
+                              width: MediaQuery.of(context).size.width * 0.3,
                               height: 110,
                               child: Image.network(
                                 evenement.image,
                                 fit: BoxFit.cover,
                               ))),
                       SizedBox(
-                        width: 20,
+                        width: 2,
                       ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Container(
-                                width: 20,
-                                height: 20,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: evenement.status == "urgent"
-                                        ? Colors.red
-                                        : Colors.green),
-                              ),
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.4,
+                                  child: Text(
+                                    evenement.titre,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.black,
+                                      //decoration: TextDecoration.lineThrough
+                                    ),
+                                  )),
+                              evenement.status == "urgent"
+                                  ? Container(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.03,
+                                      width: MediaQuery.of(context).size.width *
+                                          0.2,
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(30)),
+                                      child: Center(child: Text("Urgent")),
+                                    )
+                                  : Container(),
                               SizedBox(
-                                width: 3,
-                              ),
-                              Text(
-                                evenement.titre,
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.white,
-                                  //decoration: TextDecoration.lineThrough
-                                ),
+                                width: 1,
                               ),
                             ],
                           ),
@@ -77,9 +91,9 @@ class EvenementCard extends StatelessWidget {
                           Text(
                             evenement.auteur,
                             style: TextStyle(
-                              fontSize: 15,
+                              fontSize: 13,
                               fontWeight: FontWeight.w500,
-                              color: Colors.white,
+                              color: Colors.black,
                               //decoration: TextDecoration.lineThrough
                             ),
                           ),
@@ -89,19 +103,20 @@ class EvenementCard extends StatelessWidget {
                           Text(
                             evenement.poste,
                             style: TextStyle(
-                                fontSize: 15,
+                                fontSize: 13,
                                 fontWeight: FontWeight.w500,
-                                color: Colors.white),
+                                color: Colors.black),
                           ),
                           SizedBox(
                             height: 4,
                           ),
                           Text(
-                            evenement.date.toString(),
+                            dateCustomformat(DateTime.parse(
+                                evenement.date.toDate().toString())),
                             style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w300,
-                                color: Colors.white),
+                                color: Colors.black),
                           )
                         ],
                       )

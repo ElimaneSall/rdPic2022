@@ -5,7 +5,6 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:tuto_firebase/SOSEPT/model/SOSModel.dart';
 import 'package:tuto_firebase/SOSEPT/model/widget/DetailSOS.dart';
 import 'package:tuto_firebase/SOSEPT/model/widget/RepondreSOS.dart';
-import 'package:tuto_firebase/annonce/screen/detailAnnonce.dart';
 import 'package:tuto_firebase/utils/color/color.dart';
 import 'package:tuto_firebase/utils/method.dart';
 import 'package:intl/intl.dart';
@@ -104,6 +103,19 @@ class SOSCard extends StatelessWidget {
                                                                   Text(
                                                                     dataUser[
                                                                         "nom"],
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .center,
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            15,
+                                                                        fontWeight:
+                                                                            FontWeight.bold),
+                                                                  ),
+                                                                  Text(
+                                                                    dataUser[
+                                                                            "promo"] +
+                                                                        " ème promo",
                                                                     textAlign:
                                                                         TextAlign
                                                                             .center,

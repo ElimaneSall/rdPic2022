@@ -7,6 +7,8 @@ import 'package:tuto_firebase/blog/model/article.dart';
 import 'package:tuto_firebase/blog/sidebar/nav_drawer.dart';
 import 'package:tuto_firebase/blog/widget/article_card.dart';
 import 'package:tuto_firebase/utils/color/color.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 class HomeArticle extends StatefulWidget {
   const HomeArticle({Key? key}) : super(key: key);
@@ -18,6 +20,7 @@ class HomeArticle extends StatefulWidget {
 class _HomeArticleState extends State<HomeArticle> {
   @override
   Widget build(BuildContext context) {
+    initializeDateFormatting("fr");
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     CollectionReference products = firestore.collection('Article');
     return Scaffold(
@@ -26,7 +29,7 @@ class _HomeArticleState extends State<HomeArticle> {
       //backgroundColor: Colors.blue,
       body: SafeArea(
           child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 32, horizontal: 20),
+              padding: EdgeInsets.symmetric(vertical: 32, horizontal: 10),
               child: SingleChildScrollView(
                 child: Column(
                   children: [

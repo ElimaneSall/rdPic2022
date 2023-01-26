@@ -6,38 +6,23 @@ import 'package:tuto_firebase/blog/model/article.dart';
 import 'package:tuto_firebase/blog/screen/commentArticlePage.dart';
 import 'package:tuto_firebase/blog/screen/lirePDF.dart';
 import 'package:tuto_firebase/utils/color/color.dart';
+import 'package:tuto_firebase/utils/method.dart';
 
 class DetailArticle extends StatefulWidget {
   String id;
-  String url;
-  String auteur;
-  String image;
-  int likes;
-  String date;
-  String titre;
-  List commentaire;
 
-  DetailArticle(this.id, this.url, this.image, this.auteur, this.likes,
-      this.date, this.titre, this.commentaire,
-      {Key? key})
-      : super(key: key);
+  DetailArticle(this.id, {Key? key}) : super(key: key);
 
   @override
   State<DetailArticle> createState() => _DetailArticleState(
-      id, url, image, likes, auteur, date, titre, commentaire);
+        id,
+      );
 }
 
 class _DetailArticleState extends State<DetailArticle> {
   String _id;
-  String _url;
-  String _auteur;
-  String _image;
-  int _likes;
-  String _date;
-  String _titre;
-  List _commentaires;
-  _DetailArticleState(this._id, this._url, this._image, this._likes,
-      this._auteur, this._date, this._titre, this._commentaires);
+
+  _DetailArticleState(this._id);
   final Stream<QuerySnapshot> _articleStream =
       FirebaseFirestore.instance.collection('Article').snapshots();
 
@@ -52,168 +37,254 @@ class _DetailArticleState extends State<DetailArticle> {
     }
   }
 
+  TextEditingController controller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-        stream: _articleStream,
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.hasError) {
-            return Text('Something went wrong');
-          }
+    return Scaffold(
+        appBar: AppBar(
+          title: Center(child: Text("Detail de l'article")),
+          backgroundColor: AppColors.primary,
+        ),
+        body: SingleChildScrollView(
+            child: FutureBuilder<DocumentSnapshot>(
+                future: FirebaseFirestore.instance
+                    .collection('Article')
+                    .doc(_id)
+                    .get(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<DocumentSnapshot> snapshot) {
+                  if (snapshot.hasError) {
+                    return Text("Something went wrong");
+                  }
 
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Text("Loading");
-          }
+                  if (snapshot.hasData && !snapshot.data!.exists) {
+                    return Row(
+                      children: [Text("Anonyme")],
+                    );
+                  }
 
-          return Scaffold(
-              appBar: AppBar(
-                title: Center(child: Text("Detail de l'article")),
-                backgroundColor: AppColors.primary,
-              ),
-              body: SingleChildScrollView(
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                    Image.network(
-                      _image,
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height / 2,
-                      fit: BoxFit.cover,
-                    ),
-                    Column(
-                      children: [
-                        Text(
-                          _titre,
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 20,
-                              decoration: TextDecoration.none),
-                        ),
-                        Text(
-                          "Posté par " + _auteur,
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 15,
-                              decoration: TextDecoration.none),
-                        ),
-                        Text(
-                          "Date: Le " + _date,
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 10,
-                              decoration: TextDecoration.none),
-                        ),
-                        SizedBox(
-                          height: 7,
-                        ),
-                        Text(
-                          "Description:",
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 15,
-                              decoration: TextDecoration.none),
-                        ),
-                        Text(
-                          "Le Dark Web est un ensemble caché de sites Internet accessibles uniquement par un navigateur spécialement conçu à cet effet. Il est utilisé pour préserver l'anonymat et la confidentialité des activités sur Internet, ce qui peut être utile aussi bien pour les applications légales que pour les applications illégales",
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 12,
-                              decoration: TextDecoration.none),
-                        ),
-                        Container(
-                            padding: EdgeInsets.all(10),
-                            height: 40,
-                            color: AppColors.softBlue,
-                            child: Row(
-                              children: [
-                                Row(
-                                  children: [
-                                    IconButton(
-                                        onPressed: () {
-                                          addLikes(_id, _likes);
-                                        },
-                                        icon: Icon(Icons.favorite)),
-                                    // SizedBox(height: 10,),
-                                    Text(_likes.toString())
-                                  ],
-                                ),
-                                SizedBox(
-                                  width: 70,
-                                ),
-                                InkWell(
-                                    child: Text(
-                                      "Comment",
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 15),
-                                    ),
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  CommentArticlePage(_id)));
-                                    }),
-                                SizedBox(
-                                  width: 70,
-                                ),
-                                InkWell(
-                                    child: Text(
-                                      "Lire",
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 15),
-                                    ),
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  LirePDF(_url, _titre)));
-                                    })
-                              ],
-                            )),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("Commentaires",
-                                style: TextStyle(fontSize: 20)),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            for (final categorie in _commentaires)
-                              Column(
-                                children: [
-                                  Row(children: [
-                                    Icon(Icons.person),
-                                    SizedBox(
-                                      width: 3,
-                                    ),
-                                    Expanded(
-                                      child: Container(
-                                        padding: EdgeInsets.all(10),
-                                        //   color: AppColors,
-                                        decoration: BoxDecoration(
-                                            color: AppColors.softBlue,
-                                            borderRadius:
-                                                BorderRadius.circular(10)),
-                                        child: Text(categorie),
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    Map<String, dynamic> dataEvenement =
+                        snapshot.data!.data() as Map<String, dynamic>;
+                    return Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Image.network(
+                            dataEvenement["image"],
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height / 2,
+                            fit: BoxFit.cover,
+                          ),
+                          Column(
+                            children: [
+                              Text(
+                                dataEvenement["titre"],
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    decoration: TextDecoration.none),
+                              ),
+                              Text(
+                                "Ecris par " + dataEvenement["auteur"],
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 15,
+                                    decoration: TextDecoration.none),
+                              ),
+                              Text(
+                                dateCustomformat(DateTime.parse(
+                                    dataEvenement["date"].toDate().toString())),
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 10,
+                                    decoration: TextDecoration.none),
+                              ),
+                              SizedBox(
+                                height: 7,
+                              ),
+                              // Text(
+                              //   dataEvenement["poste"],
+                              //   style: TextStyle(
+                              //       color: Colors.black,
+                              //       fontSize: 15,
+                              //       decoration: TextDecoration.none),
+                              // ),
+                              Text(
+                                "Description:",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 15,
+                                    decoration: TextDecoration.none),
+                              ),
+                              Text(
+                                dataEvenement["description"],
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 12,
+                                    decoration: TextDecoration.none),
+                              ),
+                              Container(
+                                  padding: EdgeInsets.all(10),
+                                  height: 40,
+                                  color: AppColors.primary,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        children: [
+                                          IconButton(
+                                              onPressed: () {
+                                                addLikes(_id,
+                                                    dataEvenement["likes"]);
+                                              },
+                                              icon: Icon(Icons.favorite)),
+                                          // SizedBox(height: 10,),
+                                          Text(
+                                              dataEvenement["likes"].toString())
+                                        ],
                                       ),
-                                    )
-                                  ]),
+                                      InkWell(
+                                          child: Text(
+                                            "Commenter",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 15),
+                                          ),
+                                          onTap: () {
+                                            commentOpenDiallog(context,
+                                                controller, _id, "Article");
+                                          }),
+                                      InkWell(
+                                          child: Text(
+                                            "Télécharger",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 15),
+                                          ),
+                                          onTap: () {})
+                                    ],
+                                  )),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("Commentaires",
+                                      style: TextStyle(fontSize: 20)),
                                   SizedBox(
                                     height: 10,
-                                  )
+                                  ),
+                                  for (final commentaire
+                                      in dataEvenement["commentaires"])
+                                    Column(children: [
+                                      Container(
+                                          decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  CircleAvatar(
+                                                    radius: 20,
+                                                    backgroundImage: NetworkImage(
+                                                        "https://st.depositphotos.com/1011643/2013/i/950/depositphotos_20131045-stock-photo-happy-male-african-university-student.jpg"),
+                                                  ),
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Text(
+                                                        "Elimane Sall",
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: TextStyle(
+                                                            fontSize: 15,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      ),
+                                                      Text(
+                                                        timeAgoCustom(DateTime
+                                                            .parse(commentaire[
+                                                                    "date"]
+                                                                .toDate()
+                                                                .toString())),
+                                                        style: TextStyle(
+                                                          fontSize: 15,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          color: Colors.black,
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        width: 3,
+                                                      ),
+                                                      //   Text(
+                                                      //       "Il y'a ${(DateTime.now().toIso8601String())} heures")
+                                                    ],
+                                                  )
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Text(commentaire[
+                                                      'commentaire']),
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: [
+                                                  Text(
+                                                    dateCustomformat(
+                                                        DateTime.parse(
+                                                            commentaire['date']
+                                                                .toDate()
+                                                                .toString())),
+                                                  )
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                height: 10,
+                                              )
+                                            ],
+                                          )),
+                                      SizedBox(
+                                        height: 10,
+                                      )
+                                    ])
                                 ],
-                              ),
-                          ],
-                        )
-                      ],
-                    )
-                  ])));
-        });
+                              )
+                            ],
+                          )
+                        ]);
+                  }
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                })));
   }
 }

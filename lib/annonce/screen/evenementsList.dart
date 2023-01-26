@@ -5,6 +5,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:tuto_firebase/annonce/model/evenement.dart';
 import 'package:tuto_firebase/annonce/sideBar/sideBar.dart';
 import 'package:tuto_firebase/annonce/widget/evenementCard.dart';
+import 'package:tuto_firebase/utils/color/color.dart';
 
 class EvenementList extends StatefulWidget {
   const EvenementList({Key? key}) : super(key: key);
@@ -21,14 +22,14 @@ class _EvenementListState extends State<EvenementList> {
     return Scaffold(
         appBar: AppBar(
           title: Center(child: Text("Evenement")),
-          backgroundColor: Colors.blue,
+          backgroundColor: AppColors.primary,
         ),
         drawer: NavBar(),
         //backgroundColor: Colors.blue,
         body: SafeArea(
             child: SingleChildScrollView(
                 child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 32, horizontal: 20),
+          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
           child: Column(
             children: [
               Text(
