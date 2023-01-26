@@ -55,10 +55,7 @@ dependencies:
   gallery_saver: ^2.3.2
   firebase_storage_web: ^3.3.9
   qr_code_scanner: ^1.0.1
- 
-
- 
-  
+  flutter_local_notifications: ^9.6.1
 
 dev_dependencies:
   flutter_test:

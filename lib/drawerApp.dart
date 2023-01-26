@@ -12,6 +12,8 @@ import 'package:tuto_firebase/login/PageTest.dart';
 import 'package:tuto_firebase/login/profile.dart';
 import 'package:tuto_firebase/login/signIn.dart';
 import 'package:tuto_firebase/pShop/screen/HomeUserPshop.dart';
+import 'package:tuto_firebase/notifications/notifications_page.dart';
+import 'package:tuto_firebase/notifications/model/notifications.dart';
 
 import 'blog/screen/RD.dart';
 
@@ -50,6 +52,17 @@ class _DrawerAppState extends State<DrawerApp> {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => Profile()),
+            );
+          }),
+      ListTile(
+          leading: Icon(Icons.notifications),
+          title: const Text(
+            "Notifications",
+          ),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Notifications()),
             );
           }),
       ListTile(
