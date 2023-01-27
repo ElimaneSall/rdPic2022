@@ -7,14 +7,14 @@ import 'package:tuto_firebase/interclasse/screen/adminFootball.dart';
 import 'package:tuto_firebase/utils/color/color.dart';
 import 'package:tuto_firebase/widget/reusableTextField.dart';
 
-class CreateMatch extends StatefulWidget {
-  const CreateMatch({Key? key}) : super(key: key);
+class CreateBasketMatch extends StatefulWidget {
+  const CreateBasketMatch({Key? key}) : super(key: key);
 
   @override
-  State<CreateMatch> createState() => _CreateMatchState();
+  State<CreateBasketMatch> createState() => _CreateBasketMatchState();
 }
 
-class _CreateMatchState extends State<CreateMatch> {
+class _CreateBasketMatchState extends State<CreateBasketMatch> {
   TextEditingController _equipeTextController = TextEditingController();
   TextEditingController _adversaireTextController = TextEditingController();
   DateTime selectedDate = DateTime.now();
@@ -108,7 +108,7 @@ class _CreateMatchState extends State<CreateMatch> {
                     signInSignUpButton("Créer", context, false, () {
                       if (_equipeTextController.value.text !=
                           _adversaireTextController.value.text) {
-                        FirebaseFirestore.instance.collection('Matchs').add({
+                        FirebaseFirestore.instance.collection('Basket').add({
                           "idEquipe1": _equipeTextController.value.text,
                           "idEquipe2": _adversaireTextController.value.text,
                           "redCard1": 0,

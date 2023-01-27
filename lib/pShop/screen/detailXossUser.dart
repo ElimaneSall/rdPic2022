@@ -137,7 +137,7 @@ class _DetailXossUserState extends State<DetailXossUser> {
 
                               if (snapshot.hasData && !snapshot.data!.exists) {
                                 return Row(
-                                  children: [Text("Anonyme")],
+                                  children: [Text("Loading")],
                                 );
                               }
 
@@ -174,7 +174,10 @@ class _DetailXossUserState extends State<DetailXossUser> {
                                         Center(
                                           child: Container(
                                             height: 30,
-                                            width: 100,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.3,
                                             decoration: BoxDecoration(
                                                 borderRadius:
                                                     BorderRadius.circular(10),
@@ -183,6 +186,9 @@ class _DetailXossUserState extends State<DetailXossUser> {
                                                 child: Text(
                                               dataXoss["prix"].toString() +
                                                   " FCFA",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold),
                                             )),
                                           ),
                                         ),
@@ -211,7 +217,7 @@ class _DetailXossUserState extends State<DetailXossUser> {
                                       ],
                                     ));
                               }
-                              return Text("Anonyme");
+                              return Text("Loading");
                             }),
                       ],
                     )))));

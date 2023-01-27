@@ -5,6 +5,8 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:tuto_firebase/blog/screen/RD.dart';
 import 'package:tuto_firebase/homeApp.dart';
+import 'package:tuto_firebase/interclasse/basket/screen/createMatch.dart';
+import 'package:tuto_firebase/interclasse/basket/screen/homeBasket.dart';
 import 'package:tuto_firebase/interclasse/screen/adminFootball.dart';
 import 'package:tuto_firebase/interclasse/screen/classementMatch.dart';
 
@@ -66,6 +68,15 @@ class NavBar extends StatelessWidget {
           }),
       ListTile(
           leading: Icon(Icons.favorite),
+          title: Text("Admin Basket"),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CreateBasketMatch()),
+            );
+          }),
+      ListTile(
+          leading: Icon(Icons.favorite),
           title: Text("Classement Football"),
           onTap: () {
             Navigator.push(
@@ -80,7 +91,7 @@ class NavBar extends StatelessWidget {
             final categorie = "RD";
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => RD(categorie)),
+              MaterialPageRoute(builder: (context) => HomeBasket()),
             );
           }),
       ListTile(

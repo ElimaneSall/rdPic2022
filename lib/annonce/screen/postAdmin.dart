@@ -128,6 +128,7 @@ class _PostAdminState extends State<PostAdmin> {
                       "idUser": FirebaseAuth.instance.currentUser!.uid,
                       'commentaires': [],
                       'likes': 0,
+                      'unlikes': 0,
                     });
                     Navigator.pop(context);
                   })

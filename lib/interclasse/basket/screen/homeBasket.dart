@@ -9,18 +9,18 @@ import 'package:tuto_firebase/interclasse/model/match.dart';
 import 'package:tuto_firebase/interclasse/widget/match_card.dart';
 import 'package:tuto_firebase/utils/color/color.dart';
 
-class HomeInterClasse extends StatefulWidget {
-  const HomeInterClasse({Key? key}) : super(key: key);
+class HomeBasket extends StatefulWidget {
+  const HomeBasket({Key? key}) : super(key: key);
 
   @override
-  State<HomeInterClasse> createState() => _HomeInterClasseState();
+  State<HomeBasket> createState() => _HomeBasketState();
 }
 
-class _HomeInterClasseState extends State<HomeInterClasse> {
+class _HomeBasketState extends State<HomeBasket> {
   @override
   Widget build(BuildContext context) {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
-    CollectionReference matchs = firestore.collection('Matchs');
+    CollectionReference matchs = firestore.collection('Basket');
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.primary,
