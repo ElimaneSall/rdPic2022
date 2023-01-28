@@ -57,200 +57,155 @@ class _DetailMatchState extends State<DetailMatch> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Image.asset("equipe1.png",
-                                        width: 100, height: 40),
-                                    SizedBox(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.4),
-                                    Image.asset("equipe2.png",
-                                        width: 100, height: 40),
-                                  ]),
-
-                              // Text(dataMatch["idEquipe1"],
-                              //     style: TextStyle(
-                              //         color: AppColors.blue,
-                              //         fontSize: 30,
-                              //         fontWeight: FontWeight.bold)),
-                              // SizedBox(
-                              //   height: 30,
-                              // ),
-                              // Text("Cartons",
-                              //     style: TextStyle(
-                              //       color: AppColors.blue,
-                              //       fontSize: 20,
-                              //     )),
-                              Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(dataMatch["idEquipe1"],
-                                      style: TextStyle(
-                                          color: AppColors.blue,
-                                          fontSize: 30,
-                                          fontWeight: FontWeight.bold)),
-                                  SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.6),
-                                  Text(dataMatch["idEquipe2"],
-                                      style: TextStyle(
-                                          color: AppColors.blue,
-                                          fontSize: 30,
-                                          fontWeight: FontWeight.bold)),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(dataMatch["score1"].toString(),
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 30,
-                                          fontWeight: FontWeight.bold)),
-                                  SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.1),
-                                  Text("-",
-                                      style: TextStyle(
-                                          color: AppColors.blue,
-                                          fontSize: 25,
-                                          fontWeight: FontWeight.bold)),
-                                  SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.1),
-                                  Text(dataMatch["score2"].toString(),
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 30,
-                                          fontWeight: FontWeight.bold)),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Column(
                                     children: [
-                                      for (var buteur in dataMatch["buteurs1"])
-                                        Text(buteur["buteur"]),
+                                      Image.asset("equipe1.png",
+                                          width: 100, height: 40),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Text(dataMatch["idEquipe1"],
+                                          style: TextStyle(
+                                              color: AppColors.blue,
+                                              fontSize: 30,
+                                              fontWeight: FontWeight.bold)),
+                                      SizedBox(
+                                        height: 30,
+                                      ),
+                                      Text("Cartons",
+                                          style: TextStyle(
+                                            color: AppColors.blue,
+                                            fontSize: 20,
+                                          )),
+                                      Row(
+                                        children: [
+                                          Container(
+                                              height: 40,
+                                              width: 30,
+                                              color: Colors.yellow,
+                                              child: Center(
+                                                  child: Text(
+                                                dataMatch["yellowCard1"]
+                                                    .toString(),
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 15,
+                                                ),
+                                              ))),
+                                          SizedBox(
+                                            width: 5,
+                                          ),
+                                          Container(
+                                              height: 40,
+                                              width: 30,
+                                              color: Colors.red,
+                                              child: Center(
+                                                  child: Text(
+                                                dataMatch["redCard1"]
+                                                    .toString(),
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 15,
+                                                ),
+                                              ))),
+                                        ],
+                                      )
                                     ],
                                   ),
-                                  SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.1),
                                   Column(
                                     children: [
-                                      for (var buteur in dataMatch["buteurs2"])
-                                        Text(buteur["buteur"]),
-                                    ],
-                                  )
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Column(
+                                      Text("Full time"),
+                                      SizedBox(height: 7),
+                                      Row(
                                         children: [
-                                          Text("Cartons",
+                                          Text(dataMatch["score1"].toString(),
                                               style: TextStyle(
-                                                color: AppColors.blue,
-                                                fontSize: 20,
-                                              )),
-                                          Row(
-                                            children: [
-                                              Container(
-                                                  height: 40,
-                                                  width: 30,
-                                                  color: Colors.yellow,
-                                                  child: Center(
-                                                      child: Text(
-                                                    dataMatch["yellowCard1"]
-                                                        .toString(),
-                                                    style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 15,
-                                                    ),
-                                                  ))),
-                                              SizedBox(
-                                                width: 5,
-                                              ),
-                                              Container(
-                                                  height: 40,
-                                                  width: 30,
-                                                  color: Colors.red,
-                                                  child: Center(
-                                                      child: Text(
-                                                    dataMatch["redCard1"]
-                                                        .toString(),
-                                                    style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 15,
-                                                    ),
-                                                  ))),
-                                            ],
-                                          )
+                                                  color: Colors.black,
+                                                  fontSize: 30,
+                                                  fontWeight: FontWeight.bold)),
+                                          SizedBox(
+                                            width: 20,
+                                          ),
+                                          Text("-",
+                                              style: TextStyle(
+                                                  color: AppColors.blue,
+                                                  fontSize: 25,
+                                                  fontWeight: FontWeight.bold)),
+                                          SizedBox(
+                                            width: 20,
+                                          ),
+                                          Text(dataMatch["score2"].toString(),
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 30,
+                                                  fontWeight: FontWeight.bold)),
                                         ],
                                       ),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.5),
-                                  Row(
-                                    children: [
-                                      Column(
-                                        children: [
-                                          Text("Cartons",
-                                              style: TextStyle(
-                                                color: AppColors.blue,
-                                                fontSize: 20,
-                                              )),
-                                          Row(
-                                            children: [
-                                              Container(
-                                                  height: 40,
-                                                  width: 30,
-                                                  color: Colors.yellow,
-                                                  child: Center(
-                                                      child: Text(
-                                                    dataMatch["yellowCard2"]
-                                                        .toString(),
-                                                    style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 15,
-                                                    ),
-                                                  ))),
-                                              SizedBox(
-                                                width: 5,
-                                              ),
-                                              Container(
-                                                  height: 40,
-                                                  width: 30,
-                                                  color: Colors.red,
-                                                  child: Center(
-                                                      child: Text(
-                                                    dataMatch["redCard2"]
-                                                        .toString(),
-                                                    style: TextStyle(
-                                                      color: Colors.black,
-                                                      fontSize: 15,
-                                                    ),
-                                                  ))),
-                                            ],
-                                          )
-                                        ],
+                                      SizedBox(
+                                        height: 30,
                                       ),
+                                      Image.asset("ball_football.png",
+                                          width: 100, height: 40),
                                     ],
                                   ),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Image.asset("ball_football.png",
-                                      width: 100, height: 40),
+                                  Column(
+                                    children: [
+                                      Image.asset("equipe2.png",
+                                          width: 100, height: 40),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Text(dataMatch["idEquipe2"],
+                                          style: TextStyle(
+                                              color: AppColors.blue,
+                                              fontSize: 30,
+                                              fontWeight: FontWeight.bold)),
+                                      SizedBox(
+                                        height: 30,
+                                      ),
+                                      Text("Cartons",
+                                          style: TextStyle(
+                                            color: AppColors.blue,
+                                            fontSize: 20,
+                                          )),
+                                      Row(
+                                        children: [
+                                          Container(
+                                              height: 40,
+                                              width: 30,
+                                              color: Colors.yellow,
+                                              child: Center(
+                                                  child: Text(
+                                                dataMatch["yellowCard2"]
+                                                    .toString(),
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 15,
+                                                ),
+                                              ))),
+                                          SizedBox(
+                                            width: 5,
+                                          ),
+                                          Container(
+                                              height: 40,
+                                              width: 30,
+                                              color: Colors.red,
+                                              child: Center(
+                                                  child: Text(
+                                                dataMatch["redCard2"]
+                                                    .toString(),
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 15,
+                                                ),
+                                              ))),
+                                        ],
+                                      )
+                                    ],
+                                  ),
                                 ],
                               ),
                               SizedBox(
@@ -332,12 +287,12 @@ class _DetailMatchState extends State<DetailMatch> {
                                       color: AppColors.primary,
                                       child: Row(
                                         children: [
-                                          GestureDetector(
-                                              onTap: () {
+                                          IconButton(
+                                              onPressed: () {
                                                 addLikes(_id, "Evenement",
                                                     dataMatch["likes"]);
                                               },
-                                              child: Icon(
+                                              icon: Icon(
                                                 Icons.thumb_up,
                                                 color: Colors.white,
                                               )),
@@ -347,16 +302,13 @@ class _DetailMatchState extends State<DetailMatch> {
                                             style:
                                                 TextStyle(color: Colors.white),
                                           ),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
 
-                                          GestureDetector(
-                                              onTap: () {
+                                          IconButton(
+                                              onPressed: () {
                                                 undLike(_id, "Evenement",
                                                     dataMatch["unlikes"]);
                                               },
-                                              child: Icon(
+                                              icon: Icon(
                                                 Icons.thumb_down,
                                                 color: Colors.white,
                                               )),

@@ -190,6 +190,7 @@ class _HomeAnnonceState extends State<HomeAnnonce> {
                               .map((e) => AnnonceCard(Annonce(
                                     id: e.id,
                                     likes: e['likes'],
+                                    unlikes: e['unlikes'],
                                     commentaires: e['commentaires'],
                                     titre: e['titre'],
                                     poste: e['poste'],

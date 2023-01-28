@@ -114,3 +114,25 @@ Future commentOpenDiallog(
         ],
       ),
     );
+
+void addLikes(String docID, String collection, int likes) {
+  var newLikes = likes + 1;
+  try {
+    FirebaseFirestore.instance.collection(collection).doc(docID).update({
+      'likes': newLikes,
+    }).then((value) => print("données à jour"));
+  } catch (e) {
+    print(e.toString());
+  }
+}
+
+void undLike(String docID, String collection, int likes) {
+  var newLikes = likes + 1;
+  try {
+    FirebaseFirestore.instance.collection(collection).doc(docID).update({
+      'unlikes': newLikes,
+    }).then((value) => print("données à jour"));
+  } catch (e) {
+    print(e.toString());
+  }
+}

@@ -18,16 +18,6 @@ class DetailEvenement extends StatefulWidget {
 
 class _DetailEvenementState extends State<DetailEvenement> {
   String _id;
-  void addLikes(String docID, int likes) {
-    var newLikes = likes + 1;
-    try {
-      FirebaseFirestore.instance.collection('Evenement').doc(docID).update({
-        'likes': newLikes,
-      }).then((value) => print("données à jour"));
-    } catch (e) {
-      print(e.toString());
-    }
-  }
 
   TextEditingController controller = TextEditingController();
 
@@ -121,25 +111,44 @@ class _DetailEvenementState extends State<DetailEvenement> {
                               ),
                               Container(
                                   padding: EdgeInsets.all(10),
+                                  width: MediaQuery.of(context).size.width * 1,
                                   height: 40,
                                   color: AppColors.primary,
                                   child: Row(
                                     children: [
-                                      Row(
-                                        children: [
-                                          IconButton(
-                                              onPressed: () {
-                                                addLikes(_id,
-                                                    dataEvenement["likes"]);
-                                              },
-                                              icon: Icon(Icons.favorite)),
-                                          // SizedBox(height: 10,),
-                                          Text(
-                                              dataEvenement["likes"].toString())
-                                        ],
+                                      IconButton(
+                                          onPressed: () {
+                                            addLikes(_id, "Evenement",
+                                                dataEvenement["likes"]);
+                                          },
+                                          icon: Icon(
+                                            Icons.thumb_up,
+                                            color: Colors.white,
+                                          )),
+                                      // SizedBox(height: 10,),
+                                      Text(
+                                        dataEvenement["likes"].toString(),
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+
+                                      IconButton(
+                                          onPressed: () {
+                                            undLike(_id, "Evenement",
+                                                dataEvenement["unlikes"]);
+                                          },
+                                          icon: Icon(
+                                            Icons.thumb_down,
+                                            color: Colors.white,
+                                          )),
+                                      // SizedBox(height: 10,),
+                                      Text(
+                                        dataEvenement["unlikes"].toString(),
+                                        style: TextStyle(color: Colors.white),
                                       ),
                                       SizedBox(
-                                        width: 70,
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.1,
                                       ),
                                       InkWell(
                                           child: Text(
@@ -153,7 +162,9 @@ class _DetailEvenementState extends State<DetailEvenement> {
                                                 controller, _id, "Evenement");
                                           }),
                                       SizedBox(
-                                        width: 70,
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.1,
                                       ),
                                       InkWell(
                                           child: Text(

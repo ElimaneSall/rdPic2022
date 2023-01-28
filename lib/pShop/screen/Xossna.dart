@@ -19,6 +19,29 @@ class _XossnaState extends State<Xossna> {
   TextEditingController _produitTextController = TextEditingController();
   TextEditingController _prixTextController = TextEditingController();
   List listProduit = [];
+  double sum = 0;
+  void getSomme() {
+    FirebaseFirestore.instance.collection('Xoss').get().then(
+      (querySnapshot) {
+        querySnapshot.docs.forEach((result) {
+          if (result.data()["idUser"] ==
+              FirebaseAuth.instance.currentUser!.uid) {
+            sum = sum + result.data()['prix'];
+          }
+        });
+        print("somme2$sum");
+        setState(() {});
+      },
+    );
+  }
+
+  @override
+  void initState() {
+    getSomme();
+    print("somme1$sum");
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,6 +57,7 @@ class _XossnaState extends State<Xossna> {
                     padding: EdgeInsets.fromLTRB(
                         20, MediaQuery.of(context).size.height * 0.2, 20, 0),
                     child: Column(children: <Widget>[
+                      Text(sum.toString()),
                       SizedBox(
                         height: 20,
                       ),
@@ -45,19 +69,31 @@ class _XossnaState extends State<Xossna> {
                       reusableTextField("Prix", Icons.add, false,
                           _prixTextController, Colors.blue),
                       signInSignUpButton("Xossna", context, false, () {
-                        listProduit =
-                            _produitTextController.value.text.split(";");
-                        FirebaseFirestore.instance.collection('Xoss').add({
-                          'produits': FieldValue.arrayUnion(listProduit),
-                          "prix": int.parse(_prixTextController.value.text),
-                          "date": DateTime.now(),
-                          "idUser": FirebaseAuth.instance.currentUser!.uid,
-                          "statut": false
-                        });
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => SuccessMessage()));
+                        if (sum < 10000) {
+                          listProduit =
+                              _produitTextController.value.text.split(";");
+                          FirebaseFirestore.instance.collection('Xoss').add({
+                            'produits': FieldValue.arrayUnion(listProduit),
+                            "prix": int.parse(_prixTextController.value.text),
+                            "date": DateTime.now(),
+                            "idUser": FirebaseAuth.instance.currentUser!.uid,
+                            "statut": false
+                          });
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SuccessMessage()));
+                        } else {
+                          showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                  title: Text("Message"),
+                                  content: Text(
+                                    "Vous avez atteint la valeur maximale",
+                                    textAlign: TextAlign.center,
+                                  )));
+                        }
+                        ;
                       }),
                     ])))));
   }

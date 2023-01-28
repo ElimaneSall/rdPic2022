@@ -11,9 +11,8 @@ import 'package:tuto_firebase/login/GetFile.dart';
 import 'package:tuto_firebase/login/PageTest.dart';
 import 'package:tuto_firebase/login/profile.dart';
 import 'package:tuto_firebase/login/signIn.dart';
-import 'package:tuto_firebase/pShop/screen/HomeUserPshop.dart';
 import 'package:tuto_firebase/notifications/notifications_page.dart';
-import 'package:tuto_firebase/notifications/model/notifications.dart';
+import 'package:tuto_firebase/pShop/screen/HomeUserPshop.dart';
 
 import 'blog/screen/RD.dart';
 

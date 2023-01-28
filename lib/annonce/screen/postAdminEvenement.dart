@@ -188,6 +188,7 @@ class _PostAdminEvenementState extends State<PostAdminEvenement> {
                         "image": url,
                         'commentaires': [],
                         'likes': 0,
+                        'unlikes': 0,
                       });
                       Navigator.pop(context);
                     },

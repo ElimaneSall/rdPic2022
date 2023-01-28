@@ -54,9 +54,9 @@ class _AdminFootballState extends State<AdminFootball> {
                               Matches(
                                   id: e.id,
                                   phase: e["phase"],
+                                  equipe1: e['idEquipe1'],
                                   buteurs1: e["buteurs1"],
                                   buteurs2: e["buteurs2"],
-                                  equipe1: e['idEquipe1'],
                                   equipe2: e['idEquipe2'],
                                   date: e['date'],
                                   score1: e['score1'],

@@ -15,22 +15,26 @@ class HomeUserPshop extends StatefulWidget {
 }
 
 class _HomeUserPshopState extends State<HomeUserPshop> {
-  int somme = 10;
-  var total = 0;
-
-  int getTotalPrix() {
-    FirebaseFirestore.instance.collection('Xoss').get().then((querySnapshot) {
-      querySnapshot.docs.forEach((result) {
-        somme = somme + int.parse(result['prix']);
-        print("somme" + somme.toString());
-      });
-    });
-    return somme;
+  double sum = 0;
+  void getSomme() {
+    FirebaseFirestore.instance.collection('Xoss').get().then(
+      (querySnapshot) {
+        querySnapshot.docs.forEach((result) {
+          if (result.data()["idUser"] ==
+              FirebaseAuth.instance.currentUser!.uid) {
+            sum = sum + result.data()['prix'];
+          }
+        });
+        print("somme2$sum");
+        setState(() {});
+      },
+    );
   }
 
   @override
-  initState() {
-    getTotalPrix();
+  void initState() {
+    getSomme();
+    print("somme1$sum");
     super.initState();
   }
 
@@ -77,7 +81,7 @@ class _HomeUserPshopState extends State<HomeUserPshop> {
                           borderRadius: BorderRadius.circular(10)),
                       child: Center(
                         child: Text(
-                          getTotalPrix().toString() + " FCFA",
+                          sum.toString() + " FCFA",
                           style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
@@ -89,7 +93,7 @@ class _HomeUserPshopState extends State<HomeUserPshop> {
                     height: MediaQuery.of(context).size.height * 0.02,
                   ),
                   Text(
-                    getTotalPrix().toString(),
+                    "Samay Xoss",
                     style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.w500,

@@ -8,17 +8,22 @@ class Matches {
   Timestamp date;
   int score2;
   int likes;
+  String phase;
   List commentaires;
-
-  Matches({
-    required this.likes,
-    required this.commentaires,
-    required this.id,
-    required this.equipe1,
-    required this.equipe2,
-    required this.score1,
-    required this.date,
-    required this.score2,
-    //required this.likes,
-  });
+  dynamic buteurs1;
+  dynamic buteurs2;
+  Matches(
+      {required this.likes,
+      required this.commentaires,
+      required this.id,
+      required this.equipe1,
+      required this.equipe2,
+      required this.score1,
+      required this.date,
+      required this.score2,
+      required this.phase,
+      required this.buteurs1,
+      required this.buteurs2
+      //required this.likes,
+      });
 }

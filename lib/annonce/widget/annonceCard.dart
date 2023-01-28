@@ -140,13 +140,30 @@ class AnnonceCard extends StatelessWidget {
                             children: [
                               Row(
                                 children: [
-                                  IconButton(
-                                      onPressed: () {
-                                        //  addLikes(_id, 1);
-                                      },
-                                      icon: Icon(Icons.favorite)),
-                                  // SizedBox(height: 10,),
-                                  Text(1.toString()),
+                                  Row(
+                                    children: [
+                                      IconButton(
+                                          onPressed: () {
+                                            addLikes(annonce.id, "Annonce",
+                                                annonce.likes);
+                                          },
+                                          icon: Icon(Icons.thumb_up)),
+                                      // SizedBox(height: 10,),
+                                      Text(annonce.likes.toString()),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      IconButton(
+                                          onPressed: () {
+                                            undLike(annonce.id, "Annonce",
+                                                annonce.unlikes);
+                                          },
+                                          icon: Icon(Icons.thumb_down)),
+                                      // SizedBox(height: 10,),
+                                      Text(annonce.unlikes.toString()),
+                                    ],
+                                  ),
                                 ],
                               ),
                               Text(
