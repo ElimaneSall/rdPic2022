@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -14,6 +15,13 @@ class ArticleCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
+        onLongPress: () {
+          if (FirebaseAuth.instance.currentUser!.uid == article.idUser) {
+            openDialogDelete(context, article.id, "Article",
+                "Message de suppression", "Voulez vous supprimer cet article");
+            Navigator.pop(context);
+          }
+        },
         onTap: () {
           Navigator.push(
               context,

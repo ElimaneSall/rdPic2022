@@ -459,8 +459,14 @@ ButtonAdd(_id, int ancienData, String fieldData) {
       iconSize: _sizeIconPlus);
 }
 
-ButtonBut(_id, int ancienData, String fieldData, BuildContext context,
-    TextEditingController controller, String buteur) {
+ButtonBut(
+  _id,
+  int ancienData,
+  String fieldData,
+  BuildContext context,
+  TextEditingController controller,
+  String buteur,
+) {
   return IconButton(
       onPressed: () {
         addToDatabase(_id, ancienData, fieldData);

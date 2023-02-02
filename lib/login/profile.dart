@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:tuto_firebase/SOSEPT/screen/HomeSOS.dart';
+import 'package:tuto_firebase/homeApp.dart';
+import 'package:tuto_firebase/utils/color/color.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -20,7 +23,7 @@ class _ProfileState extends State<Profile> {
     return FutureBuilder<DocumentSnapshot>(
         future: FirebaseFirestore.instance
             .collection('Users')
-            .doc("TmdN4QcagleZJH0Vhq3cvC7o6hi2")
+            .doc(FirebaseAuth.instance.currentUser!.uid)
             .get(),
         builder:
             (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
@@ -43,8 +46,9 @@ class _ProfileState extends State<Profile> {
                   new Container(
                     decoration: new BoxDecoration(
                         gradient: new LinearGradient(colors: [
-                      const Color(0xFF26CBE6),
-                      const Color(0xFF26CBC0),
+                      hexStringToColor("000"),
+                      hexStringToColor("000"),
+                      hexStringToColor("dd9933"),
                     ], begin: Alignment.topCenter, end: Alignment.center)),
                   ),
                   new Scaffold(
@@ -68,7 +72,25 @@ class _ProfileState extends State<Profile> {
                                     height: _height / 30,
                                   ),
                                   new Text(
-                                    dataUser["prenom"] + " " + dataUser["nom"],
+                                    dataUser["prenom"] +
+                                        " " +
+                                        dataUser["nom"] +
+                                        dataUser["promo"] +
+                                        " ème promo",
+                                    style: new TextStyle(
+                                        fontSize: 18.0,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  Text(
+                                    dataUser["telephone"],
+                                    style: new TextStyle(
+                                        fontSize: 18.0,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  Text(
+                                    dataUser["email"],
                                     style: new TextStyle(
                                         fontSize: 18.0,
                                         color: Colors.white,
@@ -118,43 +140,9 @@ class _ProfileState extends State<Profile> {
                                       new EdgeInsets.only(top: _height / 20),
                                   child: new Column(
                                     children: <Widget>[
-                                      infoChild(_width, Icons.email,
-                                          'zulfiqar108@gmail.com'),
-                                      infoChild(
-                                          _width, Icons.call, '+12-1234567890'),
-                                      infoChild(_width, Icons.group_add,
-                                          'Add to group'),
-                                      infoChild(_width, Icons.chat_bubble,
-                                          'Show all comments'),
-                                      new Padding(
-                                        padding: new EdgeInsets.only(
-                                            top: _height / 30),
-                                        child: new Container(
-                                          width: _width / 3,
-                                          height: _height / 20,
-                                          decoration: new BoxDecoration(
-                                              color: const Color(0xFF26CBE6),
-                                              borderRadius:
-                                                  new BorderRadius.all(
-                                                      new Radius.circular(
-                                                          _height / 40)),
-                                              boxShadow: [
-                                                new BoxShadow(
-                                                    color: Colors.black87,
-                                                    blurRadius: 2.0,
-                                                    offset:
-                                                        new Offset(0.0, 1.0))
-                                              ]),
-                                          child: new Center(
-                                            child: new Text('FOLLOW ME',
-                                                style: new TextStyle(
-                                                    fontSize: 12.0,
-                                                    color: Colors.white,
-                                                    fontWeight:
-                                                        FontWeight.bold)),
-                                          ),
-                                        ),
-                                      )
+                                      SizedBox(height: 30),
+                                      CardHome(context, "sosLogo.png",
+                                          "SOS EPT", () => HomeSOS()),
                                     ],
                                   ),
                                 )

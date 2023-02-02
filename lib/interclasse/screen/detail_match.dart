@@ -428,39 +428,90 @@ class _DetailMatchState extends State<DetailMatch> {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  CircleAvatar(
-                                                    radius: 20,
-                                                    backgroundImage: NetworkImage(
-                                                        "https://st.depositphotos.com/1011643/2013/i/950/depositphotos_20131045-stock-photo-happy-male-african-university-student.jpg"),
-                                                  ),
-                                                  Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                        "Elimane Sall",
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        style: TextStyle(
-                                                            fontSize: 15,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                      SizedBox(
-                                                        width: 3,
-                                                      ),
-                                                      //   Text(
-                                                      //       "Il y'a ${(DateTime.now().toIso8601String())} heures")
-                                                    ],
-                                                  )
-                                                ],
-                                              ),
+                                              FutureBuilder<DocumentSnapshot>(
+                                                  future: FirebaseFirestore
+                                                      .instance
+                                                      .collection("Users")
+                                                      .doc(
+                                                          commentaire["idUser"])
+                                                      .get(),
+                                                  builder: (BuildContext
+                                                          context,
+                                                      AsyncSnapshot<
+                                                              DocumentSnapshot>
+                                                          snapshot) {
+                                                    if (snapshot.hasError) {
+                                                      return Text(
+                                                          "Something went wrong");
+                                                    }
+
+                                                    if (snapshot.hasData &&
+                                                        !snapshot
+                                                            .data!.exists) {
+                                                      return Text(
+                                                          "Document does not exist");
+                                                    }
+
+                                                    if (snapshot
+                                                            .connectionState ==
+                                                        ConnectionState.done) {
+                                                      Map<String, dynamic>
+                                                          dataUser =
+                                                          snapshot.data!.data()
+                                                              as Map<String,
+                                                                  dynamic>;
+                                                      //  role = dataUser["role"];
+                                                      return Container(
+                                                          color: Colors.white,
+                                                          child: Row(
+                                                            children: [
+                                                              Row(
+                                                                children: [
+                                                                  CircleAvatar(
+                                                                      radius:
+                                                                          20,
+                                                                      backgroundImage:
+                                                                          NetworkImage(
+                                                                        dataUser[
+                                                                            "urlProfile"],
+                                                                      )),
+                                                                  Column(
+                                                                    children: [
+                                                                      Row(
+                                                                        children: [
+                                                                          Text(
+                                                                            dataUser["prenom"],
+                                                                            textAlign:
+                                                                                TextAlign.center,
+                                                                            style:
+                                                                                TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                                                                          ),
+                                                                          SizedBox(
+                                                                            width:
+                                                                                3,
+                                                                          ),
+                                                                          Text(
+                                                                            dataUser["nom"],
+                                                                            textAlign:
+                                                                                TextAlign.center,
+                                                                            style:
+                                                                                TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                      Text(timeAgoCustom(DateTime.parse(commentaire[
+                                                                              'date']
+                                                                          .toDate()
+                                                                          .toString())))
+                                                                    ],
+                                                                  )
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          ));
+                                                    }
+                                                    return Text("Anonyme");
+                                                  }),
                                               SizedBox(
                                                 height: 10,
                                               ),

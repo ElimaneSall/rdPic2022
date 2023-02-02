@@ -5,7 +5,8 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:tuto_firebase/SOSEPT/screen/HomeSOS.dart';
 import 'package:tuto_firebase/annonce/screen/homeAnnonce.dart';
 import 'package:tuto_firebase/blog/screen/homeArticle.dart';
-import 'package:tuto_firebase/interclasse/screen/homeInterClasse.dart';
+import 'package:tuto_firebase/interclasse/home/homeInterClasse.dart';
+import 'package:tuto_firebase/interclasse/screen/homeFootball.dart';
 import 'package:tuto_firebase/jeux/screen/Home.dart';
 import 'package:tuto_firebase/login/GetFile.dart';
 import 'package:tuto_firebase/login/PageTest.dart';
@@ -14,7 +15,7 @@ import 'package:tuto_firebase/login/signIn.dart';
 import 'package:tuto_firebase/notifications/notifications_page.dart';
 import 'package:tuto_firebase/pShop/screen/HomeUserPshop.dart';
 
-import 'blog/screen/RD.dart';
+import 'blog/screen/ArticleParCategorie.dart';
 
 class DrawerApp extends StatefulWidget {
   const DrawerApp({Key? key}) : super(key: key);

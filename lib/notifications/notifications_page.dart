@@ -30,20 +30,20 @@ class _NotificationsState extends State<Notifications> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-            title: const Text("Notifications",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 25)),
-            centerTitle: true,
-            backgroundColor: AppColors.primary,
-            leading: Builder(builder: (context) {
-              return IconButton(
-                icon:
-                    const Icon(Icons.arrow_back, size: 30, color: Colors.white),
-                onPressed: () => Navigator.of(context).pop(),
-              );
-            })),
+          title: const Text("Notifications",
+              style: TextStyle(
+                color: Colors.white,
+              )),
+          centerTitle: true,
+          backgroundColor: AppColors.primary,
+          // leading: Builder(builder: (context) {
+          //   return IconButton(
+          //     icon:
+          //         const Icon(Icons.arrow_back, size: 30, color: Colors.white),
+          //     onPressed: () => Navigator.of(context).pop(),
+          //   );
+          // }))
+        ),
         body: Padding(
             padding: const EdgeInsets.all(10),
             child: StatefulBuilder(builder: ((context, setState) {
@@ -58,8 +58,8 @@ class _NotificationsState extends State<Notifications> {
                     itemBuilder: (BuildContext context, int index) {
                       return Container(
                           alignment: Alignment.center,
-                          margin: const EdgeInsets.symmetric(horizontal: 20.0),
-                          height: 80,
+                          margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                          height: MediaQuery.of(context).size.height * 0.1,
                           decoration: const BoxDecoration(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(15.0))),
@@ -74,7 +74,7 @@ class _NotificationsState extends State<Notifications> {
                                     style: const TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 20.0),
+                                        fontSize: 15.0),
                                   ),
                                   subtitle: Text(_notifs[index].body,
                                       style: const TextStyle(

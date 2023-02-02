@@ -93,8 +93,6 @@ class _PostAdminEvenementState extends State<PostAdminEvenement> {
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                  reusableTextField("Auteur", Icons.add, false,
-                      auteurcontroller, Colors.blue),
                   SizedBox(
                     height: 15,
                   ),
@@ -180,12 +178,13 @@ class _PostAdminEvenementState extends State<PostAdminEvenement> {
                           .collection('Evenement')
                           .add({
                         'titre': titrecontroller.value.text,
-                        'auteur': auteurcontroller.value.text,
                         'description': auteurcontroller.value.text,
                         'date': selectedDate,
+                        "auteur": "",
                         'poste': postecontroller.value.text,
                         'status': statuscontroller.value.text,
                         "image": url,
+                        "idUser": FirebaseAuth.instance.currentUser!.uid,
                         'commentaires': [],
                         'likes': 0,
                         'unlikes': 0,

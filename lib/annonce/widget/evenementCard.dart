@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -14,6 +15,12 @@ class EvenementCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
+        onLongPress: () {
+          if (FirebaseAuth.instance.currentUser!.uid == evenement.idUser) {
+            openDialogDelete(context, evenement.id, "Evenement",
+                "Message de suppression", "Voulez vous supprimer ce message");
+          }
+        },
         onTap: () {
           Navigator.push(
               context,
@@ -26,7 +33,7 @@ class EvenementCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                  width: MediaQuery.of(context).size.width * 0.95,
+                  width: MediaQuery.of(context).size.width * 0.98,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     color: AppColors.lightGray,
@@ -36,7 +43,7 @@ class EvenementCard extends StatelessWidget {
                       ClipRRect(
                           borderRadius: BorderRadius.circular(30),
                           child: Container(
-                              margin: EdgeInsets.fromLTRB(5, 5, 5, 5),
+                              margin: EdgeInsets.fromLTRB(0, 5, 0, 5),
                               width: MediaQuery.of(context).size.width * 0.3,
                               height: 110,
                               child: Image.network(
@@ -54,7 +61,7 @@ class EvenementCard extends StatelessWidget {
                             children: [
                               Container(
                                   width:
-                                      MediaQuery.of(context).size.width * 0.4,
+                                      MediaQuery.of(context).size.width * 0.35,
                                   child: Text(
                                     evenement.titre,
                                     maxLines: 1,
@@ -72,14 +79,58 @@ class EvenementCard extends StatelessWidget {
                                           MediaQuery.of(context).size.height *
                                               0.03,
                                       width: MediaQuery.of(context).size.width *
-                                          0.2,
+                                          0.25,
                                       decoration: BoxDecoration(
                                           color: Colors.white,
                                           borderRadius:
                                               BorderRadius.circular(30)),
-                                      child: Center(child: Text("Urgent")),
+                                      child: Center(
+                                          child: Text(
+                                        "urgent",
+                                        style: TextStyle(color: Colors.red),
+                                      )),
                                     )
-                                  : Container(),
+                                  : evenement.status == "moins urgent"
+                                      ? Container(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.03,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.25,
+                                          decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(30)),
+                                          child: Center(
+                                              child: Text(
+                                            "moins urgent",
+                                            style:
+                                                TextStyle(color: Colors.yellow),
+                                          )),
+                                        )
+                                      : Container(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.03,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.25,
+                                          decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(30)),
+                                          child: Center(
+                                              child: Text(
+                                            "facultatif",
+                                            style:
+                                                TextStyle(color: Colors.green),
+                                          )),
+                                        ),
                               SizedBox(
                                 width: 1,
                               ),

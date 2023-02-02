@@ -8,7 +8,7 @@ import 'package:tuto_firebase/utils/color/color.dart';
 import 'package:tuto_firebase/widget/reusableTextField.dart';
 
 class CreateMatch extends StatefulWidget {
-  const CreateMatch({Key? key}) : super(key: key);
+  CreateMatch({Key? key}) : super(key: key);
 
   @override
   State<CreateMatch> createState() => _CreateMatchState();

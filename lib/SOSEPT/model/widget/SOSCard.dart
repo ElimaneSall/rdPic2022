@@ -76,11 +76,12 @@ class SOSCard extends StatelessWidget {
                                                       Row(
                                                         children: [
                                                           CircleAvatar(
-                                                            radius: 20,
-                                                            backgroundImage:
-                                                                NetworkImage(
-                                                                    "https://st.depositphotos.com/1011643/2013/i/950/depositphotos_20131045-stock-photo-happy-male-african-university-student.jpg"),
-                                                          ),
+                                                              radius: 20,
+                                                              backgroundImage:
+                                                                  NetworkImage(
+                                                                dataUser[
+                                                                    "urlProfile"],
+                                                              )),
                                                           Column(
                                                             children: [
                                                               Row(

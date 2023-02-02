@@ -8,10 +8,12 @@ import 'package:tuto_firebase/annonce/screen/homeAnnonce.dart';
 import 'package:tuto_firebase/blog/screen/homeArticle.dart';
 
 import 'package:tuto_firebase/drawerApp.dart';
-import 'package:tuto_firebase/interclasse/screen/homeInterClasse.dart';
+import 'package:tuto_firebase/interclasse/home/homeInterClasse.dart';
+import 'package:tuto_firebase/interclasse/screen/homeFootball.dart';
 import 'package:tuto_firebase/jeux/screen/Home.dart';
 import 'package:tuto_firebase/pShop/screen/HomeUserPshop.dart';
 import 'package:tuto_firebase/screen/homeScreen.dart';
+import 'package:tuto_firebase/utils/color/color.dart';
 
 class HomeApp extends StatefulWidget {
   const HomeApp({Key? key}) : super(key: key);
@@ -81,7 +83,7 @@ class _HomeAppState extends State<HomeApp> {
     return Scaffold(
         drawer: DrawerApp(),
         appBar: AppBar(
-          backgroundColor: Color.fromRGBO(91, 60, 30, 100),
+          backgroundColor: AppColors.primary,
           title: Center(child: Text("Hub des applis de l'EPT")),
         ),
         body: SingleChildScrollView(

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
@@ -18,6 +19,27 @@ class HomeArticle extends StatefulWidget {
 }
 
 class _HomeArticleState extends State<HomeArticle> {
+  String role = "user";
+  getRole() {
+    FirebaseFirestore.instance
+        .collection('Users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        role = documentSnapshot.get("role");
+        setState(() {});
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    getRole();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     initializeDateFormatting("fr");
@@ -25,7 +47,7 @@ class _HomeArticleState extends State<HomeArticle> {
     CollectionReference products = firestore.collection('Article');
     return Scaffold(
       appBar: AppBar(backgroundColor: AppColors.primary),
-      drawer: NavBar(),
+      drawer: NavBar(role),
       //backgroundColor: Colors.blue,
       body: SafeArea(
           child: Padding(
@@ -55,6 +77,7 @@ class _HomeArticleState extends State<HomeArticle> {
                                     .map((e) => ArticleCard(Article(
                                         commentaire: e['commentaires'],
                                         id: e.id,
+                                        idUser: e["idUser"],
                                         urlPDF: e['urlPDF'],
                                         image: e['image'],
                                         titre: e['titre'],

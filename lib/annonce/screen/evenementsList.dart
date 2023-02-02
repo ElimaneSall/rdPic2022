@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -15,16 +16,37 @@ class EvenementList extends StatefulWidget {
 }
 
 class _EvenementListState extends State<EvenementList> {
+  String role = "user";
+  getRole() {
+    FirebaseFirestore.instance
+        .collection('Users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        role = documentSnapshot.get("role");
+        setState(() {});
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    getRole();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
-    CollectionReference products = firestore.collection('Evenement');
+    CollectionReference evenements = firestore.collection('Evenement');
     return Scaffold(
         appBar: AppBar(
           title: Center(child: Text("Evenement")),
           backgroundColor: AppColors.primary,
         ),
-        drawer: NavBar(),
+        drawer: NavBar(role),
         //backgroundColor: Colors.blue,
         body: SafeArea(
             child: SingleChildScrollView(
@@ -45,7 +67,7 @@ class _EvenementListState extends State<EvenementList> {
               ),
               StreamBuilder<QuerySnapshot>(
                   stream:
-                      products.orderBy('date', descending: false).snapshots(),
+                      evenements.orderBy('date', descending: true).snapshots(),
                   builder: (_, snapshot) {
                     if (snapshot.hasData) {
                       return Column(
@@ -54,13 +76,16 @@ class _EvenementListState extends State<EvenementList> {
                               .map((e) => EvenementCard(Evenement(
                                     commentaires: e['commentaires'],
                                     likes: e['likes'],
+                                    idUser: e["idUser"],
                                     image: e['image'],
                                     titre: e['titre'],
                                     poste: e['poste'],
                                     date: e['date'],
                                     status: e['status'],
+                                    auteur: e["auteur"],
+                                    description: e["description"],
                                     // description: e['description'],
-                                    auteur: e['auteur'],
+                                    // auteur: e['auteur'],
                                     id: e.id,
                                     // likes: e['likes']
                                   )))

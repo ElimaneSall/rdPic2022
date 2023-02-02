@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:tuto_firebase/annonce/screen/commentEvenementPage.dart';
 import 'package:tuto_firebase/utils/color/color.dart';
 import 'package:tuto_firebase/utils/method.dart';
 
@@ -26,7 +25,7 @@ class _DetailEvenementState extends State<DetailEvenement> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Center(child: Text("Detail Evemenent")),
+          title: Center(child: Text("Détail Evenement")),
           backgroundColor: AppColors.primary,
         ),
         body: SingleChildScrollView(
@@ -95,20 +94,25 @@ class _DetailEvenementState extends State<DetailEvenement> {
                                     fontSize: 15,
                                     decoration: TextDecoration.none),
                               ),
-                              Text(
-                                "Description:",
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 15,
-                                    decoration: TextDecoration.none),
-                              ),
-                              Text(
-                                "Le Dark Web est un ensemble caché de sites Internet accessibles uniquement par un navigateur spécialement conçu à cet effet. Il est utilisé pour préserver l'anonymat et la confidentialité des activités sur Internet, ce qui peut être utile aussi bien pour les applications légales que pour les applications illégales",
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 12,
-                                    decoration: TextDecoration.none),
-                              ),
+                              if (dataEvenement["description"] != "")
+                                Column(
+                                  children: [
+                                    Text(
+                                      "Description:",
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 15,
+                                          decoration: TextDecoration.none),
+                                    ),
+                                    Text(
+                                      dataEvenement["description"],
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 12,
+                                          decoration: TextDecoration.none),
+                                    ),
+                                  ],
+                                ),
                               Container(
                                   padding: EdgeInsets.all(10),
                                   width: MediaQuery.of(context).size.width * 1,
@@ -116,34 +120,44 @@ class _DetailEvenementState extends State<DetailEvenement> {
                                   color: AppColors.primary,
                                   child: Row(
                                     children: [
-                                      IconButton(
-                                          onPressed: () {
-                                            addLikes(_id, "Evenement",
-                                                dataEvenement["likes"]);
-                                          },
-                                          icon: Icon(
-                                            Icons.thumb_up,
-                                            color: Colors.white,
-                                          )),
-                                      // SizedBox(height: 10,),
-                                      Text(
-                                        dataEvenement["likes"].toString(),
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-
-                                      IconButton(
-                                          onPressed: () {
-                                            undLike(_id, "Evenement",
-                                                dataEvenement["unlikes"]);
-                                          },
-                                          icon: Icon(
-                                            Icons.thumb_down,
-                                            color: Colors.white,
-                                          )),
-                                      // SizedBox(height: 10,),
-                                      Text(
-                                        dataEvenement["unlikes"].toString(),
-                                        style: TextStyle(color: Colors.white),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          GestureDetector(
+                                              onTap: () {
+                                                addLikes(_id, "Evenement",
+                                                    dataEvenement["likes"]);
+                                              },
+                                              child: Icon(
+                                                Icons.thumb_up,
+                                                color: Colors.white,
+                                              )),
+                                          // SizedBox(height: 10,),
+                                          Text(
+                                            dataEvenement["likes"].toString(),
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          GestureDetector(
+                                              onTap: () {
+                                                undLike(_id, "Evenement",
+                                                    dataEvenement["unlikes"]);
+                                              },
+                                              child: Icon(
+                                                Icons.thumb_down,
+                                                color: Colors.white,
+                                              )),
+                                          // SizedBox(height: 10,),
+                                          Text(
+                                            dataEvenement["unlikes"].toString(),
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                          ),
+                                        ],
                                       ),
                                       SizedBox(
                                         width:
@@ -200,52 +214,90 @@ class _DetailEvenementState extends State<DetailEvenement> {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  CircleAvatar(
-                                                    radius: 20,
-                                                    backgroundImage: NetworkImage(
-                                                        "https://st.depositphotos.com/1011643/2013/i/950/depositphotos_20131045-stock-photo-happy-male-african-university-student.jpg"),
-                                                  ),
-                                                  Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                        "Elimane Sall",
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        style: TextStyle(
-                                                            fontSize: 15,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                      Text(
-                                                        timeAgoCustom(DateTime
-                                                            .parse(commentaire[
-                                                                    "date"]
-                                                                .toDate()
-                                                                .toString())),
-                                                        style: TextStyle(
-                                                          fontSize: 15,
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          color: Colors.black,
-                                                        ),
-                                                      ),
-                                                      SizedBox(
-                                                        width: 3,
-                                                      ),
-                                                      //   Text(
-                                                      //       "Il y'a ${(DateTime.now().toIso8601String())} heures")
-                                                    ],
-                                                  )
-                                                ],
-                                              ),
+                                              FutureBuilder<DocumentSnapshot>(
+                                                  future: FirebaseFirestore
+                                                      .instance
+                                                      .collection("Users")
+                                                      .doc(
+                                                          commentaire["idUser"])
+                                                      .get(),
+                                                  builder: (BuildContext
+                                                          context,
+                                                      AsyncSnapshot<
+                                                              DocumentSnapshot>
+                                                          snapshot) {
+                                                    if (snapshot.hasError) {
+                                                      return Text(
+                                                          "Something went wrong");
+                                                    }
+
+                                                    if (snapshot.hasData &&
+                                                        !snapshot
+                                                            .data!.exists) {
+                                                      return Text(
+                                                          "Document does not exist");
+                                                    }
+
+                                                    if (snapshot
+                                                            .connectionState ==
+                                                        ConnectionState.done) {
+                                                      Map<String, dynamic>
+                                                          dataUser =
+                                                          snapshot.data!.data()
+                                                              as Map<String,
+                                                                  dynamic>;
+                                                      //  role = dataUser["role"];
+                                                      return Container(
+                                                          color: Colors.white,
+                                                          child: Row(
+                                                            children: [
+                                                              Row(
+                                                                children: [
+                                                                  CircleAvatar(
+                                                                      radius:
+                                                                          20,
+                                                                      backgroundImage:
+                                                                          NetworkImage(
+                                                                        dataUser[
+                                                                            "urlProfile"],
+                                                                      )),
+                                                                  Column(
+                                                                    children: [
+                                                                      Row(
+                                                                        children: [
+                                                                          Text(
+                                                                            dataUser["prenom"],
+                                                                            textAlign:
+                                                                                TextAlign.center,
+                                                                            style:
+                                                                                TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                                                                          ),
+                                                                          SizedBox(
+                                                                            width:
+                                                                                3,
+                                                                          ),
+                                                                          Text(
+                                                                            dataUser["nom"],
+                                                                            textAlign:
+                                                                                TextAlign.center,
+                                                                            style:
+                                                                                TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                      Text(timeAgoCustom(DateTime.parse(commentaire[
+                                                                              'date']
+                                                                          .toDate()
+                                                                          .toString())))
+                                                                    ],
+                                                                  )
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          ));
+                                                    }
+                                                    return Text("Anonyme");
+                                                  }),
                                               SizedBox(
                                                 height: 10,
                                               ),

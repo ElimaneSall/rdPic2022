@@ -5,6 +5,7 @@ class Article {
   // String idd;
   String titre;
   String image;
+  String idUser;
   String auteur;
   Timestamp date;
   String description;
@@ -14,6 +15,7 @@ class Article {
 
   Article({
     required this.id,
+    required this.idUser,
     required this.urlPDF,
     required this.image,
     required this.titre,

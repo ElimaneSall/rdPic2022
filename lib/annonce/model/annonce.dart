@@ -5,11 +5,13 @@ class Annonce {
   String id;
   String titre;
   // String image;
-  String auteur;
+  String urlFile;
+  String idUser;
   Timestamp date;
   String poste;
   String status;
   String annonce;
+
   int likes;
   int unlikes;
   List commentaires;
@@ -17,7 +19,8 @@ class Annonce {
   Annonce({
     required this.id,
     required this.titre,
-    required this.auteur,
+    required this.urlFile,
+    required this.idUser,
     required this.date,
     required this.poste,
     required this.status,

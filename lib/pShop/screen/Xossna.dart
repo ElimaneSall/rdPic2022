@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:tuto_firebase/notifications/model/notifications.dart';
 import 'package:tuto_firebase/pShop/screen/SuccessMessage.dart';
 import 'package:tuto_firebase/utils/color/color.dart';
 
@@ -79,6 +80,11 @@ class _XossnaState extends State<Xossna> {
                             "idUser": FirebaseAuth.instance.currentUser!.uid,
                             "statut": false
                           });
+                          CustomNotification.addNotification(
+                              "2",
+                              "Xoss",
+                              "Un nouveau xoss d'une valeur de ${_prixTextController.value.text} FCFA a été fait",
+                              "k6uD0t2S7oRmBw5Q49nydG7KhT22");
                           Navigator.push(
                               context,
                               MaterialPageRoute(

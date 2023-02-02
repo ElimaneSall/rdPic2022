@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tuto_firebase/interclasse/model/match.dart';
 import 'package:tuto_firebase/interclasse/screen/detail_match.dart';
@@ -15,6 +16,12 @@ class MatchCard extends StatelessWidget {
   Widget build(BuildContext context) {
     initializeDateFormatting("fr");
     return InkWell(
+        onLongPress: () {
+          if (FirebaseAuth.instance.currentUser!.uid == match.idUser) {
+            openDialogDelete(context, match.id, "Annonce",
+                "Message de suppression", "Voulez vous supprimer ce match");
+          }
+        },
         onTap: () {
           function();
         },

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -15,6 +16,27 @@ class AnnonceList extends StatefulWidget {
 }
 
 class _AnnonceListState extends State<AnnonceList> {
+  String role = "user";
+  getRole() {
+    FirebaseFirestore.instance
+        .collection('Users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        role = documentSnapshot.get("role");
+        setState(() {});
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    getRole();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -24,7 +46,7 @@ class _AnnonceListState extends State<AnnonceList> {
           title: Center(child: Text("Annonce")),
           backgroundColor: AppColors.primary,
         ),
-        drawer: NavBar(),
+        drawer: NavBar(role),
         //backgroundColor: Colors.blue,
         body: SafeArea(
             child: SingleChildScrollView(
@@ -45,14 +67,16 @@ class _AnnonceListState extends State<AnnonceList> {
               ),
               StreamBuilder<QuerySnapshot>(
                   stream:
-                      products.orderBy('date', descending: false).snapshots(),
+                      products.orderBy('date', descending: true).snapshots(),
                   builder: (_, snapshot) {
                     if (snapshot.hasData) {
                       return Column(
                           children: (snapshot.data! as QuerySnapshot)
                               .docs
-                              .map((e) => AnnonceCard(Annonce(
+                              .map((e) => AnnonceCard(
+                                  Annonce(
                                     id: e.id,
+                                    idUser: e["idUser"],
                                     likes: e['likes'],
                                     unlikes: e['unlikes'],
                                     commentaires: e['commentaires'],
@@ -61,9 +85,12 @@ class _AnnonceListState extends State<AnnonceList> {
                                     date: e['date'],
                                     status: e['status'],
                                     // description: e['description'],
-                                    auteur: e['auteur'],
+                                    urlFile: e['urlFile'],
                                     annonce: e['annonce'],
                                     // likes: e['likes']
+                                  ),
+                                  Container(
+                                    child: Text("Download"),
                                   )))
                               .toList());
                     } else {

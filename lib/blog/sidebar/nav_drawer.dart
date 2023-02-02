@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:tuto_firebase/blog/screen/RD.dart';
+import 'package:tuto_firebase/blog/screen/ArticleParCategorie.dart';
 import 'package:tuto_firebase/blog/screen/addArticle.dart';
 import 'package:tuto_firebase/blog/screen/homeArticle.dart';
 import 'package:tuto_firebase/homeApp.dart';
 
 class NavBar extends StatelessWidget {
-  const NavBar({Key? key}) : super(key: key);
+  String role;
+  NavBar(this.role, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -27,16 +28,16 @@ class NavBar extends StatelessWidget {
                   image: NetworkImage(
                       "https://pbs.twimg.com/profile_images/1600049665789108224/ZaL59hjV_400x400.jpg"),
                   fit: BoxFit.cover))),
-      ListTile(
-          leading: Icon(Icons.favorite),
-          title: Text("Admin"),
-          onTap: () {
-            final categorie = "RD";
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => AddArticle()),
-            );
-          }),
+      if (role == "adminBlog" || role == "admin")
+        ListTile(
+            leading: Icon(Icons.favorite),
+            title: Text("Admin"),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AddArticle()),
+              );
+            }),
       ListTile(
           leading: Icon(Icons.favorite),
           title: Text("Home Blog"),
@@ -62,7 +63,8 @@ class NavBar extends StatelessWidget {
             final categorie = "PN";
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => RD(categorie)),
+              MaterialPageRoute(
+                  builder: (context) => ArticleParCategorie(categorie, role)),
             );
           }),
       ListTile(
@@ -72,7 +74,8 @@ class NavBar extends StatelessWidget {
             final categorie = "RD";
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => RD(categorie)),
+              MaterialPageRoute(
+                  builder: (context) => ArticleParCategorie(categorie, role)),
             );
           }),
       ListTile(
@@ -82,7 +85,8 @@ class NavBar extends StatelessWidget {
             final categorie = "environnement";
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => RD(categorie)),
+              MaterialPageRoute(
+                  builder: (context) => ArticleParCategorie(categorie, role)),
             );
           }),
       ListTile(
@@ -92,7 +96,8 @@ class NavBar extends StatelessWidget {
             final categorie = "meca";
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => RD(categorie)),
+              MaterialPageRoute(
+                  builder: (context) => ArticleParCategorie(categorie, role)),
             );
           }),
       ListTile(
@@ -104,7 +109,8 @@ class NavBar extends StatelessWidget {
             final categorie = "aero";
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => RD(categorie)),
+              MaterialPageRoute(
+                  builder: (context) => ArticleParCategorie(categorie, role)),
             );
           }),
       ListTile(
@@ -114,7 +120,8 @@ class NavBar extends StatelessWidget {
             final categorie = "civil";
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => RD(categorie)),
+              MaterialPageRoute(
+                  builder: (context) => ArticleParCategorie(categorie, role)),
             );
           }),
       ListTile(
@@ -124,7 +131,8 @@ class NavBar extends StatelessWidget {
             final categorie = "GI";
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => RD(categorie)),
+              MaterialPageRoute(
+                  builder: (context) => ArticleParCategorie(categorie, role)),
             );
           }),
       ListTile(
@@ -134,7 +142,8 @@ class NavBar extends StatelessWidget {
             final categorie = "anglais";
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => RD(categorie)),
+              MaterialPageRoute(
+                  builder: (context) => ArticleParCategorie(categorie, role)),
             );
           }),
       ListTile(
@@ -144,7 +153,8 @@ class NavBar extends StatelessWidget {
             final categorie = "RAMA";
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => RD(categorie)),
+              MaterialPageRoute(
+                  builder: (context) => ArticleParCategorie(categorie, role)),
             );
           }),
       ListTile(
@@ -154,7 +164,8 @@ class NavBar extends StatelessWidget {
             final categorie = "sante";
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => RD(categorie)),
+              MaterialPageRoute(
+                  builder: (context) => ArticleParCategorie(categorie, role)),
             );
           })
     ]));

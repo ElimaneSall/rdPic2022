@@ -14,6 +14,7 @@ import 'package:tuto_firebase/utils/method.dart';
 class ListXossUsers extends StatelessWidget {
   final Xoss xoss;
   ListXossUsers(this.xoss);
+
   @override
   Widget build(BuildContext context) {
     initializeDateFormatting("fr");
@@ -132,11 +133,11 @@ class ListXossUsers extends StatelessWidget {
                 Text(
                   xoss.prix.toString() + " FCFA",
                   style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                    color: Color.fromRGBO(139, 137, 129, 1),
-                    //decoration: TextDecoration.lineThrough
-                  ),
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.blue
+                      //decoration: TextDecoration.lineThrough
+                      ),
                 ),
               ],
             ),

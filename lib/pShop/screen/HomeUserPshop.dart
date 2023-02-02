@@ -21,7 +21,8 @@ class _HomeUserPshopState extends State<HomeUserPshop> {
       (querySnapshot) {
         querySnapshot.docs.forEach((result) {
           if (result.data()["idUser"] ==
-              FirebaseAuth.instance.currentUser!.uid) {
+                  FirebaseAuth.instance.currentUser!.uid &&
+              result.data()["statut"] == false) {
             sum = sum + result.data()['prix'];
           }
         });
@@ -40,16 +41,8 @@ class _HomeUserPshopState extends State<HomeUserPshop> {
 
   @override
   Widget build(BuildContext context) {
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
-    CollectionReference xoss = firestore.collection('Xoss');
+    CollectionReference xoss = FirebaseFirestore.instance.collection('Xoss');
 
-    Stream<QuerySnapshot> products =
-        firestore.collection('Xoss').orderBy("date").where(
-      "idUser",
-      whereIn: [
-        FirebaseAuth.instance.currentUser!.uid,
-      ],
-    ).snapshots();
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -57,7 +50,7 @@ class _HomeUserPshopState extends State<HomeUserPshop> {
           style: TextStyle(color: Colors.white),
         ),
         centerTitle: true,
-        backgroundColor: Color.fromRGBO(91, 60, 30, 100),
+        backgroundColor: AppColors.primary,
         leading: GestureDetector(
           onTap: () {
             Navigator.push(
@@ -103,7 +96,11 @@ class _HomeUserPshopState extends State<HomeUserPshop> {
                     height: 22,
                   ),
                   StreamBuilder<QuerySnapshot>(
-                      stream: products,
+                      stream: xoss
+                          .orderBy("date", descending: true)
+                          .where("idUser", whereIn: [
+                        FirebaseAuth.instance.currentUser!.uid
+                      ]).snapshots(),
                       builder: (_, snapshot) {
                         if (snapshot.hasData) {
                           return Column(

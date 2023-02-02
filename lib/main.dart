@@ -2,11 +2,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:tuto_firebase/blog/screen/homeArticle.dart';
 import 'package:tuto_firebase/homeApp.dart';
+import 'package:tuto_firebase/login/DownloadFile.dart';
+import 'package:tuto_firebase/login/UploadFile.dart';
 import 'package:tuto_firebase/login/signIn.dart';
 import 'package:tuto_firebase/screen/homeScreen.dart';
-import 'package:tuto_firebase/tuto/addUser.dart';
-import 'package:tuto_firebase/tuto/add_data.dart';
-import 'package:tuto_firebase/tuto/liste_user.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

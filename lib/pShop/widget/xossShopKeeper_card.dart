@@ -9,6 +9,7 @@ import 'package:tuto_firebase/pShop/model/xoss.dart';
 import 'package:tuto_firebase/pShop/screen/detailXossShopKeeper.dart';
 import 'package:tuto_firebase/pShop/screen/detailXossUser.dart';
 import 'package:tuto_firebase/screen/detaitl_screen.dart';
+import 'package:tuto_firebase/utils/color/color.dart';
 import 'package:tuto_firebase/utils/method.dart';
 
 import 'package:intl/intl.dart';
@@ -108,7 +109,7 @@ class xossShopKeeper extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w500,
-                          color: Color.fromRGBO(139, 137, 129, 1),
+                          color: AppColors.blue,
                           //decoration: TextDecoration.lineThrough
                         ),
                       ),

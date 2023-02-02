@@ -5,6 +5,7 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server/gmail.dart';
+import 'package:tuto_firebase/notifications/model/notifications.dart';
 import 'package:tuto_firebase/utils/color/color.dart';
 
 import 'package:intl/intl.dart';
@@ -66,7 +67,7 @@ class _DetailXossShopKeeperState extends State<DetailXossShopKeeper> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: AppColors.primary,
-          title: Text("Detail"),
+          title: Text("Détail"),
           centerTitle: true,
         ),
         body: Center(
@@ -221,26 +222,28 @@ class _DetailXossShopKeeperState extends State<DetailXossShopKeeper> {
                                                   ),
                                                 ],
                                               ),
-                                            Container(
+                                            Center(
+                                              child: Container(
                                                 height: 30,
-                                                width: 100,
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.3,
                                                 decoration: BoxDecoration(
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             10),
                                                     color: AppColors.primary),
                                                 child: Center(
-                                                    child: Text(dataXoss["prix"]
-                                                            .toString() +
-                                                        " FCFA"))),
-                                            SizedBox(
-                                              height: 4,
-                                            ),
-                                            Text(
-                                              DateTime.parse(dataXoss["date"]
-                                                      .toDate()
-                                                      .toString())
-                                                  .toString(),
+                                                    child: Text(
+                                                  dataXoss["prix"].toString() +
+                                                      " FCFA",
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                )),
+                                              ),
                                             ),
                                             if (!dataXoss["statut"])
                                               Row(
@@ -360,7 +363,14 @@ class _DetailXossShopKeeperState extends State<DetailXossShopKeeper> {
                                                         onPrimary: Colors
                                                             .black, // foreground
                                                       ),
-                                                      onPressed: sendMail,
+                                                      onPressed: (() {
+                                                        CustomNotification
+                                                            .addNotification(
+                                                                "uid",
+                                                                "Un Xoss non-aye",
+                                                                "Bonjour, nous vous rappelons que vous avec un xoss non paye d’une valeur de 800FCFA",
+                                                                "TmdN4QcagleZJH0Vhq3cvC7o6hi2");
+                                                      }),
                                                       child: Text("rappeler")),
                                                 ],
                                               ),

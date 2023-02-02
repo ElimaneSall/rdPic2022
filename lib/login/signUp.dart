@@ -107,9 +107,12 @@ class _SignUpState extends State<SignUp> {
                                   .toString())
                               .set({
                             'email': _emailTextController.value.text,
-                            'promo': _emailTextController.value.text,
+                            'promo': _promoTextController.value.text,
                             'nom': _nameTextController.value.text,
+                            "prenom": _userNameTextController.value.text,
                             'admin': false,
+                            "role": "user",
+                            "urlProfile": "",
                             "id": FirebaseAuth.instance.currentUser!.uid
                                 .toString()
                           });

@@ -1,10 +1,18 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:tuto_firebase/notifications/model/notifications.dart';
 import 'package:tuto_firebase/utils/color/color.dart';
 import 'package:tuto_firebase/widget/reusableTextField.dart';
+import 'package:path/path.dart' as Path;
+
+import '../../utils/method.dart';
 
 class PostAdmin extends StatefulWidget {
   const PostAdmin({Key? key}) : super(key: key);
@@ -21,9 +29,6 @@ class _PostAdminState extends State<PostAdmin> {
   final postecontroller = TextEditingController();
   final statuscontroller = TextEditingController();
 
-  List<String> auteurs = ['Bassirou', 'Fary', 'Aicha'];
-  String? selectedAuteur = "Bassirou";
-
   List<String> postes = [
     'Commission Pédagogique',
     'Commission Culturelle',
@@ -31,10 +36,36 @@ class _PostAdminState extends State<PostAdmin> {
   ];
   String? selectedPoste = "Commission Pédagogique";
 
-  List<String> status = ['urgent', 'Moins Urgent', 'Facultatif'];
+  List<String> status = ['urgent', 'moins urgent', 'facultatif'];
   String? selectedStatus = "urgent";
+
+  List userId = [];
+  void getUserId() {
+    FirebaseFirestore.instance.collection('Users').get().then(
+      (querySnapshot) {
+        querySnapshot.docs.forEach((result) {
+          userId.add(result.id);
+        });
+        print("Liste 2 des user ID$userId");
+        setState(() {});
+      },
+    );
+  }
+
+  @override
+  void initState() {
+    getUserId();
+    print("Liste des ID$userId");
+    super.initState();
+  }
+
+  UploadTask? task;
+  File? file;
+  String? urlFile;
   @override
   Widget build(BuildContext context) {
+    final filename =
+        file != null ? Path.basename(file!.path) : "No select file";
     return Scaffold(
         appBar: AppBar(
           backgroundColor: AppColors.primary,
@@ -44,27 +75,6 @@ class _PostAdminState extends State<PostAdmin> {
             child: Padding(
                 padding: const EdgeInsets.all(10),
                 child: Column(children: [
-                  ListTile(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4),
-                        side: BorderSide(color: Colors.white)),
-                    title: Row(children: [
-                      Text('Auteur:'),
-                      SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.7,
-                          child: DropdownButton(
-                            value: selectedAuteur,
-                            items: auteurs
-                                .map((item) => DropdownMenuItem<String>(
-                                      child: Text(item),
-                                      value: item,
-                                    ))
-                                .toList(),
-                            onChanged: (item) => setState(
-                                () => selectedAuteur = item as String?),
-                          ))
-                    ]),
-                  ),
                   ListTile(
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(4),
@@ -115,23 +125,96 @@ class _PostAdminState extends State<PostAdmin> {
                     ]),
                   ),
                   SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        onPressed: (() {
+                          selectFile();
+                        }),
+                        child: Text("Select file"),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      ElevatedButton(
+                          onPressed: (() {
+                            uploadFile();
+                          }),
+                          child: Text("Upload")),
+                    ],
+                  ),
+                  Text(filename),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  task != null ? builUploadStatus(task!) : Container(),
+                  SizedBox(
                     height: 20,
                   ),
                   signInSignUpButton("Poster l'annonce", context, false, () {
                     FirebaseFirestore.instance.collection('Annonce').add({
                       'titre': titrecontroller.value.text,
                       'annonce': annoncecontroller.value.text,
-                      'auteur': selectedAuteur,
                       'date': DateTime.now(),
                       'poste': selectedPoste,
                       'status': selectedStatus,
                       "idUser": FirebaseAuth.instance.currentUser!.uid,
+                      "urlFile": urlFile,
                       'commentaires': [],
                       'likes': 0,
                       'unlikes': 0,
+                    }).then((value) async {
+                      await userId.map((e) =>
+                          CustomNotification.addNotification(
+                              "a", "Polytech Info", "Un nouveau message", e));
+                      print("Envoie de toutes les notifications");
+                      Navigator.pop(context);
                     });
-                    Navigator.pop(context);
                   })
                 ]))));
   }
+
+  Future selectFile() async {
+    final result = await FilePicker.platform.pickFiles(allowMultiple: false);
+
+    if (result == null) return;
+    final path = result.files.single.path!;
+    setState(() {
+      file = File(path);
+    });
+  }
+
+  Future uploadFile() async {
+    if (file == null) return;
+
+    final fileName = Path.basename(file!.path);
+    final destination = "files/$fileName";
+    task = FirebaseApi.uploadFile(destination, file!);
+
+    setState(() {});
+    if (task == null) return;
+
+    final snapshot = await task!.whenComplete(() {});
+    urlFile = await snapshot.ref.getDownloadURL();
+    setState(() {});
+
+    print("Url Download $urlFile");
+  }
+
+  Widget builUploadStatus(UploadTask task) => StreamBuilder<TaskSnapshot>(
+        stream: task.snapshotEvents,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            final snap = snapshot.data!;
+            final progress = snap.bytesTransferred / snap.totalBytes;
+            final percentage = (progress * 100).toStringAsFixed(2);
+            return Text("$percentage %");
+          } else {
+            return Container();
+          }
+        },
+      );
 }

@@ -21,9 +21,9 @@ class HomeSOS extends StatefulWidget {
 }
 
 class _HomeSOSState extends State<HomeSOS> {
+  String group = "47";
   @override
   Widget build(BuildContext context) {
-    String group = "47";
     FirebaseFirestore.instance
         .collection('Users')
         .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -37,11 +37,10 @@ class _HomeSOSState extends State<HomeSOS> {
         print('Document does not exist on the database');
       }
     });
+
     FirebaseFirestore firestore = FirebaseFirestore.instance;
-    Stream<QuerySnapshot> products = firestore.collection('SOS').where(
-      "groupe",
-      whereIn: ["tout", group],
-    ).snapshots();
+    CollectionReference products = firestore.collection('SOS');
+
     return Scaffold(
       appBar: AppBar(
         title: Center(child: Text("SOS EPT")),
@@ -115,7 +114,10 @@ class _HomeSOSState extends State<HomeSOS> {
               height: 22,
             ),
             StreamBuilder<QuerySnapshot>(
-                stream: products,
+                stream: products.orderBy("date", descending: true).where(
+                  "groupe",
+                  whereIn: ["tout", group],
+                ).snapshots(),
                 builder: (_, snapshot) {
                   if (snapshot.hasData) {
                     return Container(

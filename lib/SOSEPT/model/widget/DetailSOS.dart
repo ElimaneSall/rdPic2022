@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:tuto_firebase/SOSEPT/model/SOSModel.dart';
 import 'package:tuto_firebase/SOSEPT/model/widget/RepondreSOS.dart';
 import 'package:tuto_firebase/SOSEPT/model/widget/SOSCard.dart';
-import 'package:tuto_firebase/blog/screen/commentArticlePage.dart';
+import 'package:tuto_firebase/utils/method.dart';
 
 class DetailSOS extends StatefulWidget {
   String id;
@@ -17,7 +18,7 @@ class DetailSOS extends StatefulWidget {
 
 class _DetailSOSState extends State<DetailSOS> {
   String _id;
-
+  late String role;
   _DetailSOSState(this._id);
   void addLikes(String docID, int likes) {
     var newLikes = likes + 1;
@@ -25,6 +26,18 @@ class _DetailSOSState extends State<DetailSOS> {
       FirebaseFirestore.instance.collection('SOS').doc(docID).update({
         'likes': newLikes,
       }).then((value) => print("données à jour"));
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  void _delete(String docID) {
+    try {
+      FirebaseFirestore.instance
+          .collection('SOS')
+          .doc(docID)
+          .delete()
+          .then((value) => print("données à jour"));
     } catch (e) {
       print(e.toString());
     }
@@ -99,6 +112,7 @@ class _DetailSOSState extends State<DetailSOS> {
                                               Map<String, dynamic> dataUser =
                                                   snapshot.data!.data()
                                                       as Map<String, dynamic>;
+                                              role = dataUser["role"];
                                               return Container(
                                                   color: Colors.white,
                                                   child: Row(
@@ -106,11 +120,12 @@ class _DetailSOSState extends State<DetailSOS> {
                                                       Row(
                                                         children: [
                                                           CircleAvatar(
-                                                            radius: 20,
-                                                            backgroundImage:
-                                                                NetworkImage(
-                                                                    "https://st.depositphotos.com/1011643/2013/i/950/depositphotos_20131045-stock-photo-happy-male-african-university-student.jpg"),
-                                                          ),
+                                                              radius: 20,
+                                                              backgroundImage:
+                                                                  NetworkImage(
+                                                                dataUser[
+                                                                    "urlProfile"],
+                                                              )),
                                                           Column(
                                                             children: [
                                                               Row(
@@ -144,7 +159,11 @@ class _DetailSOSState extends State<DetailSOS> {
                                                                   ),
                                                                 ],
                                                               ),
-                                                              Text("Il y'a 1h")
+                                                              Text(timeAgoCustom(
+                                                                  DateTime.parse(data[
+                                                                          'date']
+                                                                      .toDate()
+                                                                      .toString())))
                                                             ],
                                                           )
                                                         ],
@@ -175,31 +194,38 @@ class _DetailSOSState extends State<DetailSOS> {
                                 height: 40,
                                 color: Colors.black,
                                 child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.max,
                                   children: [
-                                    Text(
-                                      "Ri",
-                                      style: TextStyle(color: Colors.white),
-                                    ),
                                     Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisSize: MainAxisSize.max,
                                       children: [
-                                        IconButton(
-                                          onPressed: () {
-                                            addLikes(_id, data["likes"]);
-                                          },
-                                          icon: Icon(
-                                            Icons.favorite,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                        // SizedBox(height: 10,),
-                                        Text(
-                                          data["likes"].toString(),
-                                          style: TextStyle(color: Colors.white),
+                                        Row(
+                                          children: [
+                                            GestureDetector(
+                                              onTap: () {
+                                                addLikes(_id, data["likes"]);
+                                              },
+                                              child: Icon(
+                                                Icons.favorite,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                            // SizedBox(height: 10,),
+                                            Text(
+                                              data["likes"].toString(),
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                            )
+                                          ],
                                         )
                                       ],
-                                    ),
-                                    SizedBox(
-                                      width: 70,
                                     ),
                                     InkWell(
                                         child: Text(
@@ -215,6 +241,20 @@ class _DetailSOSState extends State<DetailSOS> {
                                                   builder: (context) =>
                                                       RepondreSOS(_id)));
                                         }),
+                                    if (FirebaseAuth
+                                            .instance.currentUser!.uid ==
+                                        data["idAuteur"])
+                                      InkWell(
+                                          child: Text(
+                                            "Supprimer",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 15),
+                                          ),
+                                          onTap: () {
+                                            _delete(_id);
+                                            Navigator.pop(context);
+                                          }),
                                   ],
                                 )),
                             SizedBox(
@@ -242,39 +282,83 @@ class _DetailSOSState extends State<DetailSOS> {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
-                                                Row(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    CircleAvatar(
-                                                      radius: 20,
-                                                      backgroundImage: NetworkImage(
-                                                          "https://st.depositphotos.com/1011643/2013/i/950/depositphotos_20131045-stock-photo-happy-male-african-university-student.jpg"),
-                                                    ),
-                                                    Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Text(
-                                                          "Elimane Sall",
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: TextStyle(
-                                                              fontSize: 15,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold),
-                                                        ),
-                                                        SizedBox(
-                                                          width: 3,
-                                                        ),
-                                                        //   Text(
-                                                        //       "Il y'a ${(DateTime.now().toIso8601String())} heures")
-                                                      ],
-                                                    )
-                                                  ],
-                                                ),
+                                                FutureBuilder<DocumentSnapshot>(
+                                                    future: users
+                                                        .doc(reponse["idUser"])
+                                                        .get(),
+                                                    builder: (BuildContext
+                                                            context,
+                                                        AsyncSnapshot<
+                                                                DocumentSnapshot>
+                                                            snapshot) {
+                                                      if (snapshot.hasError) {
+                                                        return Text(
+                                                            "Something went wrong");
+                                                      }
+
+                                                      if (snapshot.hasData &&
+                                                          !snapshot
+                                                              .data!.exists) {
+                                                        return Text(
+                                                            "Document does not exist");
+                                                      }
+
+                                                      if (snapshot
+                                                              .connectionState ==
+                                                          ConnectionState
+                                                              .done) {
+                                                        Map<String, dynamic>
+                                                            dataUser = snapshot
+                                                                    .data!
+                                                                    .data()
+                                                                as Map<String,
+                                                                    dynamic>;
+                                                        role = dataUser["role"];
+                                                        return Container(
+                                                            color: Colors.white,
+                                                            child: Row(
+                                                              children: [
+                                                                Row(
+                                                                  children: [
+                                                                    CircleAvatar(
+                                                                        radius:
+                                                                            20,
+                                                                        backgroundImage:
+                                                                            NetworkImage(
+                                                                          dataUser[
+                                                                              "urlProfile"],
+                                                                        )),
+                                                                    Column(
+                                                                      children: [
+                                                                        Row(
+                                                                          children: [
+                                                                            Text(
+                                                                              dataUser["prenom"],
+                                                                              textAlign: TextAlign.center,
+                                                                              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                                                                            ),
+                                                                            SizedBox(
+                                                                              width: 3,
+                                                                            ),
+                                                                            Text(
+                                                                              dataUser["nom"],
+                                                                              textAlign: TextAlign.center,
+                                                                              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                        Text(timeAgoCustom(DateTime.parse(reponse['date']
+                                                                            .toDate()
+                                                                            .toString())))
+                                                                      ],
+                                                                    )
+                                                                  ],
+                                                                ),
+                                                              ],
+                                                            ));
+                                                      }
+                                                      return Text("Anonyme");
+                                                    }),
                                                 SizedBox(
                                                   height: 10,
                                                 ),
@@ -289,13 +373,11 @@ class _DetailSOSState extends State<DetailSOS> {
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.start,
                                                   children: [
-                                                    Text(
-                                                      DateTime.parse(
-                                                              reponse['date']
-                                                                  .toDate()
-                                                                  .toString())
-                                                          .toString(),
-                                                    )
+                                                    Text(dateCustomformat(
+                                                        DateTime.parse(
+                                                            reponse['date']
+                                                                .toDate()
+                                                                .toString())))
                                                   ],
                                                 ),
                                                 SizedBox(

@@ -41,7 +41,8 @@ class _ListUserXossState extends State<ListUserXoss> {
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10)),
                         // height: MediaQuery.of(context).size.height * 0.4,
-                        child: Column(
+                        child: SingleChildScrollView(
+                            child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             StreamBuilder<QuerySnapshot>(
@@ -86,6 +87,6 @@ class _ListUserXossState extends State<ListUserXoss> {
                                   );
                                 }),
                           ],
-                        ))))));
+                        )))))));
   }
 }

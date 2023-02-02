@@ -6,6 +6,7 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server/gmail.dart';
+import 'package:tuto_firebase/notifications/model/notifications.dart';
 import 'package:tuto_firebase/utils/color/color.dart';
 
 import 'package:intl/intl.dart';
@@ -24,6 +25,7 @@ class _DetailXossUserState extends State<DetailXossUser> {
   String _id;
   bool _statut;
   _DetailXossUserState(this._id, this._statut);
+  late String prenom;
   Future<void> sendMail() async {
     try {
       var userEmail = "salleli@ept.sn";
@@ -46,7 +48,7 @@ class _DetailXossUserState extends State<DetailXossUser> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: AppColors.primary,
-          title: Text("Detail"),
+          title: Text("Détail"),
           centerTitle: true,
         ),
         body: Center(
@@ -86,6 +88,7 @@ class _DetailXossUserState extends State<DetailXossUser> {
                                   ConnectionState.done) {
                                 Map<String, dynamic> dataUser = snapshot.data!
                                     .data() as Map<String, dynamic>;
+                                prenom = dataUser["prenom"];
                                 return Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -210,7 +213,15 @@ class _DetailXossUserState extends State<DetailXossUser> {
                                                   onPrimary: Colors
                                                       .black, // foreground
                                                 ),
-                                                onPressed: sendMail,
+                                                // onPressed: sendMail,
+                                                onPressed: () {
+                                                  CustomNotification.addNotification(
+                                                      "uid",
+                                                      "Signalement d'un payement",
+                                                      "$prenom dit qu'il a payé un xoss",
+                                                      "k6uD0t2S7oRmBw5Q49nydG7KhT22");
+                                                  print("Payement fait");
+                                                },
                                                 child: Text(
                                                     "Signaler un payement")),
                                           ),

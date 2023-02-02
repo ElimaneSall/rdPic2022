@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -134,5 +138,145 @@ void undLike(String docID, String collection, int likes) {
     }).then((value) => print("données à jour"));
   } catch (e) {
     print(e.toString());
+  }
+}
+
+void _delete(String docID) {
+  try {
+    FirebaseFirestore.instance
+        .collection('SOS')
+        .doc(docID)
+        .delete()
+        .then((value) => print("données à jour"));
+  } catch (e) {
+    print(e.toString());
+  }
+}
+
+Future openDialogDelete(
+  BuildContext context,
+  String id,
+  String collection,
+  String title,
+  String contentMessage,
+) =>
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        content: Container(
+          child: Text(
+            contentMessage,
+            textAlign: TextAlign.center,
+          ),
+        ),
+        actions: [
+          TextButton(
+              onPressed: () {
+                try {
+                  FirebaseFirestore.instance
+                      .collection(collection)
+                      .doc(id)
+                      .delete()
+                      .then((value) => print("données à jour"));
+                } catch (e) {
+                  print(e.toString());
+                }
+              },
+              child: Text("Supprimer"))
+        ],
+      ),
+    );
+
+Color _colorIconPlus = Colors.black;
+double _sizeIconPlus = 20;
+void addToDatabase(
+    String docID, int ancienNombre, String champ, String collection, int pas) {
+  var newNombre = ancienNombre + pas;
+  try {
+    FirebaseFirestore.instance.collection(collection).doc(docID).update({
+      '${champ}': newNombre,
+    }).then((value) => print("données à jour"));
+  } catch (e) {
+    print(e.toString());
+  }
+}
+
+ButtonAdd(_id, int ancienData, String fieldData, String collection, int pas) {
+  return IconButton(
+      onPressed: () {
+        addToDatabase(_id, ancienData, fieldData, collection, pas);
+      },
+      icon: Icon(Icons.add),
+      color: _colorIconPlus,
+      iconSize: _sizeIconPlus);
+}
+
+ButtonBut(
+    _id,
+    int ancienData,
+    String fieldData,
+    BuildContext context,
+    TextEditingController controller,
+    String buteur,
+    String collection,
+    int pas) {
+  return IconButton(
+      onPressed: () {
+        addToDatabase(_id, ancienData, fieldData, collection, pas);
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text("Buteur"),
+            content: TextField(
+              controller: controller,
+              decoration: InputDecoration(hintText: "Nom du buteur"),
+            ),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    try {
+                      FirebaseFirestore.instance
+                          .collection("Matchs")
+                          .doc(_id)
+                          .update({
+                        buteur: FieldValue.arrayUnion([
+                          {"buteur": controller.value.text}
+                        ]),
+                      }).then((value) {
+                        print("données à jour");
+                        Navigator.pop(context);
+                      });
+                    } catch (e) {
+                      print(e.toString());
+                    }
+                  },
+                  child: Text("Modifier"))
+            ],
+          ),
+        );
+      },
+      icon: Icon(Icons.add),
+      color: _colorIconPlus,
+      iconSize: _sizeIconPlus);
+}
+
+class FirebaseApi {
+  static UploadTask? uploadFile(String destination, File file) {
+    try {
+      final ref = FirebaseStorage.instance.ref(destination);
+      return ref.putFile(file);
+    } on FirebaseException catch (e) {
+      return null;
+    }
+  }
+
+  static UploadTask? uploadBytes(String destination, Uint8List data) {
+    try {
+      final ref = FirebaseStorage.instance.ref(destination);
+      return ref.putData(data);
+    } on FirebaseException catch (e) {
+      return null;
+    }
   }
 }

@@ -36,7 +36,7 @@ class CustomNotification {
         CustomNotification(uid, title, body, time, userId);
     await FirebaseFirestore.instance
         .collection('Notifs')
-        .doc(uid)
+        .doc()
         .set(notif.toMap())
         .then((value) {
       service.showNotification(

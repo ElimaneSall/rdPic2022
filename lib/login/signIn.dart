@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tuto_firebase/homeApp.dart';
 import 'package:tuto_firebase/login/signUp.dart';
 import 'package:tuto_firebase/pShop/screen/HomeShopkeeperPshop.dart';
-import 'package:tuto_firebase/screen/homeScreen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../utils/color/color.dart';
 import '../widget/reusableTextField.dart';
@@ -16,6 +16,8 @@ class SignIn extends StatefulWidget {
   @override
   State<SignIn> createState() => _SignInState();
 }
+
+late String role;
 
 class _SignInState extends State<SignIn> {
   late TextEditingController _emailTextController = TextEditingController();
@@ -51,28 +53,39 @@ class _SignInState extends State<SignIn> {
           SizedBox(
             height: 30,
           ),
-          reusableTextField("Enter Mail", Icons.person_outline, false,
+          reusableTextField("Entrer votre mail", Icons.person_outline, false,
               _emailTextController, Colors.white),
           SizedBox(
             height: 30,
           ),
-          reusableTextField("Enter Password", Icons.lock, true,
+          reusableTextField("Entrer votre mot de passe", Icons.lock, true,
               _passwordTextController, Colors.white),
           signInSignUpButton("Se Connecter", context, true, () {
             FirebaseAuth.instance
                 .signInWithEmailAndPassword(
                     email: _emailTextController.text,
                     password: _passwordTextController.text)
-                .then((value) {
-              if (_emailTextController.value.text == "salleli@gmail.com") {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => HomeShopkeeperPshop()));
-              } else {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => HomeApp()));
-              }
+                .then((value) async {
+              await FirebaseFirestore.instance
+                  .collection('Users')
+                  .doc(value.user!.uid)
+                  .get()
+                  .then((DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.exists) {
+                  if (documentSnapshot.get("role") == "boutiquier") {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => HomeShopkeeperPshop()));
+                  } else {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => HomeApp()));
+                  }
+                } else {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => HomeApp()));
+                }
+              });
             });
           }),
           Row(
