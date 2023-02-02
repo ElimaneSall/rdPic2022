@@ -10,6 +10,7 @@ import 'package:tuto_firebase/interclasse/screen/homeFootball.dart';
 import 'package:tuto_firebase/jeux/screen/Home.dart';
 import 'package:tuto_firebase/login/GetFile.dart';
 import 'package:tuto_firebase/login/PageTest.dart';
+import 'package:tuto_firebase/login/TestNotification2.dart';
 import 'package:tuto_firebase/login/profile.dart';
 import 'package:tuto_firebase/login/signIn.dart';
 import 'package:tuto_firebase/notifications/notifications_page.dart';
@@ -129,7 +130,7 @@ class _DrawerAppState extends State<DrawerApp> {
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => QRCodeDetect()),
+              MaterialPageRoute(builder: (context) => TestNotification2()),
             );
           }),
       ListTile(
