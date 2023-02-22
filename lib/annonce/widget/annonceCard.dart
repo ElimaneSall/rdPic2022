@@ -44,6 +44,7 @@ class AnnonceCard extends StatelessWidget {
                         "Voulez vous supprimer ce message");
                     Navigator.pop(context);
                   }
+                  print("**false");
                 },
                 child: Expanded(
                     child: Column(
@@ -234,12 +235,19 @@ class AnnonceCard extends StatelessWidget {
                                 height: 4,
                               ),
                               //  Image.network(annonce.urlFile),
-                              Text(
-                                annonce.poste,
-                                style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.black),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    annonce.poste,
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.black),
+                                  ),
+                                  if (annonce.urlFile != "") _Downloadwidget
+                                ],
                               ),
                               SizedBox(
                                 height: 2,
@@ -289,7 +297,6 @@ class AnnonceCard extends StatelessWidget {
                             ],
                           )),
                     ])))),
-        if (annonce.urlFile != "") _Downloadwidget,
       ],
     ));
   }

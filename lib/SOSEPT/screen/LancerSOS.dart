@@ -1,12 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:tuto_firebase/SOSEPT/screen/SuccessMessageSOS.dart';
 import 'package:tuto_firebase/utils/color/color.dart';
 
 import '../../pShop/screen/SuccessMessage.dart';
+import '../../services/notification.dart';
+import '../../utils/method.dart';
 import '../../widget/reusableTextField.dart';
 
 class LancerSOS extends StatefulWidget {
@@ -21,6 +25,70 @@ class _LancerSOSState extends State<LancerSOS> {
   TextEditingController _sosGroupTextController = TextEditingController();
   List<String> group = ['tout', '50', '49', '48', '47', '46'];
   String? selectedGroup = "tout";
+
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
+  List usersToken = [];
+
+  List usersId = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    setState(() {
+      usersId = getUsersId()[0];
+      usersToken = getUsersId()[1];
+    });
+    initInfo();
+  }
+
+  @override
+  initInfo() {
+    var androidInitialize =
+        const AndroidInitializationSettings("@mipmap/ic_launcher");
+
+    var IOSInitialize = IOSInitializationSettings();
+    var initializationsSettings =
+        InitializationSettings(android: androidInitialize, iOS: IOSInitialize);
+
+    flutterLocalNotificationsPlugin.initialize(
+      initializationsSettings,
+      onSelectNotification: (String? payload) async {
+        try {
+          if (payload != null && payload.isNotEmpty) {
+          } else {}
+        } catch (e) {
+          print(e.toString());
+        }
+        return;
+      },
+    );
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      print("----------------------onMessage-------------------");
+      print(
+          "onMessage:${message.notification!.title}/${message.notification!.body}");
+      BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(
+          message.notification!.body.toString(),
+          htmlFormatBigText: true,
+          contentTitle: message.notification!.title.toString(),
+          htmlFormatContentTitle: true);
+      AndroidNotificationDetails androidNotificationDetails =
+          AndroidNotificationDetails("dbfood", "dbfood",
+              importance: Importance.max,
+              styleInformation: bigTextStyleInformation,
+              priority: Priority.max,
+              playSound: true);
+      NotificationDetails notificationDetails =
+          NotificationDetails(android: androidNotificationDetails);
+      await flutterLocalNotificationsPlugin.show(0, message.notification!.title,
+          message.notification!.body, notificationDetails,
+          payload: message.data["title"]);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,18 +154,18 @@ class _LancerSOSState extends State<LancerSOS> {
                           "idAuteur": FirebaseAuth.instance.currentUser!.uid,
                           "likes": 0,
                         });
-                        sosRef
-                            .doc("UCNWdGhmLsuZ6aYDimgb")
-                            .collection("Reponses")
-                            .add({});
-                        sosRef.doc("UCNWdGhmLsuZ6aYDimgb").update({"nom": "i"});
-
-                        /* FirebaseFirestore.instance
-                            .collection('SOS')
-                            .doc("bFPveFLPDTtfNk3EoUGS")
-                            .collection("Reponses")
-                            .add({});
-                            */
+                        var i = 0;
+                        for (var e in usersToken) {
+                          sendPushMessage(
+                              e!,
+                              " ${_sosTextController.value.text} ",
+                              "Blog: ${_sosTextController.value.text} ");
+                          addNotif(_sosTextController.value.text,
+                              _sosTextController.value.text, usersId[i]);
+                          i++;
+                        }
+                        i = 0;
+                        Navigator.pop(context);
                         Navigator.push(
                             context,
                             MaterialPageRoute(

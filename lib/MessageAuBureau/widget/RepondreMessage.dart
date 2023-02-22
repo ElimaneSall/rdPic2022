@@ -6,18 +6,18 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:tuto_firebase/utils/color/color.dart';
 
-class RepondreSOS extends StatefulWidget {
+class RepondreMessage extends StatefulWidget {
   String id;
-  RepondreSOS(this.id);
+  RepondreMessage(this.id);
 
   @override
-  State<RepondreSOS> createState() => _RepondreSOSState(id);
+  State<RepondreMessage> createState() => _RepondreMessageState(id);
 }
 
-class _RepondreSOSState extends State<RepondreSOS> {
+class _RepondreMessageState extends State<RepondreMessage> {
   String _id;
   final reponsecontroller = TextEditingController();
-  _RepondreSOSState(this._id);
+  _RepondreMessageState(this._id);
 
   @override
   Widget build(BuildContext context) {

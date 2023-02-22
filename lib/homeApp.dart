@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:tuto_firebase/EPTChat/screen/HomeSocial.dart';
+import 'package:tuto_firebase/EPTChat/screen/message/HomeChat.dart';
 import 'package:tuto_firebase/SOSEPT/screen/HomeSOS.dart';
 import 'package:tuto_firebase/annonce/screen/homeAnnonce.dart';
 import 'package:tuto_firebase/blog/screen/homeArticle.dart';
@@ -84,7 +86,7 @@ class _HomeAppState extends State<HomeApp> {
         drawer: DrawerApp(),
         appBar: AppBar(
           backgroundColor: AppColors.primary,
-          title: Center(child: Text("Hub des applis de l'EPT")),
+          title: Center(child: Text("EPT App")),
         ),
         body: SingleChildScrollView(
             child: Padding(
@@ -94,6 +96,9 @@ class _HomeAppState extends State<HomeApp> {
             children: [
               CardHome(context, "index_foot.jpg", "Interclasse",
                   () => HomeInterClasse()),
+              SizedBox(height: 30),
+              CardHome(context, "socialNetwork.png", "EPT Chat",
+                  () => HomeSocialNetwork()),
               SizedBox(height: 30),
               CardHome(context, "Pshop.png", "P-shop", () => HomeUserPshop()),
               SizedBox(height: 30),

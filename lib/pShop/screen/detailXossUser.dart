@@ -4,8 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:mailer/mailer.dart';
-import 'package:mailer/smtp_server/gmail.dart';
+
 import 'package:tuto_firebase/notifications/model/notifications.dart';
 import 'package:tuto_firebase/utils/color/color.dart';
 
@@ -26,21 +25,6 @@ class _DetailXossUserState extends State<DetailXossUser> {
   bool _statut;
   _DetailXossUserState(this._id, this._statut);
   late String prenom;
-  Future<void> sendMail() async {
-    try {
-      var userEmail = "salleli@ept.sn";
-      var message = Message();
-      message.subject = "Test flutter";
-      message.text = "Je test envoie de mail";
-      message.from = Address(userEmail.toString());
-
-      message.recipients.add(userEmail);
-
-      var smtpServer = gmailRelaySaslXoauth2(userEmail, "");
-
-      send(message, smtpServer);
-    } catch (e) {}
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -228,7 +212,9 @@ class _DetailXossUserState extends State<DetailXossUser> {
                                       ],
                                     ));
                               }
-                              return Text("Loading");
+                              return Center(
+                                child: CircularProgressIndicator(),
+                              );
                             }),
                       ],
                     )))));

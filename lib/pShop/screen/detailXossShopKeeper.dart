@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:mailer/mailer.dart';
-import 'package:mailer/smtp_server/gmail.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:tuto_firebase/notifications/model/notifications.dart';
+import 'package:tuto_firebase/services/notification.dart';
 import 'package:tuto_firebase/utils/color/color.dart';
 
 import 'package:intl/intl.dart';
@@ -23,6 +24,13 @@ class _DetailXossShopKeeperState extends State<DetailXossShopKeeper> {
   String _id;
 
   TextEditingController prixController = TextEditingController();
+
+  String? mtoken;
+
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
+  String? token;
   _DetailXossShopKeeperState(this._id);
   void updateStatut(String docID, bool statut) {
     try {
@@ -46,20 +54,67 @@ class _DetailXossShopKeeperState extends State<DetailXossShopKeeper> {
     }
   }
 
-  Future<void> sendMail() async {
-    try {
-      var userEmail = "salleli@ept.sn";
-      var message = Message();
-      message.subject = "Test flutter";
-      message.text = "Je test envoie de mail";
-      message.from = Address(userEmail.toString());
+  @override
+  void initState() {
+    super.initState();
 
-      message.recipients.add(userEmail);
+    getToken();
+    initInfo();
+    //getTokenShop();
+  }
 
-      var smtpServer = gmailRelaySaslXoauth2(userEmail, "");
+  initInfo() {
+    var androidInitialize =
+        const AndroidInitializationSettings("@mipmap/ic_launcher");
 
-      send(message, smtpServer);
-    } catch (e) {}
+    var IOSInitialize = IOSInitializationSettings();
+    var initializationsSettings =
+        InitializationSettings(android: androidInitialize, iOS: IOSInitialize);
+
+    flutterLocalNotificationsPlugin.initialize(
+      initializationsSettings,
+      onSelectNotification: (String? payload) async {
+        try {
+          if (payload != null && payload.isNotEmpty) {
+          } else {}
+        } catch (e) {
+          print(e.toString());
+        }
+        return;
+      },
+    );
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      print("----------------------onMessage-------------------");
+      print(
+          "onMessage:${message.notification!.title}/${message.notification!.body}");
+      BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(
+          message.notification!.body.toString(),
+          htmlFormatBigText: true,
+          contentTitle: message.notification!.title.toString(),
+          htmlFormatContentTitle: true);
+      AndroidNotificationDetails androidNotificationDetails =
+          AndroidNotificationDetails("dbfood", "dbfood",
+              importance: Importance.max,
+              styleInformation: bigTextStyleInformation,
+              priority: Priority.max,
+              playSound: true);
+      NotificationDetails notificationDetails =
+          NotificationDetails(android: androidNotificationDetails);
+      await flutterLocalNotificationsPlugin.show(0, message.notification!.title,
+          message.notification!.body, notificationDetails,
+          payload: message.data["title"]);
+    });
+  }
+
+  void getToken() async {
+    await FirebaseMessaging.instance.getToken().then((token) {
+      setState(() {
+        mtoken = token;
+        print("My token is $mtoken");
+      });
+      // saveToken(token!);
+    });
   }
 
   @override
@@ -151,6 +206,9 @@ class _DetailXossShopKeeperState extends State<DetailXossShopKeeper> {
                                                         snapshot.data!.data()
                                                             as Map<String,
                                                                 dynamic>;
+
+                                                    token = dataUser["token"];
+                                                    print("TokenBi $token");
                                                     return Row(
                                                       mainAxisAlignment:
                                                           MainAxisAlignment
@@ -259,9 +317,12 @@ class _DetailXossShopKeeperState extends State<DetailXossShopKeeper> {
                                                             .black, // foreground
                                                       ),
                                                       onPressed: () {
-                                                        deleteStatut(_id);
+                                                        sendPushMessage(
+                                                            token!,
+                                                            "Nous vous rappelons que vous avez payé un xoss impayé d'une valeur de ${dataXoss["prix"]}",
+                                                            "Xoss");
                                                       },
-                                                      child: Text("Supprimer")),
+                                                      child: Text("Rappeler")),
                                                   SizedBox(
                                                     width:
                                                         MediaQuery.of(context)
@@ -280,6 +341,11 @@ class _DetailXossShopKeeperState extends State<DetailXossShopKeeper> {
                                                       onPressed: () {
                                                         updateStatut(_id,
                                                             dataXoss["statut"]);
+                                                        //   print("Token bi$token");
+                                                        sendPushMessage(
+                                                            token!,
+                                                            "Vous avez payé votre xoss d'une valeur de ${dataXoss["prix"]}",
+                                                            "Xoss");
                                                       },
                                                       child: Text("Payer")),
                                                   SizedBox(
@@ -346,6 +412,10 @@ class _DetailXossShopKeeperState extends State<DetailXossShopKeeper> {
                                                       onPressed: () {
                                                         updateStatut(_id,
                                                             dataXoss["statut"]);
+                                                        sendPushMessage(
+                                                            token!,
+                                                            "Vous n'avez payé pas votre xoss d'une valeur de ${dataXoss["prix"]}",
+                                                            "Xoss");
                                                       },
                                                       child: Text("Impaye")),
                                                   SizedBox(
@@ -364,14 +434,12 @@ class _DetailXossShopKeeperState extends State<DetailXossShopKeeper> {
                                                             .black, // foreground
                                                       ),
                                                       onPressed: (() {
-                                                        CustomNotification
-                                                            .addNotification(
-                                                                "uid",
-                                                                "Un Xoss non-aye",
-                                                                "Bonjour, nous vous rappelons que vous avec un xoss non paye d’une valeur de 800FCFA",
-                                                                "TmdN4QcagleZJH0Vhq3cvC7o6hi2");
+                                                        sendPushMessage(
+                                                            token!,
+                                                            "Nous vous rappelons que vous avez payé un xoss impayé d'une valeur de ${dataXoss["prix"]}",
+                                                            "Xoss");
                                                       }),
-                                                      child: Text("rappeler")),
+                                                      child: Text("Rappeler")),
                                                 ],
                                               ),
                                           ],

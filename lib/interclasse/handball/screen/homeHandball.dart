@@ -52,7 +52,7 @@ class _homeHandballState extends State<homeHandball> {
                       height: 20,
                     ),
                     Image.asset(
-                      "index_foot.jpg",
+                      "handballLogo.jpg",
                       fit: BoxFit.cover,
                       height: 150,
                       width: MediaQuery.of(context).size.width * 0.9,

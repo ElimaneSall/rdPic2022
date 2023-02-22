@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:tuto_firebase/MessageAuBureau/widget/DetailMessage.dart';
 import 'package:tuto_firebase/SOSEPT/screen/HomeSOS.dart';
 import 'package:tuto_firebase/homeApp.dart';
 import 'package:tuto_firebase/utils/color/color.dart';
+import 'package:tuto_firebase/utils/method.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);
@@ -41,127 +43,215 @@ class _ProfileState extends State<Profile> {
             Map<String, dynamic> dataUser =
                 snapshot.data!.data() as Map<String, dynamic>;
             return (Container(
-              child: new Stack(
-                children: <Widget>[
-                  new Container(
-                    decoration: new BoxDecoration(
-                        gradient: new LinearGradient(colors: [
-                      hexStringToColor("000"),
-                      hexStringToColor("000"),
-                      hexStringToColor("dd9933"),
-                    ], begin: Alignment.topCenter, end: Alignment.center)),
-                  ),
-                  new Scaffold(
-                    backgroundColor: Colors.transparent,
-                    body: new Container(
-                      child: new Stack(
-                        children: <Widget>[
-                          new Align(
-                            alignment: Alignment.center,
-                            child: new Padding(
-                              padding: new EdgeInsets.only(top: _height / 15),
-                              child: new Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  new CircleAvatar(
-                                    backgroundImage: new NetworkImage(
-                                        dataUser["urlProfile"]),
-                                    radius: _height / 10,
-                                  ),
-                                  new SizedBox(
-                                    height: _height / 30,
-                                  ),
-                                  new Text(
-                                    dataUser["prenom"] +
-                                        " " +
-                                        dataUser["nom"] +
-                                        dataUser["promo"] +
-                                        " ème promo",
-                                    style: new TextStyle(
-                                        fontSize: 18.0,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  Text(
-                                    dataUser["telephone"],
-                                    style: new TextStyle(
-                                        fontSize: 18.0,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  Text(
-                                    dataUser["email"],
-                                    style: new TextStyle(
-                                        fontSize: 18.0,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold),
-                                  )
-                                ],
-                              ),
+                child: new Stack(children: <Widget>[
+              new Container(
+                decoration: new BoxDecoration(
+                    gradient: new LinearGradient(colors: [
+                  hexStringToColor("000"),
+                  hexStringToColor("000"),
+                  hexStringToColor("dd9933"),
+                ], begin: Alignment.topCenter, end: Alignment.center)),
+              ),
+              new Scaffold(
+                  backgroundColor: Colors.transparent,
+                  body: new Container(
+                    child: new Stack(
+                      children: <Widget>[
+                        new Align(
+                          alignment: Alignment.center,
+                          child: new Padding(
+                            padding: new EdgeInsets.only(top: _height / 15),
+                            child: new Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                new CircleAvatar(
+                                  backgroundImage:
+                                      new NetworkImage(dataUser["urlProfile"]),
+                                  radius: _height / 10,
+                                ),
+                                new SizedBox(
+                                  height: _height / 30,
+                                ),
+                                new Text(
+                                  dataUser["prenom"] + " " + dataUser["nom"],
+                                  style: new TextStyle(
+                                      fontSize: 18.0,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  dataUser["telephone"],
+                                  style: new TextStyle(
+                                      fontSize: 18.0,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  dataUser["email"],
+                                  style: new TextStyle(
+                                      fontSize: 18.0,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                )
+                              ],
                             ),
                           ),
-                          new Padding(
-                            padding: new EdgeInsets.only(top: _height / 2.2),
-                            child: new Container(
-                              color: Colors.white,
-                            ),
+                        ),
+                        new Padding(
+                          padding: new EdgeInsets.only(top: _height / 2.2),
+                          child: new Container(
+                            color: Colors.white,
                           ),
-                          new Padding(
+                        ),
+                        new Padding(
                             padding: new EdgeInsets.only(
                                 top: _height / 2.6,
                                 left: _width / 20,
                                 right: _width / 20),
-                            child: new Column(
-                              children: <Widget>[
-                                new Container(
-                                  decoration: new BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10),
-                                      boxShadow: [
-                                        new BoxShadow(
-                                            color: Colors.black45,
-                                            blurRadius: 2.0,
-                                            offset: new Offset(0.0, 2.0))
-                                      ]),
-                                  child: new Padding(
-                                    padding: new EdgeInsets.all(_width / 20),
-                                    child: new Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          headerChild('Photos', 114),
-                                          headerChild('Followers', 1205),
-                                          headerChild('Following', 360),
+                            child: new SingleChildScrollView(
+                              child: Column(
+                                children: <Widget>[
+                                  new Container(
+                                    decoration: new BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(10),
+                                        boxShadow: [
+                                          new BoxShadow(
+                                              color: Colors.black45,
+                                              blurRadius: 2.0,
+                                              offset: new Offset(0.0, 2.0))
                                         ]),
+                                    child: new Padding(
+                                      padding: new EdgeInsets.all(_width / 20),
+                                      child: new Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            headerChild(
+                                              'Promo',
+                                              dataUser["promo"] + " ème promo",
+                                            ),
+                                            headerChild('Classe', "DIC 2 GIT"),
+                                          ]),
+                                    ),
                                   ),
-                                ),
-                                new Padding(
-                                  padding:
-                                      new EdgeInsets.only(top: _height / 20),
-                                  child: new Column(
-                                    children: <Widget>[
-                                      SizedBox(height: 30),
-                                      CardHome(context, "sosLogo.png",
-                                          "SOS EPT", () => HomeSOS()),
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
+                                  new Padding(
+                                    padding:
+                                        new EdgeInsets.only(top: _height / 20),
+                                    child: StreamBuilder<QuerySnapshot>(
+                                        stream: FirebaseFirestore.instance
+                                            .collection("MessageAuBureau")
+                                            .orderBy("date", descending: true)
+                                            .snapshots(),
+                                        builder: (_, snapshot) {
+                                          if (snapshot.hasData) {
+                                            return SingleChildScrollView(
+                                                // color: AppColors.background,
+                                                child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: (snapshot.data!
+                                                            as QuerySnapshot)
+                                                        .docs
+                                                        .map((e) {
+                                                      return SingleChildScrollView(
+                                                          child: Container(
+                                                        margin: EdgeInsets.only(
+                                                            bottom: 10),
+                                                        padding:
+                                                            EdgeInsets.all(10),
+                                                        decoration: BoxDecoration(
+                                                            color: AppColors
+                                                                .background,
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10)),
+                                                        child: Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Center(
+                                                                child: Text(
+                                                                  "Message au bureau",
+                                                                  style: TextStyle(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold),
+                                                                ),
+                                                              ),
+                                                              Text(
+                                                                e["message"],
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontSize: 15,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w400,
+                                                                  color: Colors
+                                                                      .black,
+                                                                  //decoration: TextDecoration.lineThrough
+                                                                ),
+                                                              ),
+                                                              SizedBox(
+                                                                height: 10,
+                                                              ),
+                                                              ElevatedButton(
+                                                                  onPressed:
+                                                                      (() {
+                                                                    Navigator
+                                                                        .push(
+                                                                      context,
+                                                                      MaterialPageRoute(
+                                                                          builder: (context) =>
+                                                                              DetailMessage(e.id)),
+                                                                    );
+                                                                  }),
+                                                                  child: Text(
+                                                                      "Voir les réponses")),
+                                                              Center(
+                                                                child: Text(
+                                                                  dateCustomformat(DateTime.parse(e[
+                                                                          "date"]
+                                                                      .toDate()
+                                                                      .toString())),
+                                                                  style:
+                                                                      TextStyle(
+                                                                    fontSize:
+                                                                        15,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w400,
+                                                                    color: Colors
+                                                                        .blue,
+                                                                    //decoration: TextDecoration.lineThrough
+                                                                  ),
+                                                                ),
+                                                              )
+                                                            ]),
+                                                      ));
+                                                    }).toList()));
+                                          }
+                                          return Container(
+                                            child: Text("Loading"),
+                                          );
+                                        }),
+                                  )
+                                ],
+                              ),
+                            ))
+                      ],
                     ),
-                  ),
-                ],
-              ),
-            ));
+                  ))
+            ])));
           }
           return CircularProgressIndicator();
         });
   }
 
-  Widget headerChild(String header, int value) => new Expanded(
+  Widget headerChild(String header, String value) => new Expanded(
           child: new Column(
         children: <Widget>[
           new Text(header),

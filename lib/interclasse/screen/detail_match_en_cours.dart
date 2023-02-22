@@ -2,9 +2,12 @@ import 'dart:ffi';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:tuto_firebase/services/notification.dart';
 import 'package:tuto_firebase/utils/color/color.dart';
 import 'package:tuto_firebase/utils/method.dart';
 
@@ -20,8 +23,66 @@ class DetailMatchEnCours extends StatefulWidget {
 class _DetailMatchEnCoursState extends State<DetailMatchEnCours> {
   String _id;
 
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
   _DetailMatchEnCoursState(this._id);
   TextEditingController controller = TextEditingController();
+  List userTokens = [];
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      userTokens = getUsersId()[1];
+    });
+    initInfo();
+  }
+
+  @override
+  initInfo() {
+    var androidInitialize =
+        const AndroidInitializationSettings("@mipmap/ic_launcher");
+
+    var IOSInitialize = IOSInitializationSettings();
+    var initializationsSettings =
+        InitializationSettings(android: androidInitialize, iOS: IOSInitialize);
+
+    flutterLocalNotificationsPlugin.initialize(
+      initializationsSettings,
+      onSelectNotification: (String? payload) async {
+        try {
+          if (payload != null && payload.isNotEmpty) {
+          } else {}
+        } catch (e) {
+          print(e.toString());
+        }
+        return;
+      },
+    );
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      print("----------------------onMessage-------------------");
+      print(
+          "onMessage:${message.notification!.title}/${message.notification!.body}");
+      BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(
+          message.notification!.body.toString(),
+          htmlFormatBigText: true,
+          contentTitle: message.notification!.title.toString(),
+          htmlFormatContentTitle: true);
+      AndroidNotificationDetails androidNotificationDetails =
+          AndroidNotificationDetails("dbfood", "dbfood",
+              importance: Importance.max,
+              styleInformation: bigTextStyleInformation,
+              priority: Priority.max,
+              playSound: true);
+      NotificationDetails notificationDetails =
+          NotificationDetails(android: androidNotificationDetails);
+      await flutterLocalNotificationsPlugin.show(0, message.notification!.title,
+          message.notification!.body, notificationDetails,
+          payload: message.data["title"]);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // ignore: unnecessary_new
@@ -45,389 +106,389 @@ class _DetailMatchEnCoursState extends State<DetailMatchEnCours> {
                 snapshot.data!.data() as Map<String, dynamic>;
             return Scaffold(
                 appBar: AppBar(
-                    title: Center(child: Text("Detail du match")),
+                    title: Center(child: Text("Détail du match")),
                     backgroundColor: AppColors.primary),
                 body: SingleChildScrollView(
-                    child: Padding(
-                        padding: EdgeInsets.only(top: 40, right: 5, left: 5),
-                        child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Column(
-                                    children: [
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Image.asset("equipe1.png",
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.1,
-                                              height: 40),
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                          SizedBox(
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.2),
-                                          Text("Full-time"),
-                                          SizedBox(
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.2),
-                                          Image.asset("equipe2.png",
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.1,
-                                              height: 40),
-                                          SizedBox(
-                                            height: 10,
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          Text(dataMatch["idEquipe1"],
-                                              style: TextStyle(
-                                                  color: Colors.blue,
-                                                  fontSize:
-                                                      MediaQuery.of(context)
-                                                              .size
-                                                              .width *
-                                                          0.05,
-                                                  fontWeight: FontWeight.bold)),
-                                          SizedBox(
+                    child: Column(children: [
+                  Padding(
+                      padding: EdgeInsets.only(top: 40, right: 5, left: 5),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Column(
+                                  children: [
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Image.asset("equipe2.jpg",
                                             width: MediaQuery.of(context)
                                                     .size
                                                     .width *
-                                                0.6,
-                                          ),
-                                          Text(dataMatch["idEquipe2"],
-                                              style: TextStyle(
+                                                0.1,
+                                            height: 40),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        SizedBox(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.2),
+                                        Text("Full-time"),
+                                        SizedBox(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.2),
+                                        Image.asset("equipe1.jpg",
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.1,
+                                            height: 40),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Text(dataMatch["idEquipe1"],
+                                            style: TextStyle(
+                                                color: Colors.blue,
+                                                fontSize: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.05,
+                                                fontWeight: FontWeight.bold)),
+                                        SizedBox(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.6,
+                                        ),
+                                        Text(dataMatch["idEquipe2"],
+                                            style: TextStyle(
+                                                color: Colors.blue,
+                                                fontSize: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.05,
+                                                fontWeight: FontWeight.bold)),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        Column(
+                                          children: [
+                                            for (var buteur
+                                                in dataMatch["buteurs1"])
+                                              Text(buteur["buteur"]),
+                                          ],
+                                        ),
+                                        ButtonBut(
+                                            userTokens,
+                                            _id,
+                                            dataMatch["score1"],
+                                            "score1",
+                                            context,
+                                            controller,
+                                            "buteurs1"),
+                                        Text(dataMatch["score1"].toString(),
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 30,
+                                                fontWeight: FontWeight.bold)),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Text("-",
+                                            style: TextStyle(
+                                                color: Colors.blue,
+                                                fontSize: 25,
+                                                fontWeight: FontWeight.bold)),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Text(dataMatch["score2"].toString(),
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 30,
+                                                fontWeight: FontWeight.bold)),
+                                        ButtonBut(
+                                            userTokens,
+                                            _id,
+                                            dataMatch["score2"],
+                                            "score2",
+                                            context,
+                                            controller,
+                                            "buteurs2"),
+                                        Column(
+                                          children: [
+                                            for (var buteur
+                                                in dataMatch["buteurs2"])
+                                              Text(buteur["buteur"]),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        Column(
+                                          children: [
+                                            Text("Cartons",
+                                                style: TextStyle(
                                                   color: Colors.blue,
-                                                  fontSize:
-                                                      MediaQuery.of(context)
-                                                              .size
-                                                              .width *
-                                                          0.05,
-                                                  fontWeight: FontWeight.bold)),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          Column(
-                                            children: [
-                                              for (var buteur
-                                                  in dataMatch["buteurs1"])
-                                                Text(buteur["buteur"]),
-                                            ],
-                                          ),
-                                          ButtonBut(
-                                              _id,
-                                              dataMatch["score1"],
-                                              "score1",
-                                              context,
-                                              controller,
-                                              "buteurs1"),
-                                          Text(dataMatch["score1"].toString(),
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 30,
-                                                  fontWeight: FontWeight.bold)),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Text("-",
-                                              style: TextStyle(
-                                                  color: Colors.blue,
-                                                  fontSize: 25,
-                                                  fontWeight: FontWeight.bold)),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Text(dataMatch["score2"].toString(),
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 30,
-                                                  fontWeight: FontWeight.bold)),
-                                          ButtonBut(
-                                              _id,
-                                              dataMatch["score2"],
-                                              "score2",
-                                              context,
-                                              controller,
-                                              "buteurs2"),
-                                          Column(
-                                            children: [
-                                              for (var buteur
-                                                  in dataMatch["buteurs2"])
-                                                Text(buteur["buteur"]),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          Column(
-                                            children: [
-                                              Text("Cartons",
-                                                  style: TextStyle(
-                                                    color: Colors.blue,
-                                                    fontSize: 20,
-                                                  )),
-                                              Row(
-                                                children: [
-                                                  ButtonAdd(
-                                                      _id,
-                                                      dataMatch["yellowCard1"],
-                                                      "yellowCard1"),
-                                                  Container(
-                                                      height: 40,
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width *
-                                                              0.05,
-                                                      color: Colors.yellow,
-                                                      child: Center(
-                                                          child: Text(
-                                                        dataMatch["yellowCard1"]
-                                                            .toString(),
-                                                        style: TextStyle(
-                                                          color: Colors.black,
-                                                          fontSize: 15,
-                                                        ),
-                                                      ))),
-                                                  SizedBox(
+                                                  fontSize: 20,
+                                                )),
+                                            Row(
+                                              children: [
+                                                ButtonAdd(
+                                                    _id,
+                                                    dataMatch["yellowCard1"],
+                                                    "yellowCard1"),
+                                                Container(
+                                                    height: 40,
                                                     width:
                                                         MediaQuery.of(context)
                                                                 .size
                                                                 .width *
-                                                            0.001,
-                                                  ),
-                                                  Container(
-                                                      height: 40,
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width *
-                                                              0.05,
-                                                      color: Colors.red,
-                                                      child: Center(
-                                                          child: Text(
-                                                        dataMatch["redCard1"]
-                                                            .toString(),
-                                                        style: TextStyle(
-                                                          color: Colors.black,
-                                                          fontSize: 15,
-                                                        ),
-                                                      ))),
-                                                  ButtonAdd(
-                                                      _id,
-                                                      dataMatch["redCard1"],
-                                                      "redCard1"),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                          SizedBox(width: 10),
-                                          Image.asset("ball_football.png",
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.1,
-                                              height: 40),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Column(
-                                            children: [
-                                              Text("Cartons",
-                                                  style: TextStyle(
-                                                    color: Colors.blue,
-                                                    fontSize: 20,
-                                                  )),
-                                              Row(
-                                                children: [
-                                                  ButtonAdd(
-                                                      _id,
-                                                      dataMatch["yellowCard2"],
-                                                      "yellowCard2"),
-                                                  Container(
-                                                      height: 40,
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width *
-                                                              0.05,
-                                                      color: Colors.yellow,
-                                                      child: Center(
-                                                          child: Text(
-                                                        dataMatch["yellowCard2"]
-                                                            .toString(),
-                                                        style: TextStyle(
-                                                          color: Colors.black,
-                                                          fontSize: 15,
-                                                        ),
-                                                      ))),
-                                                  SizedBox(
+                                                            0.05,
+                                                    color: Colors.yellow,
+                                                    child: Center(
+                                                        child: Text(
+                                                      dataMatch["yellowCard1"]
+                                                          .toString(),
+                                                      style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontSize: 15,
+                                                      ),
+                                                    ))),
+                                                SizedBox(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.001,
+                                                ),
+                                                Container(
+                                                    height: 40,
                                                     width:
                                                         MediaQuery.of(context)
                                                                 .size
                                                                 .width *
-                                                            0.001,
-                                                  ),
-                                                  Container(
-                                                      height: 40,
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width *
-                                                              0.05,
-                                                      color: Colors.red,
-                                                      child: Center(
-                                                          child: Text(
-                                                        dataMatch["redCard2"]
-                                                            .toString(),
-                                                        style: TextStyle(
-                                                          color: Colors.black,
-                                                          fontSize: 15,
-                                                        ),
-                                                      ))),
-                                                  ButtonAdd(
-                                                      _id,
-                                                      dataMatch["redCard2"],
-                                                      "redCard2"),
-                                                ],
-                                              )
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    ],
-                                  )
+                                                            0.05,
+                                                    color: Colors.red,
+                                                    child: Center(
+                                                        child: Text(
+                                                      dataMatch["redCard1"]
+                                                          .toString(),
+                                                      style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontSize: 15,
+                                                      ),
+                                                    ))),
+                                                ButtonAdd(
+                                                    _id,
+                                                    dataMatch["redCard1"],
+                                                    "redCard1"),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(width: 10),
+                                        Image.asset("ball_football.png",
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.1,
+                                            height: 40),
+                                        SizedBox(
+                                          width: 10,
+                                        ),
+                                        Column(
+                                          children: [
+                                            Text("Cartons",
+                                                style: TextStyle(
+                                                  color: Colors.blue,
+                                                  fontSize: 20,
+                                                )),
+                                            Row(
+                                              children: [
+                                                ButtonAdd(
+                                                    _id,
+                                                    dataMatch["yellowCard2"],
+                                                    "yellowCard2"),
+                                                Container(
+                                                    height: 40,
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.05,
+                                                    color: Colors.yellow,
+                                                    child: Center(
+                                                        child: Text(
+                                                      dataMatch["yellowCard2"]
+                                                          .toString(),
+                                                      style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontSize: 15,
+                                                      ),
+                                                    ))),
+                                                SizedBox(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.001,
+                                                ),
+                                                Container(
+                                                    height: 40,
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.05,
+                                                    color: Colors.red,
+                                                    child: Center(
+                                                        child: Text(
+                                                      dataMatch["redCard2"]
+                                                          .toString(),
+                                                      style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontSize: 15,
+                                                      ),
+                                                    ))),
+                                                ButtonAdd(
+                                                    _id,
+                                                    dataMatch["redCard2"],
+                                                    "redCard2"),
+                                              ],
+                                            )
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
+                            SizedBox(
+                              height: 30,
+                            ),
+                            //en bas
+                            Center(
+                                child: Text("Statistique",
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 25,
+                                        fontWeight: FontWeight.bold))),
+                            SizedBox(height: 10),
+                            Container(
+                                child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: [
+                                  ButtonAdd(_id, dataMatch["tirs1"], "tirs1"),
+                                  StatistiqueDePlus(
+                                    "Total tirs",
+                                    "tirs.png",
+                                    dataMatch["tirs1"],
+                                    dataMatch["tirs2"],
+                                  ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  ButtonAdd(_id, dataMatch["tirs2"], "tirs2"),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  ButtonAdd(_id, dataMatch["tirsCadres1"],
+                                      "tirsCadres1"),
+                                  StatistiqueDePlus(
+                                    "Total tirs cardrés",
+                                    "tirs_cadres.png",
+                                    dataMatch["tirsCadres1"],
+                                    dataMatch["tirsCadres2"],
+                                  ),
+                                  ButtonAdd(_id, dataMatch["tirsCadres2"],
+                                      "tirsCadres2"),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  ButtonAdd(
+                                      _id, dataMatch["fautes1"], "fautes1"),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  StatistiqueDePlus(
+                                    "Total fautes",
+                                    "fautes.webp",
+                                    dataMatch["fautes1"],
+                                    dataMatch["fautes2"],
+                                  ),
+                                  ButtonAdd(
+                                      _id, dataMatch["fautes2"], "fautes2"),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  SizedBox(
+                                    width: 30,
+                                  ),
+                                  ButtonAdd(
+                                      _id, dataMatch["corners1"], "corners1"),
+                                  StatistiqueDePlus(
+                                    "Total corners",
+                                    "corners.png",
+                                    dataMatch["corners1"],
+                                    dataMatch["corners2"],
+                                  ),
+                                  ButtonAdd(
+                                      _id, dataMatch["corners2"], "corners2"),
                                 ],
                               ),
-                              SizedBox(
-                                height: 30,
-                              ),
-                              //en bas
-                              Center(
-                                  child: Text("Statistique",
-                                      style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 25,
-                                          fontWeight: FontWeight.bold))),
-                              SizedBox(height: 10),
-                              Container(
-                                  child: SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: Row(
-                                  children: [
-                                    ButtonAdd(_id, dataMatch["tirs1"], "tirs1"),
-                                    StatistiqueDePlus(
-                                      "Total tirs",
-                                      "tirs.png",
-                                      dataMatch["tirs1"],
-                                      dataMatch["tirs2"],
-                                    ),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    ButtonAdd(_id, dataMatch["tirs2"], "tirs2"),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    ButtonAdd(_id, dataMatch["tirsCadres1"],
-                                        "tirsCadres1"),
-                                    StatistiqueDePlus(
-                                      "Total tirs cardrés",
-                                      "tirs_cadres.png",
-                                      dataMatch["tirsCadres1"],
-                                      dataMatch["tirsCadres2"],
-                                    ),
-                                    ButtonAdd(_id, dataMatch["tirsCadres2"],
-                                        "tirsCadres2"),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    ButtonAdd(
-                                        _id, dataMatch["fautes1"], "fautes1"),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    StatistiqueDePlus(
-                                      "Total fautes",
-                                      "fautes.webp",
-                                      dataMatch["fautes1"],
-                                      dataMatch["fautes2"],
-                                    ),
-                                    ButtonAdd(
-                                        _id, dataMatch["fautes2"], "fautes2"),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    SizedBox(
-                                      width: 30,
-                                    ),
-                                    ButtonAdd(
-                                        _id, dataMatch["corners1"], "corners1"),
-                                    StatistiqueDePlus(
-                                      "Total corners",
-                                      "corners.png",
-                                      dataMatch["corners1"],
-                                      dataMatch["corners2"],
-                                    ),
-                                    ButtonAdd(
-                                        _id, dataMatch["corners2"], "corners2"),
-                                  ],
-                                ),
-                              )),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Center(
-                                child: ElevatedButton(
-                                    onPressed: () {
-                                      int p1 = 0;
-                                      int p2 = 0;
-                                      if (dataMatch["score1"] >
-                                          dataMatch["score2"]) {
-                                        p1 = 3;
-                                      } else {
-                                        p2 = 3;
-                                      }
-                                      FirebaseFirestore.instance
-                                          .collection("Equipes")
-                                          .doc(dataMatch["idEquipe1"])
-                                          .update({
-                                        "P": p1,
-                                        "match": FieldValue.arrayUnion([_id]),
-                                      });
-                                      FirebaseFirestore.instance
-                                          .collection("Equipes")
-                                          .doc(dataMatch["idEquipe2"])
-                                          .update({
-                                        "match": FieldValue.arrayUnion([_id]),
-                                        "P": p2,
-                                      });
-                                    },
-                                    child: Text("Fin de match")),
-                              )
-                            ]))));
+                            )),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Center(
+                              child: ElevatedButton(
+                                  onPressed: () {
+                                    int p1 = 0;
+                                    int p2 = 0;
+                                    if (dataMatch["score1"] >
+                                        dataMatch["score2"]) {
+                                      p1 = 3;
+                                    } else {
+                                      p2 = 3;
+                                    }
+                                    FirebaseFirestore.instance
+                                        .collection("Equipes")
+                                        .doc(dataMatch["idEquipe1"])
+                                        .update({
+                                      "P": p1,
+                                      "match": FieldValue.arrayUnion([_id]),
+                                    });
+                                    FirebaseFirestore.instance
+                                        .collection("Equipes")
+                                        .doc(dataMatch["idEquipe2"])
+                                        .update({
+                                      "match": FieldValue.arrayUnion([_id]),
+                                      "P": p2,
+                                    });
+                                  },
+                                  child: Text("Fin de match")),
+                            )
+                          ]))
+                ])));
           }
           return Center(
             child: CircularProgressIndicator(),
@@ -438,10 +499,10 @@ class _DetailMatchEnCoursState extends State<DetailMatchEnCours> {
 
 Color _colorIconPlus = Colors.black;
 double _sizeIconPlus = 20;
-void addToDatabase(String docID, int ancienNombre, String champ) {
+void addToDatabase(String docID, int ancienNombre, String champ) async {
   var newNombre = ancienNombre + 1;
   try {
-    FirebaseFirestore.instance.collection('Matchs').doc(docID).update({
+    await FirebaseFirestore.instance.collection('Matchs').doc(docID).update({
       '${champ}': newNombre,
     }).then((value) => print("données à jour"));
   } catch (e) {
@@ -460,6 +521,7 @@ ButtonAdd(_id, int ancienData, String fieldData) {
 }
 
 ButtonBut(
+  List tokens,
   _id,
   int ancienData,
   String fieldData,
@@ -468,8 +530,7 @@ ButtonBut(
   String buteur,
 ) {
   return IconButton(
-      onPressed: () {
-        addToDatabase(_id, ancienData, fieldData);
+      onPressed: () async {
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
@@ -482,6 +543,7 @@ ButtonBut(
               TextButton(
                   onPressed: () {
                     try {
+                      addToDatabase(_id, ancienData, fieldData);
                       FirebaseFirestore.instance
                           .collection("Matchs")
                           .doc(_id)
@@ -491,6 +553,11 @@ ButtonBut(
                         ]),
                       }).then((value) {
                         print("données à jour");
+
+                        for (var e in tokens) {
+                          sendPushMessage(e, "Veuillez consulter le match",
+                              "Interclasse: Un nouveau but");
+                        }
                         Navigator.pop(context);
                       });
                     } catch (e) {

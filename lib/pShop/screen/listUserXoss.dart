@@ -55,7 +55,9 @@ class _ListUserXossState extends State<ListUserXoss> {
 
                                   if (snapshot.connectionState ==
                                       ConnectionState.waiting) {
-                                    return Text("Loading");
+                                    return Center(
+                                      child: CircularProgressIndicator(),
+                                    );
                                   }
 
                                   if (snapshot.hasData) {

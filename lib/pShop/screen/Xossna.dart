@@ -1,12 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:tuto_firebase/notifications/model/notifications.dart';
 import 'package:tuto_firebase/pShop/screen/SuccessMessage.dart';
 import 'package:tuto_firebase/utils/color/color.dart';
 
+import '../../services/notification.dart';
 import '../../widget/reusableTextField.dart';
 
 class Xossna extends StatefulWidget {
@@ -21,6 +24,12 @@ class _XossnaState extends State<Xossna> {
   TextEditingController _prixTextController = TextEditingController();
   List listProduit = [];
   double sum = 0;
+  String? token;
+
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
+  String? idReceveurNotif;
   void getSomme() {
     FirebaseFirestore.instance.collection('Xoss').get().then(
       (querySnapshot) {
@@ -36,11 +45,73 @@ class _XossnaState extends State<Xossna> {
     );
   }
 
+  getTokenShop() {
+    FirebaseFirestore.instance.collection('Users').get().then(
+      (querySnapshot) {
+        querySnapshot.docs.forEach((result) {
+          if (result.data()["role"] == "boutiquier") {
+            token = result.data()['token'];
+            idReceveurNotif = result.data()['idUser'];
+          }
+        });
+        print("Token Boutiquier $token");
+        setState(() {});
+      },
+    );
+  }
+
   @override
   void initState() {
+    super.initState();
     getSomme();
     print("somme1$sum");
-    super.initState();
+    ;
+    initInfo();
+    getTokenShop();
+  }
+
+  initInfo() {
+    var androidInitialize =
+        const AndroidInitializationSettings("@mipmap/ic_launcher");
+
+    var IOSInitialize = IOSInitializationSettings();
+    var initializationsSettings =
+        InitializationSettings(android: androidInitialize, iOS: IOSInitialize);
+
+    flutterLocalNotificationsPlugin.initialize(
+      initializationsSettings,
+      onSelectNotification: (String? payload) async {
+        try {
+          if (payload != null && payload.isNotEmpty) {
+          } else {}
+        } catch (e) {
+          print(e.toString());
+        }
+        return;
+      },
+    );
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      print("----------------------onMessage-------------------");
+      print(
+          "onMessage:${message.notification!.title}/${message.notification!.body}");
+      BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(
+          message.notification!.body.toString(),
+          htmlFormatBigText: true,
+          contentTitle: message.notification!.title.toString(),
+          htmlFormatContentTitle: true);
+      AndroidNotificationDetails androidNotificationDetails =
+          AndroidNotificationDetails("dbfood", "dbfood",
+              importance: Importance.max,
+              styleInformation: bigTextStyleInformation,
+              priority: Priority.max,
+              playSound: true);
+      NotificationDetails notificationDetails =
+          NotificationDetails(android: androidNotificationDetails);
+      await flutterLocalNotificationsPlugin.show(0, message.notification!.title,
+          message.notification!.body, notificationDetails,
+          payload: message.data["title"]);
+    });
   }
 
   @override
@@ -80,11 +151,24 @@ class _XossnaState extends State<Xossna> {
                             "idUser": FirebaseAuth.instance.currentUser!.uid,
                             "statut": false
                           });
-                          CustomNotification.addNotification(
-                              "2",
-                              "Xoss",
-                              "Un nouveau xoss d'une valeur de ${_prixTextController.value.text} FCFA a été fait",
-                              "k6uD0t2S7oRmBw5Q49nydG7KhT22");
+                          // CustomNotification.addNotification(
+                          //     "2",
+                          //     "Xoss",
+                          //     "Un nouveau xoss d'une valeur de ${_prixTextController.value.text} FCFA a été fait",
+                          //     "k6uD0t2S7oRmBw5Q49nydG7KhT22");
+                          print("Token bi$token");
+                          sendPushMessage(
+                              token!,
+                              "Un nouveau xoss d'une valeur de ${_prixTextController.value.text} FCFA a été fait.",
+                              "Xoss");
+                          FirebaseFirestore.instance.collection('Notifs').add({
+                            'body': "body",
+                            "title": "title",
+                            "time": DateTime.now(),
+                            "userId": idReceveurNotif,
+                            "isActive": false,
+                            "uid": ""
+                          });
                           Navigator.push(
                               context,
                               MaterialPageRoute(

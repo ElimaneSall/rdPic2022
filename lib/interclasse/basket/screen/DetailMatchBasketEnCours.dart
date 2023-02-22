@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:tuto_firebase/services/notification.dart';
 import 'package:tuto_firebase/utils/color/color.dart';
 import 'package:tuto_firebase/utils/method.dart';
 
@@ -26,6 +28,13 @@ class _DetailMatchBasketEnCoursState extends State<DetailMatchBasketEnCours> {
   TextEditingController controller = TextEditingController();
   final Stream<QuerySnapshot> _articleStream =
       FirebaseFirestore.instance.collection('Basket').snapshots();
+  List userTokens = [];
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    userTokens = getUsersId()[1];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +58,7 @@ class _DetailMatchBasketEnCoursState extends State<DetailMatchBasketEnCours> {
             return Scaffold(
                 appBar: AppBar(
                     centerTitle: true,
-                    title: Center(child: Text("Detail du match")),
+                    title: Center(child: Text("Détail du match de basket")),
                     backgroundColor: AppColors.primary),
                 body: SingleChildScrollView(
                     child: Padding(
@@ -61,29 +70,15 @@ class _DetailMatchBasketEnCoursState extends State<DetailMatchBasketEnCours> {
                               Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Image.asset("equipe1.png",
+                                    Image.asset("equipe2.jpg",
                                         width: 100, height: 40),
                                     SizedBox(
                                         width:
                                             MediaQuery.of(context).size.width *
                                                 0.4),
-                                    Image.asset("equipe2.png",
+                                    Image.asset("equipe1.jpg",
                                         width: 100, height: 40),
                                   ]),
-
-                              // Text(dataMatch["idEquipe1"],
-                              //     style: TextStyle(
-                              //         color: AppColors.blue,
-                              //         fontSize: 30,
-                              //         fontWeight: FontWeight.bold)),
-                              // SizedBox(
-                              //   height: 30,
-                              // ),
-                              // Text("Cartons",
-                              //     style: TextStyle(
-                              //       color: AppColors.blue,
-                              //       fontSize: 20,
-                              //     )),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -105,8 +100,18 @@ class _DetailMatchBasketEnCoursState extends State<DetailMatchBasketEnCours> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  ButtonAdd(_id, dataMatch["score1"], "score1",
-                                      "Basket", 1),
+                                  // ButtonAdd(_id, dataMatch["score1"], "score1",
+                                  //     "Basket", 1),
+                                  GestureDetector(
+                                    child: Icon(Icons.add),
+                                    onTap: () => OpenDialogBut(
+                                        context,
+                                        controller,
+                                        _id,
+                                        "Match",
+                                        "score1",
+                                        dataMatch["score1"]),
+                                  ),
                                   Text(dataMatch["score1"].toString(),
                                       style: TextStyle(
                                           color: Colors.black,
@@ -128,8 +133,16 @@ class _DetailMatchBasketEnCoursState extends State<DetailMatchBasketEnCours> {
                                           color: Colors.black,
                                           fontSize: 30,
                                           fontWeight: FontWeight.bold)),
-                                  ButtonAdd(_id, dataMatch["score2"], "score2",
-                                      "Basket", 1),
+                                  GestureDetector(
+                                    child: Icon(Icons.add),
+                                    onTap: () => OpenDialogBut(
+                                        context,
+                                        controller,
+                                        _id,
+                                        "Match",
+                                        "score2",
+                                        dataMatch["score2"]),
+                                  ),
                                 ],
                               ),
                               Row(
@@ -172,7 +185,6 @@ class _DetailMatchBasketEnCoursState extends State<DetailMatchBasketEnCours> {
                                   )
                                 ],
                               ),
-
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -194,156 +206,64 @@ class _DetailMatchBasketEnCoursState extends State<DetailMatchBasketEnCours> {
                               SizedBox(
                                 height: 10,
                               ),
-
-                              Column(
-                                children: [
-                                  Text("Quart-temps 1"),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(dataMatch["score1"].toString(),
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold)),
-                                      SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.1),
-                                      Text("-",
-                                          style: TextStyle(
-                                              color: AppColors.blue,
-                                              fontSize: 25,
-                                              fontWeight: FontWeight.bold)),
-                                      SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.1),
-                                      Text(dataMatch["score2"].toString(),
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold)),
-                                    ],
-                                  ),
-                                ],
-                              ),
                               SizedBox(
                                 height: 5,
                               ),
-                              Column(
-                                children: [
-                                  Text("Quart-temps 2"),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(dataMatch["score1"].toString(),
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold)),
-                                      SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.1),
-                                      Text("-",
-                                          style: TextStyle(
-                                              color: AppColors.blue,
-                                              fontSize: 25,
-                                              fontWeight: FontWeight.bold)),
-                                      SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.1),
-                                      Text(dataMatch["score2"].toString(),
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold)),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Column(
-                                children: [
-                                  Text("Quart-temps 3"),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(dataMatch["score1"].toString(),
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold)),
-                                      SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.1),
-                                      Text("-",
-                                          style: TextStyle(
-                                              color: AppColors.blue,
-                                              fontSize: 25,
-                                              fontWeight: FontWeight.bold)),
-                                      SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.1),
-                                      Text(dataMatch["score2"].toString(),
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold)),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Column(
-                                children: [
-                                  Text("Quart-temps 4"),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(dataMatch["score1"].toString(),
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold)),
-                                      SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.1),
-                                      Text("-",
-                                          style: TextStyle(
-                                              color: AppColors.blue,
-                                              fontSize: 25,
-                                              fontWeight: FontWeight.bold)),
-                                      SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.1),
-                                      Text(dataMatch["score2"].toString(),
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold)),
-                                    ],
-                                  ),
-                                ],
-                              ),
+                              for (var quart in dataMatch["quarts"])
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(quart["nomQuart"]),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(quart["score1"].toString(),
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.bold)),
+                                        ButtonBut(
+                                          userTokens,
+                                          _id,
+                                          quart["score1"],
+                                          "score1",
+                                          context,
+                                          controller,
+                                        ),
+                                        SizedBox(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.1),
+                                        Text("-",
+                                            style: TextStyle(
+                                                color: AppColors.blue,
+                                                fontSize: 25,
+                                                fontWeight: FontWeight.bold)),
+                                        SizedBox(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.1),
+                                        Text(quart["score2"].toString(),
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.bold)),
+                                        ButtonBut(
+                                          userTokens,
+                                          _id,
+                                          quart["score1"],
+                                          "score1",
+                                          context,
+                                          controller,
+                                        )
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               SizedBox(
                                 height: 30,
                               ),
@@ -701,4 +621,58 @@ Widget StatistiqueDePlus(String titre, String image, int para1, int para2) {
       )
     ],
   );
+}
+
+ButtonBut(
+  List tokens,
+  _id,
+  int ancienData,
+  String fieldData,
+  BuildContext context,
+  TextEditingController controller,
+) {
+  return IconButton(
+      onPressed: () async {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text("Score"),
+            content: TextField(
+              controller: controller,
+              decoration: InputDecoration(hintText: "Nombre de points marqués"),
+            ),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    try {
+                      FirebaseFirestore.instance
+                          .collection("Basket")
+                          .doc(_id)
+                          .update({
+                        "qartss"[1]: FieldValue.arrayUnion([
+                          {
+                            "score1": 10,
+                          }
+                        ])
+                      }).then((value) {
+                        print("données à jour");
+
+                        for (var e in tokens) {
+                          sendPushMessage(e, "Veuillez consulter le match",
+                              "Interclasse: Un nouveau but");
+                        }
+                        Navigator.pop(context);
+                      });
+                    } catch (e) {
+                      print(e.toString());
+                    }
+                  },
+                  child: Text("Modifier"))
+            ],
+          ),
+        );
+      },
+      icon: Icon(Icons.add),
+      color: Colors.black,
+      iconSize: 25);
 }

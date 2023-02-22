@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:tuto_firebase/homeApp.dart';
 import '../utils/color/color.dart';
 import '../widget/reusableTextField.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({
@@ -17,10 +19,62 @@ class SignUp extends StatefulWidget {
 class _SignUpState extends State<SignUp> {
   TextEditingController _userNameTextController = TextEditingController();
   TextEditingController _nameTextController = TextEditingController();
+  TextEditingController _phoneTextController = TextEditingController();
   TextEditingController _promoTextController = TextEditingController();
   TextEditingController _emailTextController = TextEditingController();
   TextEditingController _passwordTextController = TextEditingController();
   TextEditingController _password2TextController = TextEditingController();
+
+  String? mtoken;
+  void _requestPermission() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    NotificationSettings settings = await messaging.requestPermission(
+        alert: true,
+        announcement: false,
+        badge: true,
+        carPlay: false,
+        criticalAlert: false,
+        provisional: false,
+        sound: true);
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      print("User granted permission");
+    } else if (settings.authorizationStatus ==
+        AuthorizationStatus.provisional) {
+      print("User granted provisional permission");
+    } else {
+      print("User declined or has not accepted permission");
+    }
+  }
+
+  void getToken() async {
+    await FirebaseMessaging.instance.getToken().then((token) {
+      setState(() {
+        mtoken = token;
+        print("My token is $mtoken");
+      });
+      saveToken(token!);
+    });
+  }
+
+  void saveToken(String token) async {
+    await FirebaseFirestore.instance
+        .collection("UserToken")
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .set({
+      "token": token,
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _requestPermission();
+    getToken();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,6 +123,12 @@ class _SignUpState extends State<SignUp> {
                         height: 20,
                       ),
                       reusableTextField(
+                          "Entrer votre numéro de téléphone ",
+                          Icons.person_outline,
+                          false,
+                          _phoneTextController,
+                          Colors.white),
+                      reusableTextField(
                           "Entrer votre mot de passe",
                           Icons.person_outline,
                           false,
@@ -95,12 +155,17 @@ class _SignUpState extends State<SignUp> {
                       SizedBox(
                         height: 20,
                       ),
-                      signInSignUpButton("S'inscrire", context, false, () {
+                      signInSignUpButton("S'inscrire", context, false, () async {
                         FirebaseAuth.instance
                             .createUserWithEmailAndPassword(
                                 email: _emailTextController.text,
                                 password: _passwordTextController.text)
-                            .then((value) {
+                            .then((value) async{
+                          print("SaveToken");
+                          saveToken(mtoken!);
+                             SharedPreferences prefs = await SharedPreferences.getInstance();
+prefs.setString('email', _emailTextController.value.text);
+prefs.setString('password', _passwordTextController.value.text);
                           FirebaseFirestore.instance
                               .collection('Users')
                               .doc(FirebaseAuth.instance.currentUser!.uid
@@ -110,9 +175,11 @@ class _SignUpState extends State<SignUp> {
                             'promo': _promoTextController.value.text,
                             'nom': _nameTextController.value.text,
                             "prenom": _userNameTextController.value.text,
+                            "telephone": _phoneTextController.value.text,
                             'admin': false,
                             "role": "user",
                             "urlProfile": "",
+                            "token": mtoken,
                             "id": FirebaseAuth.instance.currentUser!.uid
                                 .toString()
                           });

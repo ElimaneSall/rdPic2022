@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:tuto_firebase/SOSEPT/model/SOSModel.dart';
-import 'package:tuto_firebase/SOSEPT/model/widget/DetailSOS.dart';
-import 'package:tuto_firebase/SOSEPT/model/widget/RepondreSOS.dart';
+import 'package:tuto_firebase/SOSEPT/widget/DetailSOS.dart';
+import 'package:tuto_firebase/SOSEPT/widget/RepondreSOS.dart';
 import 'package:tuto_firebase/utils/color/color.dart';
 import 'package:tuto_firebase/utils/method.dart';
 import 'package:intl/intl.dart';
@@ -183,7 +183,7 @@ class SOSCard extends StatelessWidget {
                                                 // foreground
                                               ),
                                               child: Text(
-                                                "Voir reponses(" +
+                                                "Voir réponses(" +
                                                     sosModel.reponse.length
                                                         .toString() +
                                                     ")",
@@ -207,7 +207,7 @@ class SOSCard extends StatelessWidget {
                                                     AppColors.red, // background
                                                 // foreground
                                               ),
-                                              child: Text("Repondre")),
+                                              child: Text("Répondre")),
                                         ],
                                       )
                                     ],

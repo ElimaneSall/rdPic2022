@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tuto_firebase/notifications/model/notifications.dart';
 import 'package:tuto_firebase/notifications/widgets/notification_tile.dart';
 import 'package:tuto_firebase/utils/color/color.dart';
+import 'package:tuto_firebase/utils/method.dart';
 
 class Notifications extends StatefulWidget {
   const Notifications({Key? key}) : super(key: key);
@@ -18,11 +19,13 @@ class _NotificationsState extends State<Notifications> {
 
   @override
   void initState() {
+    print("Notif1$_notifs");
     _retrieveNotifications().then((value) {
       setState(() {
         _notifs = value;
       });
     });
+    print("Notif2$_notifs");
     super.initState();
   }
 
@@ -30,7 +33,7 @@ class _NotificationsState extends State<Notifications> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text("Notifications",
+          title: Text("Notification",
               style: TextStyle(
                 color: Colors.white,
               )),
@@ -46,75 +49,65 @@ class _NotificationsState extends State<Notifications> {
         ),
         body: Padding(
             padding: const EdgeInsets.all(10),
-            child: StatefulBuilder(builder: ((context, setState) {
-              if (_notifs.isNotEmpty) {
-                return ListView.separated(
-                    scrollDirection: Axis.vertical,
-                    shrinkWrap: true,
-                    itemCount: _notifs.length,
-                    separatorBuilder: (context, index) => const SizedBox(
-                          height: 10,
-                        ),
-                    itemBuilder: (BuildContext context, int index) {
-                      return Container(
-                          alignment: Alignment.center,
-                          margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                          height: MediaQuery.of(context).size.height * 0.1,
-                          decoration: const BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(15.0))),
-                          child: Material(
-                              elevation: 8.0,
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(15.0)),
-                              child: ListTile(
-                                  tileColor: AppColors.primary,
-                                  title: Text(
-                                    _notifs[index].title,
-                                    style: const TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 15.0),
-                                  ),
-                                  subtitle: Text(_notifs[index].body,
-                                      style: const TextStyle(
-                                          color: Colors.white, fontSize: 13.0)),
-                                  trailing: IconButton(
-                                    icon: const Icon(Icons.delete,
-                                        size: 25, color: Colors.white),
-                                    onPressed: () {
-                                      FirebaseFirestore.instance
-                                          .collection('Notifs')
-                                          .doc(_notifs[index].uid)
-                                          .set({
-                                        ..._notifs[index].toMap(),
-                                        'isActive': false
-                                      });
-                                      _retrieveNotifications().then((value) {
-                                        setState(() {
-                                          _notifs = value;
-                                        });
-                                      });
-                                    },
-                                  ))));
-                    });
-              } else {
-                return Align(
-                    alignment: Alignment.center,
-                    child: SizedBox(
-                        height: 80,
-                        width: 300,
-                        child: ElevatedButton(
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.primary),
-                            child: const Text('Aucune Notification',
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold)))));
-              }
-            }))));
+            child: StreamBuilder(
+              stream: FirebaseFirestore.instance
+                  .collection("Notifs")
+                  .where("idUser",
+                      isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+                  .where("isActive", isEqualTo: true)
+                  .snapshots(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasError) {
+                  return Text('Something went wrong');
+                }
+
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                if (!snapshot.hasData) {
+                  return Center(
+                      child: Container(
+                          height: 30,
+                          width: MediaQuery.of(context).size.width * 0.4,
+                          decoration: BoxDecoration(color: AppColors.lightGray),
+                          child: Center(
+                            child: Text("Aucune notification"),
+                          )));
+                }
+
+                return ListView(
+                  children:
+                      snapshot.data!.docs.map((DocumentSnapshot document) {
+                    Map<String, dynamic> data =
+                        document.data()! as Map<String, dynamic>;
+                    return Container(
+                      margin: EdgeInsets.only(bottom: 10),
+                      decoration: BoxDecoration(
+                          color: AppColors.lightGray,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: ListTile(
+                          title: Text(data['title']),
+                          subtitle: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(data['body']),
+                              Text(timeAgoCustom(DateTime.parse(
+                                      data["time"].toDate().toString()))
+                                  .toString()),
+                            ],
+                          )
+
+                          // trailing: Text(data["time"].toString()),
+                          ),
+                    );
+                  }).toList(),
+                );
+              },
+            )));
   }
 
   Future<List<dynamic>> _retrieveNotifications() async {
@@ -122,10 +115,8 @@ class _NotificationsState extends State<Notifications> {
       final User? user = FirebaseAuth.instance.currentUser;
       CollectionReference collectionRef =
           FirebaseFirestore.instance.collection("Notifs");
-      QuerySnapshot snapshot = await collectionRef
-          .where('userId', isEqualTo: user!.uid)
-          .where('isActive', isEqualTo: true)
-          .get();
+      QuerySnapshot snapshot =
+          await collectionRef.where('idUser', isEqualTo: user!.uid).get();
       List<dynamic> result = snapshot.docs.map((doc) {
         Map data = doc.data() as Map;
         return CustomNotification.fromMap(

@@ -31,8 +31,9 @@ class NavBarBasketball extends StatelessWidget {
           ),
           decoration: BoxDecoration(
               image: DecorationImage(
-                  image: NetworkImage(
-                      "https://pbs.twimg.com/profile_images/1600049665789108224/ZaL59hjV_400x400.jpg"),
+                  image: AssetImage(
+                    "assets/images/logoBDE.jpg",
+                  ),
                   fit: BoxFit.cover))),
       ListTile(
           leading: Icon(Icons.favorite),

@@ -71,7 +71,7 @@ class _HomeBasketState extends State<HomeBasket> {
                       height: 20,
                     ),
                     Image.asset(
-                      "index_foot.jpg",
+                      "basketballLogo.jpg",
                       fit: BoxFit.cover,
                       height: 150,
                       width: MediaQuery.of(context).size.width * 0.9,

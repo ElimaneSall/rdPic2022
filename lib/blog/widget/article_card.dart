@@ -19,8 +19,8 @@ class ArticleCard extends StatelessWidget {
           if (FirebaseAuth.instance.currentUser!.uid == article.idUser) {
             openDialogDelete(context, article.id, "Article",
                 "Message de suppression", "Voulez vous supprimer cet article");
-            Navigator.pop(context);
-          }
+            // Navigator.pop(context);
+          } else {}
         },
         onTap: () {
           Navigator.push(
@@ -30,65 +30,69 @@ class ArticleCard extends StatelessWidget {
                         article.id,
                       )));
         },
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Column(children: [
+          Row(
+            // mainAxisAlignment: MainAxisAlignment.start,
+            // crossAxisAlignment: CrossAxisAlignment.start,
+            // mainAxisSize: MainAxisSize.min,
             children: [
-              Row(
+              ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Container(
+                      width: MediaQuery.of(context).size.width * 0.35,
+                      height: MediaQuery.of(context).size.height * 0.16,
+                      child: Image.network(
+                        article.image,
+                        fit: BoxFit.fill,
+                      ))),
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.03,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: Container(
-                          width: 130,
-                          height: 110,
-                          child: Image.network(
-                            article.image,
-                            fit: BoxFit.cover,
-                          ))),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
+                  Container(
+                      width: MediaQuery.of(context).size.width * 0.5,
+                      child: Text(
                         article.titre,
+                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w500,
                           color: Colors.black,
                           //decoration: TextDecoration.lineThrough
                         ),
-                      ),
-                      SizedBox(
-                        height: 4,
-                      ),
-                      Text(
-                        article.auteur,
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.softBlue,
-                          //decoration: TextDecoration.lineThrough
-                        ),
-                      ),
-                      SizedBox(
-                        height: 4,
-                      ),
-                      Text(
-                        dateCustomformat(
-                            DateTime.parse(article.date.toDate().toString())),
-                        style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w300,
-                            color: AppColors.secondary),
-                      )
-                    ],
+                      )),
+                  SizedBox(
+                    height: 4,
+                  ),
+                  Text(
+                    article.auteur,
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.softBlue,
+                      //decoration: TextDecoration.lineThrough
+                    ),
+                  ),
+                  SizedBox(
+                    height: 4,
+                  ),
+                  Text(
+                    dateCustomformat(
+                        DateTime.parse(article.date.toDate().toString())),
+                    style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w300,
+                        color: AppColors.secondary),
                   )
                 ],
-              ),
-              SizedBox(
-                height: 20,
               )
-            ]));
+            ],
+          ),
+          SizedBox(
+            height: 20,
+          )
+        ]));
   }
 }

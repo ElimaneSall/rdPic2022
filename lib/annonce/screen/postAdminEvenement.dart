@@ -2,13 +2,18 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:tuto_firebase/services/notification.dart';
 import 'package:tuto_firebase/utils/color/color.dart';
 import 'package:tuto_firebase/widget/reusableTextField.dart';
+
+import '../../utils/method.dart';
 
 class PostAdminEvenement extends StatefulWidget {
   const PostAdminEvenement({Key? key}) : super(key: key);
@@ -79,6 +84,76 @@ class _PostAdminEvenementState extends State<PostAdminEvenement> {
       });
   }
 
+  List userId = [];
+  List userToken = [];
+
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+  void getUserId() {
+    FirebaseFirestore.instance.collection('Users').get().then(
+      (querySnapshot) {
+        querySnapshot.docs.forEach((result) {
+          userToken.add(result.data()["token"]);
+          userId.add(result.id);
+        });
+        print("Liste 2 des user ID$userId");
+        setState(() {});
+      },
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUserId();
+    print("Liste des ID$userId");
+    initInfo();
+  }
+
+  initInfo() {
+    var androidInitialize =
+        const AndroidInitializationSettings("@mipmap/ic_launcher");
+
+    var IOSInitialize = IOSInitializationSettings();
+    var initializationsSettings =
+        InitializationSettings(android: androidInitialize, iOS: IOSInitialize);
+
+    flutterLocalNotificationsPlugin.initialize(
+      initializationsSettings,
+      onSelectNotification: (String? payload) async {
+        try {
+          if (payload != null && payload.isNotEmpty) {
+          } else {}
+        } catch (e) {
+          print(e.toString());
+        }
+        return;
+      },
+    );
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      print("----------------------onMessage-------------------");
+      print(
+          "onMessage:${message.notification!.title}/${message.notification!.body}");
+      BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(
+          message.notification!.body.toString(),
+          htmlFormatBigText: true,
+          contentTitle: message.notification!.title.toString(),
+          htmlFormatContentTitle: true);
+      AndroidNotificationDetails androidNotificationDetails =
+          AndroidNotificationDetails("dbfood", "dbfood",
+              importance: Importance.max,
+              styleInformation: bigTextStyleInformation,
+              priority: Priority.max,
+              playSound: true);
+      NotificationDetails notificationDetails =
+          NotificationDetails(android: androidNotificationDetails);
+      await flutterLocalNotificationsPlugin.show(0, message.notification!.title,
+          message.notification!.body, notificationDetails,
+          payload: message.data["title"]);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -106,6 +181,8 @@ class _PostAdminEvenementState extends State<PostAdminEvenement> {
                   SizedBox(
                     height: 15,
                   ),
+                  reusableTextField("Description", Icons.add, false,
+                      descriptioncontroller, Colors.blue),
                   SizedBox(
                     height: 15,
                   ),
@@ -178,7 +255,7 @@ class _PostAdminEvenementState extends State<PostAdminEvenement> {
                           .collection('Evenement')
                           .add({
                         'titre': titrecontroller.value.text,
-                        'description': auteurcontroller.value.text,
+                        'description': descriptioncontroller.value.text,
                         'date': selectedDate,
                         "auteur": "",
                         'poste': postecontroller.value.text,
@@ -189,6 +266,17 @@ class _PostAdminEvenementState extends State<PostAdminEvenement> {
                         'likes': 0,
                         'unlikes': 0,
                       });
+                      var i = 0;
+                      for (var e in userToken) {
+                        sendPushMessage(
+                            e!,
+                            " ${descriptioncontroller.value.text} ",
+                            "BDE: ${titrecontroller.value.text} ");
+                        addNotif(titrecontroller.value.text,
+                            titrecontroller.value.text, userId[i]);
+                        i++;
+                      }
+                      i = 0;
                       Navigator.pop(context);
                     },
                   )

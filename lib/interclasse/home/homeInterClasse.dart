@@ -5,13 +5,14 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:tuto_firebase/homeApp.dart';
 import 'package:tuto_firebase/interclasse/basket/screen/homeBasket.dart';
+import 'package:tuto_firebase/interclasse/genieEnHerbe/screen/homeGenieEnHerbe.dart';
 import 'package:tuto_firebase/interclasse/handball/screen/homeHandball.dart';
 import 'package:tuto_firebase/interclasse/screen/detail_match.dart';
 import 'package:tuto_firebase/interclasse/screen/homeFootball.dart';
 import 'package:tuto_firebase/interclasse/sidebar/nav_drawer_interclasse.dart';
 import 'package:tuto_firebase/interclasse/model/match.dart';
 import 'package:tuto_firebase/interclasse/tennis/screen/homeHandball.dart';
-import 'package:tuto_firebase/interclasse/volleyball/screen/homeBasket.dart';
+import 'package:tuto_firebase/interclasse/volleyball/screen/homeVolley.dart';
 import 'package:tuto_firebase/interclasse/widget/match_card.dart';
 import 'package:tuto_firebase/utils/color/color.dart';
 
@@ -45,20 +46,20 @@ class _HomeInterClasseState extends State<HomeInterClasse> {
                     CardHome(context, "index_foot.jpg", "Football",
                         () => HomeFootball()),
                     SizedBox(height: 30),
-                    CardHome(context, "index_foot.jpg", "Génie en herbe",
-                        () => HomeInterClasse()),
+                    CardHome(context, "genieEnHerbe.jpg", "Génie en herbe",
+                        () => HomeGenieEnHerbe()),
                     SizedBox(height: 30),
-                    CardHome(context, "index_foot.jpg", "Basketball",
+                    CardHome(context, "basketballLogo.jpg", "Basketball",
                         () => HomeBasket()),
                     SizedBox(height: 30),
-                    CardHome(context, "index_foot.jpg", "Handball",
+                    CardHome(context, "handballLogo.jpg", "Handball",
                         () => homeHandball()),
                     SizedBox(height: 30),
-                    CardHome(context, "index_foot.jpg", "Volleyball",
+                    CardHome(context, "volleyball.jpg", "Volleyball",
                         () => HomeVolley()),
                     SizedBox(height: 30),
-                    CardHome(context, "index_foot.jpg", "Tennis",
-                        () => homeTennis()),
+                    CardHome(
+                        context, "tennis.jpg", "Tennis", () => homeTennis()),
                     SizedBox(height: 30),
                   ],
                 ),

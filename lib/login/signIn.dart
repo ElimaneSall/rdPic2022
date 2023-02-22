@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../utils/color/color.dart';
 import '../widget/reusableTextField.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({
@@ -22,6 +23,7 @@ late String role;
 class _SignInState extends State<SignIn> {
   late TextEditingController _emailTextController = TextEditingController();
   late TextEditingController _passwordTextController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,8 +43,8 @@ class _SignInState extends State<SignIn> {
         child: Column(children: <Widget>[
           ClipRRect(
             borderRadius: BorderRadius.circular(30),
-            child: Image.network(
-              "https://pbs.twimg.com/profile_images/1600049665789108224/ZaL59hjV_400x400.jpg",
+            child: Image.asset(
+              "assets/images/logoBDE.jpg",
               fit: BoxFit.fitWidth,
               width: MediaQuery.of(context).size.width * 0.6,
               height: 240,
@@ -60,7 +62,11 @@ class _SignInState extends State<SignIn> {
           ),
           reusableTextField("Entrer votre mot de passe", Icons.lock, true,
               _passwordTextController, Colors.white),
-          signInSignUpButton("Se Connecter", context, true, () {
+          signInSignUpButton("Se Connecter", context, true, () async {
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            prefs.setString('email', _emailTextController.value.text);
+            prefs.setString('password', _passwordTextController.value.text);
+
             FirebaseAuth.instance
                 .signInWithEmailAndPassword(
                     email: _emailTextController.text,

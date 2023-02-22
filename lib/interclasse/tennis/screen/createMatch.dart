@@ -45,7 +45,7 @@ class _CreateTennisMatchState extends State<CreateTennisMatch> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.primary,
-        title: Text("Créer un match"),
+        title: Text("Créer un match de tennis"),
       ),
       body: Container(
           width: MediaQuery.of(context).size.width,

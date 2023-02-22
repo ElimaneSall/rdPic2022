@@ -4,10 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:http/http.dart' as http;
+
+import '../services/notification.dart';
 
 class TestNotification2 extends StatefulWidget {
   const TestNotification2({super.key});
@@ -26,36 +25,18 @@ class _TestNotification2State extends State<TestNotification2> {
 
   void initState() {
     super.initState();
-
-    _requestPermission();
     getToken();
     initInfo();
   }
 
-  void sendPushMessage(String token, String body, String title) async {
-    try {
-      await http.post(Uri.parse("https://fcm.googleapis.com/fcm/send"),
-          headers: <String, String>{
-            "Content-Type": "application/json",
-            "Authorization":
-                "key=AAAAVIafLa0:APA91bEHCxiZ0-FI8AfGSxwYiPZDOd30TNgRlLXA9hhqmf8dglueUuAuTigHbAUkGl7hZXWEWMCUmreF59ITkQsDRpMonsgAcCAVE43ipc1onphXPCSU25j2tBKRl9zT2U0bqLMBS1Ye"
-          },
-          body: jsonEncode(<String, dynamic>{
-            'priority': 'high',
-            'data': <String, dynamic>{
-              'click_action': 'FLUTTER_NOTIFICATION_CLICK',
-              'status': 'done',
-              'body': body,
-              'title': title
-            },
-            "notification": <String, dynamic>{
-              "title": title,
-              "body": body,
-              "android_channel_id": "dbfood"
-            },
-            "to": token
-          }));
-    } catch (e) {}
+  void getToken() async {
+    await FirebaseMessaging.instance.getToken().then((token) {
+      setState(() {
+        mtoken = token;
+        print("My token is $mtoken");
+      });
+      // saveToken(token!);
+    });
   }
 
   initInfo() {
@@ -99,44 +80,6 @@ class _TestNotification2State extends State<TestNotification2> {
       await flutterLocalNotificationsPlugin.show(0, message.notification!.title,
           message.notification!.body, notificationDetails,
           payload: message.data["title"]);
-    });
-  }
-
-  void _requestPermission() async {
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
-
-    NotificationSettings settings = await messaging.requestPermission(
-        alert: true,
-        announcement: false,
-        badge: true,
-        carPlay: false,
-        criticalAlert: false,
-        provisional: false,
-        sound: true);
-
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      print("User granted permission");
-    } else if (settings.authorizationStatus ==
-        AuthorizationStatus.provisional) {
-      print("User granted provisional permission");
-    } else {
-      print("User declined or has not accepted permission");
-    }
-  }
-
-  void getToken() async {
-    await FirebaseMessaging.instance.getToken().then((token) {
-      setState(() {
-        mtoken = token;
-        print("My token is $mtoken");
-      });
-      saveToken(token!);
-    });
-  }
-
-  void saveToken(String token) async {
-    await FirebaseFirestore.instance.collection("UserToken").doc("User3").set({
-      "token": token,
     });
   }
 

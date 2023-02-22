@@ -50,7 +50,7 @@ class _HomeVolleyState extends State<HomeVolley> {
                       height: 20,
                     ),
                     Image.asset(
-                      "index_foot.jpg",
+                      "volleyball.jpg",
                       fit: BoxFit.cover,
                       height: 150,
                       width: MediaQuery.of(context).size.width * 0.9,

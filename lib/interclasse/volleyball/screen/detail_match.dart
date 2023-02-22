@@ -59,13 +59,13 @@ class _DetailMatchBasketState extends State<DetailMatchBasket> {
                               Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Image.asset("equipe1.png",
+                                    Image.asset("equipe2.jpg",
                                         width: 100, height: 40),
                                     SizedBox(
                                         width:
                                             MediaQuery.of(context).size.width *
                                                 0.4),
-                                    Image.asset("equipe2.png",
+                                    Image.asset("equipe1.jpg",
                                         width: 100, height: 40),
                                   ]),
 

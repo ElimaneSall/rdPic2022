@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:tuto_firebase/SOSEPT/model/SOSModel.dart';
-import 'package:tuto_firebase/SOSEPT/model/widget/RepondreSOS.dart';
-import 'package:tuto_firebase/SOSEPT/model/widget/SOSCard.dart';
+import 'package:tuto_firebase/SOSEPT/widget/RepondreSOS.dart';
+import 'package:tuto_firebase/SOSEPT/widget/SOSCard.dart';
 import 'package:tuto_firebase/utils/method.dart';
 
 class DetailSOS extends StatefulWidget {
@@ -26,18 +26,6 @@ class _DetailSOSState extends State<DetailSOS> {
       FirebaseFirestore.instance.collection('SOS').doc(docID).update({
         'likes': newLikes,
       }).then((value) => print("données à jour"));
-    } catch (e) {
-      print(e.toString());
-    }
-  }
-
-  void _delete(String docID) {
-    try {
-      FirebaseFirestore.instance
-          .collection('SOS')
-          .doc(docID)
-          .delete()
-          .then((value) => print("données à jour"));
     } catch (e) {
       print(e.toString());
     }
@@ -64,7 +52,7 @@ class _DetailSOSState extends State<DetailSOS> {
               snapshot.data!.data() as Map<String, dynamic>;
           return Scaffold(
               appBar: AppBar(
-                title: Text("Detail SOS"),
+                title: Text("Détail SOS"),
                 centerTitle: true,
                 backgroundColor: Colors.black,
               ),
@@ -211,6 +199,11 @@ class _DetailSOSState extends State<DetailSOS> {
                                             GestureDetector(
                                               onTap: () {
                                                 addLikes(_id, data["likes"]);
+                                                setState(() {
+                                                  xoss = FirebaseFirestore
+                                                      .instance
+                                                      .collection('SOS');
+                                                });
                                               },
                                               child: Icon(
                                                 Icons.favorite,
@@ -229,7 +222,7 @@ class _DetailSOSState extends State<DetailSOS> {
                                     ),
                                     InkWell(
                                         child: Text(
-                                          "Repondre",
+                                          "Répondre",
                                           style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 15),
@@ -252,7 +245,12 @@ class _DetailSOSState extends State<DetailSOS> {
                                                 fontSize: 15),
                                           ),
                                           onTap: () {
-                                            _delete(_id);
+                                            openDialogDelete(
+                                                context,
+                                                _id,
+                                                "SOS",
+                                                "SOS",
+                                                "Voulez vous supprimer ce SOS");
                                             Navigator.pop(context);
                                           }),
                                   ],
@@ -264,7 +262,7 @@ class _DetailSOSState extends State<DetailSOS> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text("Reponses",
+                                Text("Réponses",
                                     style: TextStyle(fontSize: 20)),
                                 SizedBox(
                                   height: 10,
@@ -396,7 +394,7 @@ class _DetailSOSState extends State<DetailSOS> {
                           ]))));
         }
 
-        return Text("loading");
+        return Scaffold(body: Center(child: CircularProgressIndicator()));
       },
     );
   }

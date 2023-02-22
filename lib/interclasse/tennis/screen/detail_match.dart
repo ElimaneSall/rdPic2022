@@ -48,7 +48,7 @@ class _DetailMatchTennisState extends State<DetailMatchTennis> {
             return Scaffold(
                 appBar: AppBar(
                     centerTitle: true,
-                    title: Center(child: Text("Détail du match")),
+                    title: Center(child: Text("Détail du match de Tennis")),
                     backgroundColor: AppColors.primary),
                 body: SingleChildScrollView(
                     child: Padding(
@@ -60,13 +60,13 @@ class _DetailMatchTennisState extends State<DetailMatchTennis> {
                               Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Image.asset("equipe1.png",
+                                    Image.asset("equipe2.jpg",
                                         width: 100, height: 40),
                                     SizedBox(
                                         width:
                                             MediaQuery.of(context).size.width *
                                                 0.4),
-                                    Image.asset("equipe2.png",
+                                    Image.asset("equipe1.jpg",
                                         width: 100, height: 40),
                                   ]),
                               Row(
@@ -113,14 +113,18 @@ class _DetailMatchTennisState extends State<DetailMatchTennis> {
                                           fontWeight: FontWeight.bold)),
                                 ],
                               ),
-                              Row(
+                              Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   for (var set in dataMatch["sets"])
                                     Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Text(set["nomSet"]),
                                         Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
                                           children: [
                                             Text(set["scoreSet1"].toString(),
                                                 style: TextStyle(

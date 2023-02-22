@@ -25,8 +25,9 @@ class NavBar extends StatelessWidget {
           ),
           decoration: BoxDecoration(
               image: DecorationImage(
-                  image: NetworkImage(
-                      "https://pbs.twimg.com/profile_images/1600049665789108224/ZaL59hjV_400x400.jpg"),
+                  image: AssetImage(
+                    "assets/images/logoBDE.jpg",
+                  ),
                   fit: BoxFit.cover))),
       if (role == "adminBlog" || role == "admin")
         ListTile(
@@ -60,7 +61,7 @@ class NavBar extends StatelessWidget {
           leading: Icon(Icons.favorite),
           title: Text("Polytech News"),
           onTap: () {
-            final categorie = "PN";
+            final categorie = 'Polytech  News';
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -69,9 +70,9 @@ class NavBar extends StatelessWidget {
           }),
       ListTile(
           leading: Icon(Icons.favorite),
-          title: Text("Recherche Et Developpement"),
+          title: Text("Recherche Et Développement"),
           onTap: () {
-            final categorie = "RD";
+            final categorie = 'Recherche et Développement';
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -82,7 +83,7 @@ class NavBar extends StatelessWidget {
           leading: Icon(Icons.favorite),
           title: Text("Environnement"),
           onTap: () {
-            final categorie = "environnement";
+            final categorie = 'Cellule Environnement';
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -91,9 +92,9 @@ class NavBar extends StatelessWidget {
           }),
       ListTile(
           leading: Icon(Icons.settings),
-          title: Text("Cellule Meca"),
+          title: Text("Cellule Mécanique"),
           onTap: () {
-            final categorie = "meca";
+            final categorie = 'Celulle Mécanique';
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -104,9 +105,9 @@ class NavBar extends StatelessWidget {
           leading: Icon(
             Icons.airplane_ticket,
           ),
-          title: Text("Cellule Aeronautique"),
+          title: Text("Cellule Aéronautique"),
           onTap: () {
-            final categorie = "aero";
+            final categorie = " 'Celulle Aéro',";
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -117,7 +118,7 @@ class NavBar extends StatelessWidget {
           leading: Icon(Icons.house),
           title: Text("Cellule Genie Civil"),
           onTap: () {
-            final categorie = "civil";
+            final categorie = 'Cellule Civil';
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -128,7 +129,7 @@ class NavBar extends StatelessWidget {
           leading: Icon(Icons.favorite),
           title: Text("Cellule Genie Industriel"),
           onTap: () {
-            final categorie = "GI";
+            final categorie = 'Cellule Genie Industriel';
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -150,7 +151,7 @@ class NavBar extends StatelessWidget {
           leading: Icon(Icons.favorite),
           title: Text("Sous-commission RAMA"),
           onTap: () {
-            final categorie = "RAMA";
+            final categorie = "Sous-commission Rama";
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -161,7 +162,7 @@ class NavBar extends StatelessWidget {
           leading: Icon(Icons.health_and_safety),
           title: Text("Sous-commission Sante"),
           onTap: () {
-            final categorie = "sante";
+            final categorie = 'Sous-commission Santé';
             Navigator.push(
               context,
               MaterialPageRoute(

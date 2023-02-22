@@ -3,13 +3,16 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:tuto_firebase/utils/color/color.dart';
 import 'package:path/path.dart' as Path;
 
+import '../../services/notification.dart';
 import '../../utils/method.dart';
 
 class AddArticle extends StatefulWidget {
@@ -27,14 +30,89 @@ class _AddArticleState extends State<AddArticle> {
   final imagecontroller = TextEditingController();
   final titrecontroller = TextEditingController();
   final urlcontroller = TextEditingController();
-
+  List<String> categorie = [
+    'Recherche et Développement',
+    'Cellule Civil',
+    'Celulle Aéro',
+    'Celulle Mécanique',
+    'Sous-commission Rama',
+    'Polytech  News',
+    'Cellule Environnement',
+    'Cellule Génie Industriel',
+    'Sous-commission Santé',
+    'anglais'
+  ];
+  String selectedGroup = "Recherche et Développement";
   UploadTask? taskImage;
   UploadTask? taskPDF;
   File? fileImage;
   File? filePDF;
   String? urlImage;
   String? urlPDF;
+
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+
+  List usersToken = [];
+
+  List usersId = [];
+
   @override
+  void initState() {
+    super.initState();
+
+    setState(() {
+      usersId = getUsersId()[0];
+      usersToken = getUsersId()[1];
+    });
+    initInfo();
+  }
+
+  @override
+  initInfo() {
+    var androidInitialize =
+        const AndroidInitializationSettings("@mipmap/ic_launcher");
+
+    var IOSInitialize = IOSInitializationSettings();
+    var initializationsSettings =
+        InitializationSettings(android: androidInitialize, iOS: IOSInitialize);
+
+    flutterLocalNotificationsPlugin.initialize(
+      initializationsSettings,
+      onSelectNotification: (String? payload) async {
+        try {
+          if (payload != null && payload.isNotEmpty) {
+          } else {}
+        } catch (e) {
+          print(e.toString());
+        }
+        return;
+      },
+    );
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      print("----------------------onMessage-------------------");
+      print(
+          "onMessage:${message.notification!.title}/${message.notification!.body}");
+      BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(
+          message.notification!.body.toString(),
+          htmlFormatBigText: true,
+          contentTitle: message.notification!.title.toString(),
+          htmlFormatContentTitle: true);
+      AndroidNotificationDetails androidNotificationDetails =
+          AndroidNotificationDetails("dbfood", "dbfood",
+              importance: Importance.max,
+              styleInformation: bigTextStyleInformation,
+              priority: Priority.max,
+              playSound: true);
+      NotificationDetails notificationDetails =
+          NotificationDetails(android: androidNotificationDetails);
+      await flutterLocalNotificationsPlugin.show(0, message.notification!.title,
+          message.notification!.body, notificationDetails,
+          payload: message.data["title"]);
+    });
+  }
+
   Widget build(BuildContext context) {
     final filename =
         fileImage != null ? Path.basename(fileImage!.path) : "No select file";
@@ -49,7 +127,8 @@ class _AddArticleState extends State<AddArticle> {
         ),
         body: Padding(
             padding: const EdgeInsets.all(10),
-            child: Column(children: [
+            child: SingleChildScrollView(
+                child: Column(children: [
               ListTile(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(4),
@@ -77,16 +156,39 @@ class _AddArticleState extends State<AddArticle> {
                 ]),
               ),
               ListTile(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4),
-                    side: BorderSide(color: Colors.white)),
+                // shape: RoundedRectangleBorder(
+                //     borderRadius: BorderRadius.circular(30),
+                //     side: BorderSide(color: Colors.black)),
                 title: Row(children: [
-                  Text('Categorie:'),
-                  Expanded(
-                      child: TextField(
-                    decoration: InputDecoration(border: InputBorder.none),
-                    controller: categoriecontroller,
-                  ))
+                  // Icon(
+                  //   Icons.category,
+                  //   color: Colors.black,
+                  // ),
+                  // // SizedBox(
+                  // //   width: MediaQuery.of(context).size.width * 0.02,
+                  // // ),
+                  // Text('Catégorie:'),
+                  // SizedBox(
+                  //   width: MediaQuery.of(context).size.width * 0.05,
+                  // ),
+                  SizedBox(
+                      // height: 100,
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      child: DropdownButton(
+                        value: selectedGroup,
+                        items: categorie
+                            .map((item) => DropdownMenuItem<String>(
+                                  child: Text(
+                                    item,
+                                    // style: TextStyle(fontSize: 12),
+                                    // overflow: TextOverflow.ellipsis,
+                                  ),
+                                  value: item,
+                                ))
+                            .toList(),
+                        onChanged: (item) =>
+                            setState(() => selectedGroup = (item as String?)!),
+                      ))
                 ]),
               ),
               Column(
@@ -169,20 +271,31 @@ class _AddArticleState extends State<AddArticle> {
                   onPressed: () {
                     FirebaseFirestore.instance.collection('Article').add({
                       'auteur': auteurcontroller.value.text,
-                      'categorie': categoriecontroller.value.text,
+                      'categorie': selectedGroup,
                       'date': DateTime.now(),
                       'description': descriptioncontroller.value.text,
-                      'image': urlImage,
+                      'image': urlImage != null ? urlImage : "",
                       'titre': titrecontroller.value.text,
-                      'urlPDF': urlPDF,
+                      'urlPDF': urlPDF != null ? urlPDF : "",
                       "idUser": FirebaseAuth.instance.currentUser!.uid,
                       'likes': 0,
                       'commentaires': []
                     });
+                    var i = 0;
+                    for (var e in usersToken) {
+                      sendPushMessage(
+                          e!,
+                          " ${descriptioncontroller.value.text} ",
+                          "Blog: ${titrecontroller.value.text} ");
+                      addNotif(titrecontroller.value.text,
+                          descriptioncontroller.value.text, usersId[i]);
+                      i++;
+                    }
+                    i = 0;
                     Navigator.pop(context);
                   },
                   child: Text('Ajouter'))
-            ])));
+            ]))));
   }
 
   Future selectImageFile() async {

@@ -47,7 +47,7 @@ class _DetailMatchBasketState extends State<DetailMatchBasket> {
                 snapshot.data!.data() as Map<String, dynamic>;
             return Scaffold(
                 appBar: AppBar(
-                    title: Center(child: Text("Detail du match")),
+                    title: Center(child: Text("Detail du match de basket")),
                     backgroundColor: AppColors.primary),
                 body: SingleChildScrollView(
                     child: Padding(
@@ -59,13 +59,13 @@ class _DetailMatchBasketState extends State<DetailMatchBasket> {
                               Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Image.asset("equipe1.png",
+                                    Image.asset("equipe2.jpg",
                                         width: 100, height: 40),
                                     SizedBox(
                                         width:
                                             MediaQuery.of(context).size.width *
                                                 0.4),
-                                    Image.asset("equipe2.png",
+                                    Image.asset("equipe1.jpg",
                                         width: 100, height: 40),
                                   ]),
 
@@ -129,41 +129,43 @@ class _DetailMatchBasketState extends State<DetailMatchBasket> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Column(
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Text(dataMatch["meilleurbuteurs1"]
-                                              ["nom"]),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Text(dataMatch["meilleurbuteurs1"]
-                                                  ["points"]
-                                              .toString()),
-                                        ],
-                                      )
-                                    ],
-                                  ),
+                                  Text(
+                                      dataMatch["meilleurbuteurs1"]["nom"]
+                                          .toString(),
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 15,
+                                      )),
+                                  Text(
+                                      " (${dataMatch["meilleurbuteurs1"]["points"].toString()})",
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold)),
                                   SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.1),
-                                  Column(
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Text(dataMatch["meilleurbuteurs2"]
-                                              ["nom"]),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Text(dataMatch["meilleurbuteurs2"]
-                                                  ["points"]
-                                              .toString()),
-                                        ],
-                                      )
-                                    ],
-                                  )
+                                    width: 2,
+                                  ),
+                                  Text("-",
+                                      style: TextStyle(
+                                          color: AppColors.blue,
+                                          fontSize: 25,
+                                          fontWeight: FontWeight.bold)),
+                                  SizedBox(
+                                    width: 2,
+                                  ),
+                                  Text(
+                                      dataMatch["meilleurbuteurs2"]["nom"]
+                                          .toString(),
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 15,
+                                      )),
+                                  Text(
+                                      " (${dataMatch["meilleurbuteurs2"]["points"].toString()})",
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold)),
                                 ],
                               ),
 

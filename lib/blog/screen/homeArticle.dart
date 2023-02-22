@@ -46,7 +46,11 @@ class _HomeArticleState extends State<HomeArticle> {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     CollectionReference products = firestore.collection('Article');
     return Scaffold(
-      appBar: AppBar(backgroundColor: AppColors.primary),
+      appBar: AppBar(
+        backgroundColor: AppColors.primary,
+        title: Text("Blog"),
+        centerTitle: true,
+      ),
       drawer: NavBar(role),
       //backgroundColor: Colors.blue,
       body: SafeArea(
@@ -67,7 +71,7 @@ class _HomeArticleState extends State<HomeArticle> {
                     ),
                     StreamBuilder<QuerySnapshot>(
                         stream: products
-                            .orderBy('date', descending: false)
+                            .orderBy('date', descending: true)
                             .snapshots(),
                         builder: (_, snapshot) {
                           if (snapshot.hasData) {

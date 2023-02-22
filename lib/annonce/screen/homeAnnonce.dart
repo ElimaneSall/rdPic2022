@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
+import 'package:external_path/external_path.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -36,6 +37,8 @@ class _HomeAnnonceState extends State<HomeAnnonce> {
       .snapshots();
 
   String role = "user";
+
+  CancelToken cancelToken = CancelToken();
   getRole() {
     FirebaseFirestore.instance
         .collection('Users')
@@ -69,8 +72,9 @@ class _HomeAnnonceState extends State<HomeAnnonce> {
     super.initState();
   }
 
-  Future<List<Directory>?> _getExternalStoragePath() {
-    return p.getExternalStorageDirectories(type: p.StorageDirectory.documents);
+  Future<String> _getExternalStoragePath() async {
+    return await ExternalPath.getExternalStoragePublicDirectory(
+        ExternalPath.DIRECTORY_DOWNLOADS);
   }
 
   Future _downloadAndSaveFileToStorage(
@@ -78,10 +82,10 @@ class _HomeAnnonceState extends State<HomeAnnonce> {
     try {
       final dirList = await _getExternalStoragePath();
 
-      final path = dirList![0].path;
-      final file = File('$path/$fileName');
+      final path = dirList + "/$fileName";
+
       // final Directory _documentDir = Directory('/storage/emulated/0/Download/$name');
-      await dio.download(urlPath, file.path, onReceiveProgress: (rec, total) {
+      await dio.download(urlPath, path, onReceiveProgress: (rec, total) {
         setState(() {
           _isLoading = true;
           progress = ((rec / total) * 100).toStringAsFixed(0) + "%";
@@ -97,7 +101,7 @@ class _HomeAnnonceState extends State<HomeAnnonce> {
           }
         });
       });
-      _fileFullPath = file.path;
+      _fileFullPath = path;
       if (_fileFullPath != "") {
         showDialog(
             context: context,
@@ -144,7 +148,9 @@ class _HomeAnnonceState extends State<HomeAnnonce> {
                 }
 
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Text("Loading");
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
                 }
 
                 return SingleChildScrollView(
@@ -288,32 +294,42 @@ class _HomeAnnonceState extends State<HomeAnnonce> {
                                     annonce: e['annonce'],
                                     // likes: e['likes']
                                   ),
-                                  // Column(
-                                  //   children: [
-                                  //     ElevatedButton(
-                                  //       child: Text(
-                                  //         "Télécharger",
-                                  //         style: TextStyle(
-                                  //             color: Colors.black,
-                                  //             fontSize: 15),
-                                  //       ),
-                                  //       onPressed: () async {
-                                  //         print("tappp");
+                                  Column(
+                                    children: [
+                                      ElevatedButton(
+                                        child: Text(
+                                          "Télécharger",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 15),
+                                        ),
+                                        onPressed: () async {
+                                          print("tappp");
+                                          final snackBar = SnackBar(
+                                              content: const Text(
+                                                  'Téléchargement en cours!'),
+                                              action: SnackBarAction(
+                                                label: 'Annuler',
+                                                onPressed: () {
+                                                  // Some code to undo the change.
+                                                  cancelToken.cancel();
+                                                },
+                                              ));
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(snackBar);
+                                          _downloadAndSaveFileToStorage(
+                                              context,
+                                              e["urlFile"],
+                                              "${e["titre"]}.${e["extension"]}");
 
-                                  //         _downloadAndSaveFileToStorage(
-                                  //             context,
-                                  //             e["urlFile"],
-                                  //             "${e["titre"]}.pdf");
-
-                                  //         setState(() {
-                                  //           _isDownloading = !_isDownloading;
-                                  //         });
-                                  //       },
-                                  //     ),
-                                  //     //  builUploadStatus(task!)
-                                  //   ],
-                                  // )
-                                  Container()))
+                                          setState(() {
+                                            _isDownloading = !_isDownloading;
+                                          });
+                                        },
+                                      ),
+                                      //  builUploadStatus(task!)
+                                    ],
+                                  )))
                               .toList());
                     } else {
                       return Center(

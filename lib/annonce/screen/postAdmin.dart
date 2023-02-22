@@ -3,15 +3,18 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:tuto_firebase/notifications/model/notifications.dart';
 import 'package:tuto_firebase/utils/color/color.dart';
 import 'package:tuto_firebase/widget/reusableTextField.dart';
 import 'package:path/path.dart' as Path;
 
+import '../../services/notification.dart';
 import '../../utils/method.dart';
 
 class PostAdmin extends StatefulWidget {
@@ -32,18 +35,22 @@ class _PostAdminState extends State<PostAdmin> {
   List<String> postes = [
     'Commission Pédagogique',
     'Commission Culturelle',
-    'Sécrétariat général'
+    'Sécrétariat général',
   ];
   String? selectedPoste = "Commission Pédagogique";
 
   List<String> status = ['urgent', 'moins urgent', 'facultatif'];
   String? selectedStatus = "urgent";
-
   List userId = [];
+  List userToken = [];
+
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
   void getUserId() {
     FirebaseFirestore.instance.collection('Users').get().then(
       (querySnapshot) {
         querySnapshot.docs.forEach((result) {
+          userToken.add(result.data()["token"]);
           userId.add(result.id);
         });
         print("Liste 2 des user ID$userId");
@@ -54,9 +61,54 @@ class _PostAdminState extends State<PostAdmin> {
 
   @override
   void initState() {
+    super.initState();
     getUserId();
     print("Liste des ID$userId");
-    super.initState();
+    initInfo();
+  }
+
+  initInfo() {
+    var androidInitialize =
+        const AndroidInitializationSettings("@mipmap/ic_launcher");
+
+    var IOSInitialize = IOSInitializationSettings();
+    var initializationsSettings =
+        InitializationSettings(android: androidInitialize, iOS: IOSInitialize);
+
+    flutterLocalNotificationsPlugin.initialize(
+      initializationsSettings,
+      onSelectNotification: (String? payload) async {
+        try {
+          if (payload != null && payload.isNotEmpty) {
+          } else {}
+        } catch (e) {
+          print(e.toString());
+        }
+        return;
+      },
+    );
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      print("----------------------onMessage-------------------");
+      print(
+          "onMessage:${message.notification!.title}/${message.notification!.body}");
+      BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(
+          message.notification!.body.toString(),
+          htmlFormatBigText: true,
+          contentTitle: message.notification!.title.toString(),
+          htmlFormatContentTitle: true);
+      AndroidNotificationDetails androidNotificationDetails =
+          AndroidNotificationDetails("dbfood", "dbfood",
+              importance: Importance.max,
+              styleInformation: bigTextStyleInformation,
+              priority: Priority.max,
+              playSound: true);
+      NotificationDetails notificationDetails =
+          NotificationDetails(android: androidNotificationDetails);
+      await flutterLocalNotificationsPlugin.show(0, message.notification!.title,
+          message.notification!.body, notificationDetails,
+          payload: message.data["title"]);
+    });
   }
 
   UploadTask? task;
@@ -162,17 +214,21 @@ class _PostAdminState extends State<PostAdmin> {
                       'poste': selectedPoste,
                       'status': selectedStatus,
                       "idUser": FirebaseAuth.instance.currentUser!.uid,
-                      "urlFile": urlFile,
+                      "urlFile": urlFile == null ? "" : urlFile,
                       'commentaires': [],
                       'likes': 0,
                       'unlikes': 0,
-                    }).then((value) async {
-                      await userId.map((e) =>
-                          CustomNotification.addNotification(
-                              "a", "Polytech Info", "Un nouveau message", e));
-                      print("Envoie de toutes les notifications");
-                      Navigator.pop(context);
                     });
+                    var i = 0;
+                    for (var e in userToken) {
+                      sendPushMessage(e!, " ${annoncecontroller.value.text} ",
+                          "BDE: ${titrecontroller.value.text} ");
+                      addNotif(titrecontroller.value.text,
+                          annoncecontroller.value.text, userId[i]);
+                      i++;
+                    }
+                    i = 0;
+                    Navigator.pop(context);
                   })
                 ]))));
   }

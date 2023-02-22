@@ -29,8 +29,14 @@ class _DetailMatchTennisEnCoursState extends State<DetailMatchTennisEnCours> {
   TextEditingController scorecontroller2 = TextEditingController();
   final Stream<QuerySnapshot> _articleStream =
       FirebaseFirestore.instance.collection('Tennis').snapshots();
-  List<String> _set = ['Set 1', "Set 2", 'Set 3', 'Set 4'];
-  String? selectedSet = "Set 1";
+  List<String> _set = [
+    'Premier set',
+    "Deuxième set",
+    'Troisième set',
+    'Quatrième set',
+    "Cinquième set"
+  ];
+  String? selectedSet = "Premier set";
 
   @override
   Widget build(BuildContext context) {
@@ -66,13 +72,13 @@ class _DetailMatchTennisEnCoursState extends State<DetailMatchTennisEnCours> {
                               Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Image.asset("equipe1.png",
+                                    Image.asset("equipe2.jpg",
                                         width: 100, height: 40),
                                     SizedBox(
                                         width:
                                             MediaQuery.of(context).size.width *
                                                 0.4),
-                                    Image.asset("equipe2.png",
+                                    Image.asset("equipe1.jpg",
                                         width: 100, height: 40),
                                   ]),
                               Row(

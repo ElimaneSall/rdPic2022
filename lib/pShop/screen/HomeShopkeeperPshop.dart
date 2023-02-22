@@ -106,7 +106,7 @@ class _HomeShopkeeperPshopState extends State<HomeShopkeeperPshop> {
                   ),
                   StreamBuilder<QuerySnapshot>(
                       stream:
-                          xoss.orderBy('date', descending: false).snapshots(),
+                          xoss.orderBy('date', descending: true).snapshots(),
                       builder: (_, snapshot) {
                         if (snapshot.hasData) {
                           return Column(

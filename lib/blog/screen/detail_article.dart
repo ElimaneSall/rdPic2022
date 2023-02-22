@@ -2,11 +2,11 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
+import 'package:external_path/external_path.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:tuto_firebase/blog/model/article.dart';
-import 'package:tuto_firebase/blog/screen/lirePDF.dart';
 import 'package:tuto_firebase/utils/color/color.dart';
 import 'package:tuto_firebase/utils/method.dart';
 import 'package:path_provider/path_provider.dart' as p;
@@ -51,6 +51,7 @@ class _DetailArticleState extends State<DetailArticle> {
   bool _isDownloading = false;
   String downloadMessage = "Cliquer pour telecharger";
   double _pourcentage = 0.0;
+  CancelToken cancelToken = CancelToken();
 
   late double progression;
   @override
@@ -59,8 +60,9 @@ class _DetailArticleState extends State<DetailArticle> {
     super.initState();
   }
 
-  Future<List<Directory>?> _getExternalStoragePath() {
-    return p.getExternalStorageDirectories(type: p.StorageDirectory.documents);
+  Future<String> _getExternalStoragePath() async {
+    return await ExternalPath.getExternalStoragePublicDirectory(
+        ExternalPath.DIRECTORY_DOWNLOADS);
   }
 
   Future _downloadAndSaveFileToStorage(
@@ -68,10 +70,10 @@ class _DetailArticleState extends State<DetailArticle> {
     try {
       final dirList = await _getExternalStoragePath();
 
-      final path = dirList![0].path;
-      final file = File('$path/$fileName');
+      final path = dirList + "/$fileName";
+      //final file = File('$path/$fileName');
       // final Directory _documentDir = Directory('/storage/emulated/0/Download/$name');
-      await dio.download(urlPath, file.path, onReceiveProgress: (rec, total) {
+      await dio.download(urlPath, path, onReceiveProgress: (rec, total) {
         setState(() {
           _isLoading = true;
           progress = ((rec / total) * 100).toStringAsFixed(0) + "%";
@@ -86,8 +88,8 @@ class _DetailArticleState extends State<DetailArticle> {
             downloadMessage = "Terminer...${pourcentage.floor()} %";
           }
         });
-      });
-      _fileFullPath = file.path;
+      }, cancelToken: cancelToken);
+      _fileFullPath = path;
       if (_fileFullPath != "") {
         showDialog(
             context: context,
@@ -109,6 +111,8 @@ class _DetailArticleState extends State<DetailArticle> {
 
   @override
   Widget build(BuildContext context) {
+    CollectionReference article =
+        FirebaseFirestore.instance.collection('Article');
     return Scaffold(
         appBar: AppBar(
           title: Center(child: Text("Détail de l'article")),
@@ -116,10 +120,7 @@ class _DetailArticleState extends State<DetailArticle> {
         ),
         body: SingleChildScrollView(
             child: FutureBuilder<DocumentSnapshot>(
-                future: FirebaseFirestore.instance
-                    .collection('Article')
-                    .doc(_id)
-                    .get(),
+                future: article.doc(_id).get(),
                 builder: (BuildContext context,
                     AsyncSnapshot<DocumentSnapshot> snapshot) {
                   if (snapshot.hasError) {
@@ -143,7 +144,7 @@ class _DetailArticleState extends State<DetailArticle> {
                             dataEvenement["image"],
                             width: MediaQuery.of(context).size.width,
                             height: MediaQuery.of(context).size.height / 2,
-                            fit: BoxFit.cover,
+                            fit: BoxFit.fill,
                           ),
                           Column(
                             children: [
@@ -210,6 +211,11 @@ class _DetailArticleState extends State<DetailArticle> {
                                               onTap: () {
                                                 addLikes(_id,
                                                     dataEvenement["likes"]);
+                                                setState(() {
+                                                  article = FirebaseFirestore
+                                                      .instance
+                                                      .collection("Article");
+                                                });
                                               },
                                               child: Icon(Icons.favorite)),
                                           // SizedBox(height: 10,),
@@ -227,6 +233,11 @@ class _DetailArticleState extends State<DetailArticle> {
                                           onTap: () {
                                             commentOpenDiallog(context,
                                                 controller, _id, "Article");
+                                            setState(() {
+                                              article = FirebaseFirestore
+                                                  .instance
+                                                  .collection("Article");
+                                            });
                                           }),
                                       GestureDetector(
                                         child: Text(
@@ -242,21 +253,22 @@ class _DetailArticleState extends State<DetailArticle> {
                                               context,
                                               dataEvenement["urlPDF"],
                                               "${dataEvenement["titre"]}.pdf");
-                                          // showDialog(
-                                          //     context: context,
-                                          //     builder: (context) => AlertDialog(
-                                          //         title: Text("Progression"),
-                                          //         content: Padding(
-                                          //             padding:
-                                          //                 EdgeInsets.all(10),
-                                          //             child: Column(
-                                          //               children: [
-                                          //                 Text(downloadMessage),
-                                          //                 LinearProgressIndicator(
-                                          //                     value:
-                                          //                         _pourcentage),
-                                          //               ],
-                                          //             ))));
+                                          final snackBar = SnackBar(
+                                            content: const Text(
+                                                'Téléchargement en cours!'),
+                                            action: SnackBarAction(
+                                              label: 'Annuler',
+                                              onPressed: () {
+                                                // Some code to undo the change.
+                                                cancelToken.cancel();
+                                              },
+                                            ),
+                                          );
+
+                                          // Find the ScaffoldMessenger in the widget tree
+                                          // and use it to show a SnackBar.
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(snackBar);
 
                                           setState(() {
                                             _isDownloading = !_isDownloading;
@@ -415,9 +427,11 @@ class _DetailArticleState extends State<DetailArticle> {
                           )
                         ]);
                   }
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
+                  return Container(
+                      alignment: Alignment.center,
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ));
                 })));
   }
 }
