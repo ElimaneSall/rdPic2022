@@ -1,21 +1,26 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
+import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:tuto_firebase/annonce/model/evenement.dart';
-import 'package:tuto_firebase/annonce/sideBar/sideBar.dart';
-import 'package:tuto_firebase/annonce/widget/evenementCard.dart';
-import 'package:tuto_firebase/utils/color/color.dart';
+import 'package:flutter/material.dart';
+import 'package:tuto_firebase/MessageAuBureau/model/MessageAuBureauModel.dart';
+import 'package:tuto_firebase/MessageAuBureau/widget/MessageAuBureauCard.dart';
 
-class EvenementList extends StatefulWidget {
-  const EvenementList({Key? key}) : super(key: key);
+import '../../MessageAuBureau/widget/DetailMessage.dart';
+import '../../utils/color/color.dart';
+import '../../utils/method.dart';
+import '../sideBar/sideBar.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/date_symbol_data_local.dart';
+
+class CahierDoleance extends StatefulWidget {
+  const CahierDoleance({super.key});
 
   @override
-  State<EvenementList> createState() => _EvenementListState();
+  State<CahierDoleance> createState() => _CahierDoleanceState();
 }
 
-class _EvenementListState extends State<EvenementList> {
+class _CahierDoleanceState extends State<CahierDoleance> {
   String role = "user";
   getRole() {
     FirebaseFirestore.instance
@@ -34,16 +39,16 @@ class _EvenementListState extends State<EvenementList> {
   void initState() {
     // TODO: implement initState
     getRole();
-    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    initializeDateFormatting("fr");
     FirebaseFirestore firestore = FirebaseFirestore.instance;
-    CollectionReference evenements = firestore.collection('Evenement');
+    CollectionReference evenements = firestore.collection('MessageAuBureau');
     return Scaffold(
         appBar: AppBar(
-          title: Center(child: Text("Evénement")),
+          title: Center(child: Text("Cahier des doléances")),
           backgroundColor: AppColors.primary,
         ),
         drawer: NavBar(role),
@@ -55,7 +60,7 @@ class _EvenementListState extends State<EvenementList> {
           child: Column(
             children: [
               Text(
-                "Liste des evénements récents",
+                "Liste des doléances récents",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 24,
@@ -70,26 +75,19 @@ class _EvenementListState extends State<EvenementList> {
                       evenements.orderBy('date', descending: true).snapshots(),
                   builder: (_, snapshot) {
                     if (snapshot.hasData) {
-                      return Column(
-                          children: (snapshot.data! as QuerySnapshot)
-                              .docs
-                              .map((e) => EvenementCard(Evenement(
-                                    commentaires: e['commentaires'],
-                                    likes: e['likes'],
-                                    idUser: e["idUser"],
-                                    image: e['image'],
-                                    titre: e['titre'],
-                                    poste: e['poste'],
-                                    date: e['date'],
-                                    status: e['status'],
-                                    auteur: e["auteur"],
-                                    description: e["description"],
-                                    // description: e['description'],
-                                    // auteur: e['auteur'],
+                      return SingleChildScrollView(
+                          // color: AppColors.background,
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: (snapshot.data! as QuerySnapshot)
+                                  .docs
+                                  .map((e) {
+                                return MessageAuBureauCard(MessageAuBureauModel(
                                     id: e.id,
-                                    // likes: e['likes']
-                                  )))
-                              .toList());
+                                    message: e["message"],
+                                    reponses: e["reponses"],
+                                    date: e["date"]));
+                              }).toList()));
                     } else {
                       return Center(
                         child: CircularProgressIndicator(),

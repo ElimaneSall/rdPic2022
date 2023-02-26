@@ -5,16 +5,15 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:tuto_firebase/homeApp.dart';
 import 'package:tuto_firebase/interclasse/basket/screen/homeBasket.dart';
+import 'package:tuto_firebase/interclasse/football/screen/homeFootball.dart';
 import 'package:tuto_firebase/interclasse/genieEnHerbe/screen/homeGenieEnHerbe.dart';
 import 'package:tuto_firebase/interclasse/handball/screen/homeHandball.dart';
-import 'package:tuto_firebase/interclasse/screen/detail_match.dart';
-import 'package:tuto_firebase/interclasse/screen/homeFootball.dart';
-import 'package:tuto_firebase/interclasse/sidebar/nav_drawer_interclasse.dart';
-import 'package:tuto_firebase/interclasse/model/match.dart';
 import 'package:tuto_firebase/interclasse/tennis/screen/homeHandball.dart';
 import 'package:tuto_firebase/interclasse/volleyball/screen/homeVolley.dart';
 import 'package:tuto_firebase/interclasse/widget/match_card.dart';
 import 'package:tuto_firebase/utils/color/color.dart';
+
+import '../sidebar/nav_drawer_interclasse.dart';
 
 class HomeInterClasse extends StatefulWidget {
   const HomeInterClasse({Key? key}) : super(key: key);

@@ -24,6 +24,7 @@ class _SignUpState extends State<SignUp> {
   TextEditingController _emailTextController = TextEditingController();
   TextEditingController _passwordTextController = TextEditingController();
   TextEditingController _password2TextController = TextEditingController();
+  TextEditingController _classeTextController = TextEditingController();
 
   String? mtoken;
   void _requestPermission() async {
@@ -54,18 +55,18 @@ class _SignUpState extends State<SignUp> {
         mtoken = token;
         print("My token is $mtoken");
       });
-      saveToken(token!);
+      // saveToken(token!);
     });
   }
 
-  void saveToken(String token) async {
-    await FirebaseFirestore.instance
-        .collection("UserToken")
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .set({
-      "token": token,
-    });
-  }
+  // void saveToken(String token) async {
+  //   await FirebaseFirestore.instance
+  //       .collection("UserToken")
+  //       .doc(FirebaseAuth.instance.currentUser!.uid)
+  //       .set({
+  //     "token": token,
+  //   });
+  // }
 
   @override
   void initState() {
@@ -128,6 +129,9 @@ class _SignUpState extends State<SignUp> {
                           false,
                           _phoneTextController,
                           Colors.white),
+                      SizedBox(
+                        height: 20,
+                      ),
                       reusableTextField(
                           "Entrer votre mot de passe",
                           Icons.person_outline,
@@ -155,42 +159,73 @@ class _SignUpState extends State<SignUp> {
                       SizedBox(
                         height: 20,
                       ),
-                      signInSignUpButton("S'inscrire", context, false, () async {
-                        FirebaseAuth.instance
-                            .createUserWithEmailAndPassword(
-                                email: _emailTextController.text,
-                                password: _passwordTextController.text)
-                            .then((value) async{
-                          print("SaveToken");
-                          saveToken(mtoken!);
-                             SharedPreferences prefs = await SharedPreferences.getInstance();
-prefs.setString('email', _emailTextController.value.text);
-prefs.setString('password', _passwordTextController.value.text);
-                          FirebaseFirestore.instance
-                              .collection('Users')
-                              .doc(FirebaseAuth.instance.currentUser!.uid
-                                  .toString())
-                              .set({
-                            'email': _emailTextController.value.text,
-                            'promo': _promoTextController.value.text,
-                            'nom': _nameTextController.value.text,
-                            "prenom": _userNameTextController.value.text,
-                            "telephone": _phoneTextController.value.text,
-                            'admin': false,
-                            "role": "user",
-                            "urlProfile": "",
-                            "token": mtoken,
-                            "id": FirebaseAuth.instance.currentUser!.uid
-                                .toString()
+                      reusableTextField(
+                          "Entrer votre classe ",
+                          Icons.person_outline,
+                          false,
+                          _classeTextController,
+                          Colors.white),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      signInSignUpButton("S'inscrire", context, false,
+                          () async {
+                        print("MailBi");
+                        print(_emailTextController.value.text.split("@")[1]);
+                        if (_emailTextController.value.text.split("@")[1] ==
+                            "ept.sn") {
+                          FirebaseAuth.instance
+                              .createUserWithEmailAndPassword(
+                                  email: _emailTextController.text,
+                                  password: _passwordTextController.text)
+                              .then((value) async {
+                            print("SaveToken");
+                            //  saveToken(mtoken!);
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            prefs.setString(
+                                'email', _emailTextController.value.text);
+                            prefs.setString(
+                                'password', _passwordTextController.value.text);
+                            FirebaseFirestore.instance
+                                .collection('Users')
+                                .doc(FirebaseAuth.instance.currentUser!.uid
+                                    .toString())
+                                .set({
+                              'email': _emailTextController.value.text,
+                              'promo': _promoTextController.value.text,
+                              'nom': _nameTextController.value.text,
+                              "prenom": _userNameTextController.value.text,
+                              "telephone": _phoneTextController.value.text,
+                              'admin': false,
+                              "role": "user",
+                              "classe": _classeTextController.value.text,
+                              "urlProfile":
+                                  "https://w7.pngwing.com/pngs/798/436/png-transparent-computer-icons-user-profile-avatar-profile-heroes-black-profile-thumbnail.png",
+                              "token": mtoken,
+                              "id": FirebaseAuth.instance.currentUser!.uid
+                                  .toString()
+                            });
+                            print("account creating success");
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => HomeApp()));
+                          }).onError((error, stackTrace) {
+                            print("Error" + error.toString());
                           });
-                          print("account creating success");
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => HomeApp()));
-                        }).onError((error, stackTrace) {
-                          print("Error" + error.toString());
-                        });
+                        } else {
+                          final snackBar = SnackBar(
+                              content: const Text("Le mail n'est pas valide"),
+                              action: SnackBarAction(
+                                label: 'Réessayer',
+                                onPressed: () {
+                                  // Some code to undo the change.
+                                },
+                              ));
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                          print("Le mail n'est pas valide");
+                        }
                       }),
                     ])))));
   }

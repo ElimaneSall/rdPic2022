@@ -42,14 +42,12 @@ class AnnonceCard extends StatelessWidget {
                         "Annonce",
                         "Message de suppression",
                         "Voulez vous supprimer ce message");
-                    Navigator.pop(context);
+                    // Navigator.pop(context);
                   }
-                  print("**false");
                 },
-                child: Expanded(
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
                       Container(
                           decoration: BoxDecoration(
                               color: AppColors.lightGray,
@@ -296,7 +294,7 @@ class AnnonceCard extends StatelessWidget {
                               ),
                             ],
                           )),
-                    ])))),
+                    ]))),
       ],
     ));
   }

@@ -28,9 +28,21 @@ class _PostAdminEvenementState extends State<PostAdminEvenement> {
   final descriptioncontroller = TextEditingController();
   final auteurcontroller = TextEditingController();
   final datecontroller = TextEditingController();
-  final postecontroller = TextEditingController();
-  final statuscontroller = TextEditingController();
 
+  final statuscontroller = TextEditingController();
+  List<String> postes = [
+    'Présidence',
+    'Sécrétariat général',
+    'Commission Pédagogique',
+    'Commission Sociale',
+    'Commission Finance',
+    'Commission Relation Extérieure',
+    'Commission Restauration',
+    'Commission Culturelle',
+    'Commission Sport',
+    'Trésorie Générale',
+  ];
+  String? selectedPoste = 'Sécrétariat général';
   DateTime selectedDate = DateTime.now();
   List<String> status = ['urgent', 'Moins Urgent', 'Facultatif'];
   String? selectedStatus = "urgent";
@@ -38,13 +50,14 @@ class _PostAdminEvenementState extends State<PostAdminEvenement> {
   FirebaseStorage firebaseStorage = FirebaseStorage.instance;
   bool loading = false;
   String url = "";
+  String filename = "";
   Future<void> uploadImage() async {
     final XFile? pickedImage =
         await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedImage == null) {
       return null;
     }
-    String filename = pickedImage.name;
+    filename = pickedImage.name;
     File imageFile = File(pickedImage.path);
 
     Reference reference = firebaseStorage.ref(filename);
@@ -171,8 +184,27 @@ class _PostAdminEvenementState extends State<PostAdminEvenement> {
                   SizedBox(
                     height: 15,
                   ),
-                  reusableTextField(
-                      "Poste", Icons.add, false, postecontroller, Colors.blue),
+                  ListTile(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4),
+                        side: BorderSide(color: Colors.white)),
+                    title: Row(children: [
+                      Text('Poste:'),
+                      SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.7,
+                          child: DropdownButton(
+                            value: selectedPoste,
+                            items: postes
+                                .map((item) => DropdownMenuItem<String>(
+                                      child: Text(item),
+                                      value: item,
+                                    ))
+                                .toList(),
+                            onChanged: (item) =>
+                                setState(() => selectedPoste = item as String?),
+                          ))
+                    ]),
+                  ),
                   SizedBox(
                     height: 15,
                   ),
@@ -258,7 +290,9 @@ class _PostAdminEvenementState extends State<PostAdminEvenement> {
                         'description': descriptioncontroller.value.text,
                         'date': selectedDate,
                         "auteur": "",
-                        'poste': postecontroller.value.text,
+                        'extension':
+                            filename == "" ? "" : filename.split(".")[1],
+                        'poste': selectedPoste,
                         'status': statuscontroller.value.text,
                         "image": url,
                         "idUser": FirebaseAuth.instance.currentUser!.uid,

@@ -238,7 +238,7 @@ class _HomeAnnonceState extends State<HomeAnnonce> {
                                         );
                                       },
                                       child: Text(
-                                        "Evenement",
+                                        "Evénement",
                                         style: TextStyle(
                                             fontSize: 20, color: Colors.white),
                                       )))
@@ -249,7 +249,7 @@ class _HomeAnnonceState extends State<HomeAnnonce> {
                             height: 5,
                           ),
                           Text(
-                            "Les annonces recentes",
+                            "Les annonces récentes",
                             style: TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.bold),
                           ),

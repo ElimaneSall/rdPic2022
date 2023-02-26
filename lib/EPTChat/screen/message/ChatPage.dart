@@ -78,7 +78,7 @@ class _ChatPageState extends State<ChatPage> {
       //     // title: Text("${user2["prenom"]} ${user2["nom"]}"),
       //     ),
       backgroundColor: Colors.indigo,
-      appBar: AppBar(title: Text(_id)),
+      // appBar: AppBar(title: Text(_id)),
       body: SafeArea(
         child: Stack(
           children: [
@@ -114,13 +114,30 @@ class _ChatPageState extends State<ChatPage> {
                   color: Colors.white,
                 ),
               ),
-              Text(
-                "${user2["prenom"]} ${user2["nom"]}",
-                style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
-              ),
+              GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => Container()),
+                    );
+                  },
+                  child: Row(children: [
+                    CircleAvatar(
+                        radius: 20,
+                        backgroundImage: NetworkImage(
+                          user2["urlProfile"],
+                        )),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      "${user2["prenom"]} ${user2["nom"]}",
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                    )
+                  ])),
             ],
           ),
         ],
@@ -304,12 +321,15 @@ class _ChatPageState extends State<ChatPage> {
                           });
                           messagecontroller = TextEditingController();
                         }
+                        messagecontroller.clear();
+                        FocusScope.of(context).unfocus();
                         setState(() {
                           chat = FirebaseFirestore.instance
                               .collection("Chat")
                               .doc(_idDoc)
                               .get();
                         });
+                        initState();
                       } catch (e) {
                         print(e.toString());
                       }

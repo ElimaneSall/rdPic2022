@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:tuto_firebase/interclasse/handball/screen/detail_match.dart';
 import 'package:tuto_firebase/interclasse/home/homeInterClasse.dart';
-import 'package:tuto_firebase/interclasse/model/match.dart';
+import 'package:tuto_firebase/interclasse/football/model/match.dart';
 import 'package:intl/intl.dart';
 import 'package:tuto_firebase/interclasse/tennis/screen/DetailMatchTennisEnCours.dart';
 import 'package:tuto_firebase/interclasse/tennis/screen/createMatch.dart';
@@ -19,11 +19,11 @@ class adminTennis extends StatefulWidget {
 class _adminTennisState extends State<adminTennis> {
   @override
   Widget build(BuildContext context) {
-    Stream<QuerySnapshot> products =
-        FirebaseFirestore.instance.collection('Tennis').where(
-      "idEquipe1",
-      whereIn: ["47"],
-    ).snapshots();
+    Stream<QuerySnapshot> products = FirebaseFirestore.instance
+        .collection('Tennis')
+        .where("date",
+            isGreaterThanOrEqualTo: DateTime.now().subtract(Duration(days: 1)))
+        .snapshots();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.primary,
@@ -70,7 +70,8 @@ class _adminTennisState extends State<adminTennis> {
                                                 DetailMatchTennisEnCours(
                                                   e.id,
                                                 )))
-                                  }))
+                                  },
+                              "Tennis"))
                           .toList());
                 } else {
                   return Center(

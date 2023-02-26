@@ -23,16 +23,13 @@ class _DetailMatchGenieEnHerbeState extends State<DetailMatchGenieEnHerbe> {
     this._id,
   );
   TextEditingController controller = TextEditingController();
-  final Stream<QuerySnapshot> _articleStream =
-      FirebaseFirestore.instance.collection('GenieEnHerbe').snapshots();
 
   @override
   Widget build(BuildContext context) {
+    DocumentReference _match =
+        FirebaseFirestore.instance.collection('GenieEnHerbe').doc(_id);
     return FutureBuilder<DocumentSnapshot>(
-        future: FirebaseFirestore.instance
-            .collection('GenieEnHerbe')
-            .doc(_id)
-            .get(),
+        future: _match.get(),
         builder:
             (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
           if (snapshot.hasError) {
@@ -51,7 +48,7 @@ class _DetailMatchGenieEnHerbeState extends State<DetailMatchGenieEnHerbe> {
             return Scaffold(
                 appBar: AppBar(
                     title: Center(
-                        child: Text("Detail du match de Genie En Herbe")),
+                        child: Text("Détail du match de Génie En Herbe")),
                     backgroundColor: AppColors.primary),
                 body: SingleChildScrollView(
                     child: Padding(
@@ -72,20 +69,6 @@ class _DetailMatchGenieEnHerbeState extends State<DetailMatchGenieEnHerbe> {
                                     Image.asset("equipe1.jpg",
                                         width: 100, height: 40),
                                   ]),
-
-                              // Text(dataMatch["idEquipe1"],
-                              //     style: TextStyle(
-                              //         color: AppColors.blue,
-                              //         fontSize: 30,
-                              //         fontWeight: FontWeight.bold)),
-                              // SizedBox(
-                              //   height: 30,
-                              // ),
-                              // Text("Cartons",
-                              //     style: TextStyle(
-                              //       color: AppColors.blue,
-                              //       fontSize: 20,
-                              //     )),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -172,18 +155,6 @@ class _DetailMatchGenieEnHerbeState extends State<DetailMatchGenieEnHerbe> {
                                           fontWeight: FontWeight.bold)),
                                 ],
                               ),
-
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.5),
-                                  Row(
-                                    children: [],
-                                  ),
-                                ],
-                              ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -194,160 +165,57 @@ class _DetailMatchGenieEnHerbeState extends State<DetailMatchGenieEnHerbe> {
                               SizedBox(
                                 height: 10,
                               ),
-
                               Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text("Rubrique 1"),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(dataMatch["score1"].toString(),
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold)),
-                                      SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.1),
-                                      Text("-",
-                                          style: TextStyle(
-                                              color: AppColors.blue,
-                                              fontSize: 25,
-                                              fontWeight: FontWeight.bold)),
-                                      SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.1),
-                                      Text(dataMatch["score2"].toString(),
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold)),
-                                    ],
-                                  ),
+                                  for (var set in dataMatch["rubriques"])
+                                    Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(set["nomRubrique"]),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                                set["scoreRubrique1"]
+                                                    .toString(),
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 15,
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                            SizedBox(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.1),
+                                            Text("-",
+                                                style: TextStyle(
+                                                    color: AppColors.blue,
+                                                    fontSize: 25,
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                            SizedBox(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.1),
+                                            Text(
+                                                set["scoreRubrique2"]
+                                                    .toString(),
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 15,
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                          ],
+                                        )
+                                      ],
+                                    )
                                 ],
                               ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Column(
-                                children: [
-                                  Text("Rubrique 2"),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(dataMatch["score1"].toString(),
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold)),
-                                      SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.1),
-                                      Text("-",
-                                          style: TextStyle(
-                                              color: AppColors.blue,
-                                              fontSize: 25,
-                                              fontWeight: FontWeight.bold)),
-                                      SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.1),
-                                      Text(dataMatch["score2"].toString(),
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold)),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Column(
-                                children: [
-                                  Text("Rubrique 3"),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(dataMatch["score1"].toString(),
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold)),
-                                      SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.1),
-                                      Text("-",
-                                          style: TextStyle(
-                                              color: AppColors.blue,
-                                              fontSize: 25,
-                                              fontWeight: FontWeight.bold)),
-                                      SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.1),
-                                      Text(dataMatch["score2"].toString(),
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold)),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Column(
-                                children: [
-                                  Text("Rubrique 4"),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(dataMatch["score1"].toString(),
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold)),
-                                      SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.1),
-                                      Text("-",
-                                          style: TextStyle(
-                                              color: AppColors.blue,
-                                              fontSize: 25,
-                                              fontWeight: FontWeight.bold)),
-                                      SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.1),
-                                      Text(dataMatch["score2"].toString(),
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold)),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                height: 30,
-                              ),
-
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 mainAxisSize: MainAxisSize.max,
@@ -364,6 +232,13 @@ class _DetailMatchGenieEnHerbeState extends State<DetailMatchGenieEnHerbe> {
                                               onTap: () {
                                                 addLikes(_id, "GenieEnHerbe",
                                                     dataMatch["likes"]);
+                                                setState(() {
+                                                  _match = FirebaseFirestore
+                                                      .instance
+                                                      .collection(
+                                                          'GenieEnHerbe')
+                                                      .doc(_id);
+                                                });
                                               },
                                               child: Icon(
                                                 Icons.thumb_up,
@@ -383,6 +258,13 @@ class _DetailMatchGenieEnHerbeState extends State<DetailMatchGenieEnHerbe> {
                                               onTap: () {
                                                 undLike(_id, "GenieEnHerbe",
                                                     dataMatch["unlikes"]);
+                                                setState(() {
+                                                  _match = FirebaseFirestore
+                                                      .instance
+                                                      .collection(
+                                                          'GenieEnHerbe')
+                                                      .doc(_id);
+                                                });
                                               },
                                               child: Icon(
                                                 Icons.thumb_down,
@@ -577,57 +459,12 @@ class _DetailMatchGenieEnHerbeState extends State<DetailMatchGenieEnHerbe> {
                               )
                             ]))));
           }
-          return Center(
-            child: CircularProgressIndicator(),
+          return Scaffold(
+            appBar: AppBar(
+                title: Center(child: Text("Détail du match de Génie En Herbe")),
+                backgroundColor: AppColors.primary),
+            body: Center(child: CircularProgressIndicator()),
           );
         });
   }
-}
-
-Widget StatistiqueDePlus(String titre, String image, int para1, int para2) {
-  return Column(
-    children: [
-      Image.asset(
-        image,
-        width: 100,
-        height: 40,
-      ),
-      SizedBox(
-        height: 7,
-      ),
-      Text(titre,
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 15,
-          )),
-      SizedBox(
-        height: 10,
-      ),
-      Row(
-        children: [
-          Text(para1.toString(),
-              style: TextStyle(
-                  color: AppColors.blue,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold)),
-          SizedBox(
-            width: 20,
-          ),
-          Text("-",
-              style: TextStyle(
-                  color: AppColors.blue,
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold)),
-          SizedBox(
-            width: 20,
-          ),
-          Text(para2.toString(),
-              style: TextStyle(
-                  color: AppColors.blue,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold)),
-        ],
-      )
-    ],
-  );
 }

@@ -7,7 +7,7 @@ import 'package:tuto_firebase/SOSEPT/screen/HomeSOS.dart';
 import 'package:tuto_firebase/annonce/screen/homeAnnonce.dart';
 import 'package:tuto_firebase/blog/screen/homeArticle.dart';
 import 'package:tuto_firebase/interclasse/home/homeInterClasse.dart';
-import 'package:tuto_firebase/interclasse/screen/homeFootball.dart';
+import 'package:tuto_firebase/interclasse/football/screen/homeFootball.dart';
 import 'package:tuto_firebase/jeux/screen/Home.dart';
 import 'package:tuto_firebase/login/DownloadFile.dart';
 import 'package:tuto_firebase/login/GetFile.dart';
@@ -173,8 +173,8 @@ class _DrawerAppState extends State<DrawerApp> {
           onTap: () {
             FirebaseAuth.instance.signOut().then((value) async {
               SharedPreferences prefs = await SharedPreferences.getInstance();
-await prefs.remove('email');
-await prefs.remove('password');
+              await prefs.remove('email');
+              await prefs.remove('password');
               print("Deconnecter");
               Navigator.push(
                   context, MaterialPageRoute(builder: (context) => SignIn()));

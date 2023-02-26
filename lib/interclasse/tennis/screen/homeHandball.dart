@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:tuto_firebase/interclasse/sidebar/nav_drawer_Tennis.dart';
-import 'package:tuto_firebase/interclasse/model/match.dart';
+import 'package:tuto_firebase/interclasse/football/model/match.dart';
 import 'package:tuto_firebase/interclasse/tennis/screen/detail_match.dart';
 import 'package:tuto_firebase/interclasse/widget/match_card.dart';
 import 'package:tuto_firebase/utils/color/color.dart';
@@ -86,7 +86,8 @@ class _homeTennisState extends State<homeTennis> {
                                                           DetailMatchTennis(
                                                             e.id,
                                                           )))
-                                            }))
+                                            },
+                                        "Tennis"))
                                     .toList());
                           } else {
                             return Center(

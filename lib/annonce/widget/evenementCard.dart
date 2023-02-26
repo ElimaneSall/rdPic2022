@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
@@ -41,7 +42,7 @@ class EvenementCard extends StatelessWidget {
                   child: Row(
                     children: [
                       ClipRRect(
-                          borderRadius: BorderRadius.circular(30),
+                          borderRadius: BorderRadius.circular(10),
                           child: Container(
                               margin: EdgeInsets.fromLTRB(0, 5, 0, 5),
                               width: MediaQuery.of(context).size.width * 0.3,
@@ -139,15 +140,58 @@ class EvenementCard extends StatelessWidget {
                           SizedBox(
                             height: 12,
                           ),
-                          Text(
-                            evenement.auteur,
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.black,
-                              //decoration: TextDecoration.lineThrough
-                            ),
-                          ),
+                          FutureBuilder<DocumentSnapshot>(
+                              future: FirebaseFirestore.instance
+                                  .collection("Users")
+                                  .doc(evenement.idUser)
+                                  .get(),
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<DocumentSnapshot> snapshot) {
+                                if (snapshot.hasError) {
+                                  return Text("Something went wrong");
+                                }
+
+                                if (snapshot.hasData &&
+                                    !snapshot.data!.exists) {
+                                  return Text("Document does not exist");
+                                }
+
+                                if (snapshot.connectionState ==
+                                    ConnectionState.done) {
+                                  Map<String, dynamic> dataUser = snapshot.data!
+                                      .data() as Map<String, dynamic>;
+
+                                  return Container(
+                                      child: Row(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Column(
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    '${dataUser["prenom"]} ${dataUser["nom"]}',
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                      fontSize: 13,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color: Colors.black,
+                                                      //decoration: TextDecoration.lineThrough
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ],
+                                  ));
+                                }
+                                return Text("");
+                              }),
                           SizedBox(
                             height: 4,
                           ),

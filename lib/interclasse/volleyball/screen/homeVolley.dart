@@ -4,11 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:tuto_firebase/interclasse/basket/screen/detail_match.dart';
-import 'package:tuto_firebase/interclasse/screen/detail_match.dart';
-import 'package:tuto_firebase/interclasse/sidebar/nav_drawer_basketball.dart';
-import 'package:tuto_firebase/interclasse/sidebar/nav_drawer_interclasse.dart';
-import 'package:tuto_firebase/interclasse/model/match.dart';
+import 'package:tuto_firebase/interclasse/football/model/match.dart';
 import 'package:tuto_firebase/interclasse/sidebar/nav_drawer_volleyball.dart';
+import 'package:tuto_firebase/interclasse/volleyball/screen/DetailMatchVolleyEnCours.dart';
+import 'package:tuto_firebase/interclasse/volleyball/screen/detail_match.dart';
 import 'package:tuto_firebase/interclasse/widget/match_card.dart';
 import 'package:tuto_firebase/utils/color/color.dart';
 
@@ -90,10 +89,11 @@ class _HomeVolleyState extends State<HomeVolley> {
                                                   context,
                                                   MaterialPageRoute(
                                                       builder: (context) =>
-                                                          DetailMatchBasket(
+                                                          DetailMatchVolley(
                                                             e.id,
                                                           )))
-                                            }))
+                                            },
+                                        "Volley"))
                                     .toList());
                           } else {
                             return Center(

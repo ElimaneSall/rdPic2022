@@ -3,9 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:tuto_firebase/interclasse/genieEnHerbe/screen/detail_match.dart';
-import 'package:tuto_firebase/interclasse/model/match.dart';
+import 'package:tuto_firebase/interclasse/football/model/match.dart';
 import 'package:tuto_firebase/interclasse/sidebar/nav_drawer_genieEnHerbe.dart';
+import 'package:tuto_firebase/interclasse/genieEnHerbe/screen/detail_match.dart';
 import 'package:tuto_firebase/interclasse/widget/match_card.dart';
 import 'package:tuto_firebase/utils/color/color.dart';
 
@@ -45,7 +45,7 @@ class _HomeGenieEnHerbeState extends State<HomeGenieEnHerbe> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.primary,
-        title: Text("Genie En Herbe "),
+        title: Text("Génie En Herbe "),
         centerTitle: true,
       ),
       drawer: NavBarGenieEnHerbeball(role),
@@ -57,7 +57,7 @@ class _HomeGenieEnHerbeState extends State<HomeGenieEnHerbe> {
                 child: Column(
                   children: [
                     Text(
-                      "Liste des macthes de Genie En Herbe récents",
+                      "Liste des macthes de Génie En Herbe récents",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontSize: 24,
@@ -111,7 +111,8 @@ class _HomeGenieEnHerbeState extends State<HomeGenieEnHerbe> {
                                                           DetailMatchGenieEnHerbe(
                                                             e.id,
                                                           )))
-                                            }))
+                                            },
+                                        "GenieEnHerbe"))
                                     .toList());
                           } else {
                             return Center(

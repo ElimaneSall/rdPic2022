@@ -32,7 +32,7 @@ class _DetailXossUserState extends State<DetailXossUser> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: AppColors.primary,
-          title: Text("Détail"),
+          title: Text("Détail de votre xoss"),
           centerTitle: true,
         ),
         body: Center(

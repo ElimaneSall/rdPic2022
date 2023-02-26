@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
@@ -104,8 +105,12 @@ class _AddTweetState extends State<AddTweet> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: AppColors.primary,
-          title: Text('Poster un tweet'),
+          backgroundColor: Colors.white,
+          centerTitle: true,
+          title: Text(
+            'Poster un tweet',
+            style: TextStyle(color: Colors.black),
+          ),
         ),
         body: SingleChildScrollView(
             child: Padding(

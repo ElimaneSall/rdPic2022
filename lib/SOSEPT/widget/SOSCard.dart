@@ -28,11 +28,10 @@ class SOSCard extends StatelessWidget {
                       MaterialPageRoute(
                           builder: (context) => DetailSOS(sosModel.id)));
                 },
-                child: Expanded(
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
                       Container(
                           padding: EdgeInsets.all(10),
                           color: Colors.white,
@@ -220,6 +219,6 @@ class SOSCard extends StatelessWidget {
                       SizedBox(
                         height: 20,
                       )
-                    ])))));
+                    ]))));
   }
 }

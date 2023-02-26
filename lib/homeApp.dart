@@ -11,7 +11,7 @@ import 'package:tuto_firebase/blog/screen/homeArticle.dart';
 
 import 'package:tuto_firebase/drawerApp.dart';
 import 'package:tuto_firebase/interclasse/home/homeInterClasse.dart';
-import 'package:tuto_firebase/interclasse/screen/homeFootball.dart';
+import 'package:tuto_firebase/interclasse/football/screen/homeFootball.dart';
 import 'package:tuto_firebase/jeux/screen/Home.dart';
 import 'package:tuto_firebase/pShop/screen/HomeUserPshop.dart';
 import 'package:tuto_firebase/screen/homeScreen.dart';

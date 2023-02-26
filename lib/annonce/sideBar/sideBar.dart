@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tuto_firebase/annonce/screen/CahierDoleance.dart';
 import 'package:tuto_firebase/annonce/screen/annonceList.dart';
 import 'package:tuto_firebase/annonce/screen/evenementsList.dart';
 import 'package:tuto_firebase/annonce/screen/postAdmin.dart';
@@ -75,6 +76,17 @@ class NavBar extends StatelessWidget {
             );
           }),
       //  getRole();
+      if (role == "admin" || role == "mb")
+        ListTile(
+            leading: Icon(Icons.favorite),
+            title: Text("Cahier des doléances"),
+            onTap: () {
+              //final categorie = "annonce";
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => CahierDoleance()),
+              );
+            }),
       if (role == "admin" || role == "mb")
         ListTile(
             leading: Icon(Icons.favorite),

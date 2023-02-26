@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:tuto_firebase/interclasse/model/match.dart';
-import 'package:tuto_firebase/interclasse/screen/detail_match.dart';
+import 'package:tuto_firebase/interclasse/football/model/match.dart';
 import 'package:tuto_firebase/utils/color/color.dart';
 import 'package:tuto_firebase/utils/method.dart';
 
@@ -11,14 +10,15 @@ import 'package:intl/date_symbol_data_local.dart';
 class MatchCard extends StatelessWidget {
   final Matches match;
   Function function;
-  MatchCard(this.match, this.function);
+  String _collection;
+  MatchCard(this.match, this.function, this._collection);
   @override
   Widget build(BuildContext context) {
     initializeDateFormatting("fr");
     return InkWell(
         onLongPress: () {
           if (FirebaseAuth.instance.currentUser!.uid == match.idUser) {
-            openDialogDelete(context, match.id, "Annonce",
+            openDialogDelete(context, match.id, _collection,
                 "Message de suppression", "Voulez vous supprimer ce match");
           }
         },
@@ -35,7 +35,7 @@ class MatchCard extends StatelessWidget {
                 child: Row(
                   children: [
                     Container(
-                      height: 60,
+                      // height: 80,
                       decoration: BoxDecoration(
                           color: AppColors.tertiare,
                           borderRadius: BorderRadius.only(
@@ -109,7 +109,7 @@ class MatchCard extends StatelessWidget {
                           ]),
                     ),
                     Container(
-                      height: 60,
+                      //  height: 60,
                       width: MediaQuery.of(context).size.width * 0.4,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.only(

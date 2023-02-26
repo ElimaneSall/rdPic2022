@@ -23,13 +23,13 @@ class _DetailMatchState extends State<DetailMatch> {
     this._id,
   );
   TextEditingController controller = TextEditingController();
-  final Stream<QuerySnapshot> _articleStream =
-      FirebaseFirestore.instance.collection('Matchs').snapshots();
 
   @override
   Widget build(BuildContext context) {
+    DocumentReference _match =
+        FirebaseFirestore.instance.collection('Matchs').doc(_id);
     return FutureBuilder<DocumentSnapshot>(
-        future: FirebaseFirestore.instance.collection('Matchs').doc(_id).get(),
+        future: _match.get(),
         builder:
             (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
           if (snapshot.hasError) {
@@ -47,7 +47,7 @@ class _DetailMatchState extends State<DetailMatch> {
                 snapshot.data!.data() as Map<String, dynamic>;
             return Scaffold(
                 appBar: AppBar(
-                    title: Center(child: Text("Detail du match")),
+                    title: Center(child: Text("Détail du match de football")),
                     backgroundColor: AppColors.primary),
                 body: SingleChildScrollView(
                     child: Padding(
@@ -334,8 +334,14 @@ class _DetailMatchState extends State<DetailMatch> {
                                         children: [
                                           GestureDetector(
                                               onTap: () {
-                                                addLikes(_id, "Evenement",
+                                                addLikes(_id, "Matchs",
                                                     dataMatch["likes"]);
+                                                setState(() {
+                                                  _match = FirebaseFirestore
+                                                      .instance
+                                                      .collection('Matchs')
+                                                      .doc(_id);
+                                                });
                                               },
                                               child: Icon(
                                                 Icons.thumb_up,
@@ -353,8 +359,14 @@ class _DetailMatchState extends State<DetailMatch> {
 
                                           GestureDetector(
                                               onTap: () {
-                                                undLike(_id, "Evenement",
+                                                undLike(_id, "Matchs",
                                                     dataMatch["unlikes"]);
+                                                setState(() {
+                                                  _match = FirebaseFirestore
+                                                      .instance
+                                                      .collection('Matchs')
+                                                      .doc(_id);
+                                                });
                                               },
                                               child: Icon(
                                                 Icons.thumb_down,
@@ -380,11 +392,14 @@ class _DetailMatchState extends State<DetailMatch> {
                                                     fontSize: 15),
                                               ),
                                               onTap: () {
-                                                commentOpenDiallog(
-                                                    context,
-                                                    controller,
-                                                    _id,
-                                                    "Evenement");
+                                                commentOpenDiallog(context,
+                                                    controller, _id, "Matchs");
+                                                setState(() {
+                                                  _match = FirebaseFirestore
+                                                      .instance
+                                                      .collection('Matchs')
+                                                      .doc(_id);
+                                                });
                                               }),
                                           SizedBox(
                                             width: MediaQuery.of(context)
@@ -549,8 +564,11 @@ class _DetailMatchState extends State<DetailMatch> {
                               )
                             ]))));
           }
-          return Center(
-            child: CircularProgressIndicator(),
+          return Scaffold(
+            appBar: AppBar(
+                title: Center(child: Text("Détail du match de football")),
+                backgroundColor: AppColors.primary),
+            body: Center(child: CircularProgressIndicator()),
           );
         });
   }

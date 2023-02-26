@@ -53,9 +53,8 @@ class _HomeChatState extends State<HomeChat> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(FirebaseAuth.instance.currentUser!.uid),
           Text(
-            'EPT Chat,  \nReseau Social des Polytech ',
+            'EPT Chat,  \n1er Réseau Social des Polytech ',
             style: TextStyle(
                 fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
           ),

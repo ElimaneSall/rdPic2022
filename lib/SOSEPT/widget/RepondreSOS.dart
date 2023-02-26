@@ -24,7 +24,7 @@ class _RepondreSOSState extends State<RepondreSOS> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: AppColors.primary,
-          title: Text('Répondre'),
+          title: Text('Répondre au message'),
         ),
         body: Padding(
             padding: const EdgeInsets.all(10),
@@ -58,18 +58,8 @@ class _RepondreSOSState extends State<RepondreSOS> {
                           RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30)))),
                   onPressed: () {
-                    /*  FirebaseFirestore.instance
-                        .collection('SOS')
-                        .doc(_id)
-                        .collection("Reponses")
-                        .add({
-                      "reponse": reponsecontroller.value.text,
-                      "idAuteur": FirebaseAuth.instance.currentUser!.uid,
-                      "date": DateTime.now()
-                    });
-                    */
                     FirebaseFirestore.instance
-                        .collection('SOS')
+                        .collection('MessageAuBureau')
                         .doc(_id)
                         .update({
                       'reponses': FieldValue.arrayUnion([
@@ -83,7 +73,7 @@ class _RepondreSOSState extends State<RepondreSOS> {
 
                     Navigator.pop(context);
                   },
-                  child: Text('Repondre'))
+                  child: Text('Répondre'))
             ])));
   }
 }

@@ -10,9 +10,6 @@ import 'package:tuto_firebase/interclasse/basket/screen/createMatch.dart';
 import 'package:tuto_firebase/interclasse/basket/screen/homeBasket.dart';
 import 'package:tuto_firebase/interclasse/handball/screen/adminHandball.dart';
 import 'package:tuto_firebase/interclasse/handball/screen/homeHandball.dart';
-import 'package:tuto_firebase/interclasse/screen/adminFootball.dart';
-import 'package:tuto_firebase/interclasse/screen/classementMatch.dart';
-import 'package:tuto_firebase/interclasse/screen/homeFootball.dart';
 import 'package:tuto_firebase/interclasse/volleyball/screen/adminVolleyball.dart';
 import 'package:tuto_firebase/interclasse/volleyball/screen/homeVolley.dart';
 

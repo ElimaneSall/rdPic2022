@@ -4,13 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:tuto_firebase/interclasse/basket/screen/detail_match.dart';
+import 'package:tuto_firebase/interclasse/football/model/match.dart';
+import 'package:tuto_firebase/interclasse/sidebar/nav_drawer_handball.dart';
 import 'package:tuto_firebase/interclasse/handball/screen/DetailMatchHandballEnCours.dart';
 import 'package:tuto_firebase/interclasse/handball/screen/detail_match.dart';
-import 'package:tuto_firebase/interclasse/screen/detail_match.dart';
-import 'package:tuto_firebase/interclasse/sidebar/nav_drawer_basketball.dart';
-import 'package:tuto_firebase/interclasse/sidebar/nav_drawer_handball.dart';
-import 'package:tuto_firebase/interclasse/sidebar/nav_drawer_interclasse.dart';
-import 'package:tuto_firebase/interclasse/model/match.dart';
 import 'package:tuto_firebase/interclasse/widget/match_card.dart';
 import 'package:tuto_firebase/utils/color/color.dart';
 
@@ -91,7 +88,8 @@ class _homeHandballState extends State<homeHandball> {
                                                           DetailMatchHandball(
                                                             e.id,
                                                           )))
-                                            }))
+                                            },
+                                        "Handball"))
                                     .toList());
                           } else {
                             return Center(

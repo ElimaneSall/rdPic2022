@@ -2,15 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:tuto_firebase/interclasse/basket/screen/DetailMatchBasketEnCours.dart';
 import 'package:tuto_firebase/interclasse/basket/screen/createMatch.dart';
+import 'package:tuto_firebase/interclasse/football/model/match.dart';
 import 'package:tuto_firebase/interclasse/handball/screen/DetailMatchHandballEnCours.dart';
 import 'package:tuto_firebase/interclasse/handball/screen/createMatch.dart';
 import 'package:tuto_firebase/interclasse/home/homeInterClasse.dart';
-import 'package:tuto_firebase/interclasse/model/match.dart';
-import 'package:tuto_firebase/interclasse/screen/createMatch.dart';
-import 'package:tuto_firebase/interclasse/screen/detail_match.dart';
-import 'package:tuto_firebase/interclasse/screen/detail_match_en_cours.dart';
-import 'package:tuto_firebase/interclasse/screen/homeFootball.dart';
-import 'package:tuto_firebase/interclasse/sidebar/nav_drawer_interclasse.dart';
 import 'package:intl/intl.dart';
 import 'package:tuto_firebase/interclasse/widget/match_card.dart';
 import 'package:tuto_firebase/login/home.dart';
@@ -26,11 +21,11 @@ class adminHandball extends StatefulWidget {
 class _adminHandballState extends State<adminHandball> {
   @override
   Widget build(BuildContext context) {
-    Stream<QuerySnapshot> products =
-        FirebaseFirestore.instance.collection('Handball').where(
-      "idEquipe1",
-      whereIn: ["47"],
-    ).snapshots();
+    Stream<QuerySnapshot> products = FirebaseFirestore.instance
+        .collection('Handball')
+        .where("date",
+            isGreaterThanOrEqualTo: DateTime.now().subtract(Duration(days: 1)))
+        .snapshots();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.primary,
@@ -77,7 +72,8 @@ class _adminHandballState extends State<adminHandball> {
                                                 DetailMatchHandballEnCours(
                                                   e.id,
                                                 )))
-                                  }))
+                                  },
+                              "Handball"))
                           .toList());
                 } else {
                   return Center(

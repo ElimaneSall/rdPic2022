@@ -3,13 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:tuto_firebase/interclasse/basket/screen/DetailMatchBasketEnCours.dart';
 import 'package:tuto_firebase/interclasse/basket/screen/createMatch.dart';
 import 'package:tuto_firebase/interclasse/home/homeInterClasse.dart';
-import 'package:tuto_firebase/interclasse/model/match.dart';
-import 'package:tuto_firebase/interclasse/screen/createMatch.dart';
-import 'package:tuto_firebase/interclasse/screen/detail_match.dart';
-import 'package:tuto_firebase/interclasse/screen/detail_match_en_cours.dart';
-import 'package:tuto_firebase/interclasse/screen/homeFootball.dart';
-import 'package:tuto_firebase/interclasse/sidebar/nav_drawer_interclasse.dart';
+import 'package:tuto_firebase/interclasse/football/model/match.dart';
 import 'package:intl/intl.dart';
+import 'package:tuto_firebase/interclasse/volleyball/screen/DetailMatchVolleyEnCours.dart';
 import 'package:tuto_firebase/interclasse/volleyball/screen/createMatch.dart';
 import 'package:tuto_firebase/interclasse/widget/match_card.dart';
 import 'package:tuto_firebase/login/home.dart';
@@ -73,10 +69,11 @@ class _AdminVolleyballState extends State<AdminVolleyball> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                DetailMatchBasketEnCours(
+                                                DetailMatchVolleyEnCours(
                                                   e.id,
                                                 )))
-                                  }))
+                                  },
+                              "Volley"))
                           .toList());
                 } else {
                   return Center(

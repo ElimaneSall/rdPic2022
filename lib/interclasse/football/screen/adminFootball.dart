@@ -1,11 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:tuto_firebase/interclasse/football/model/match.dart';
+import 'package:tuto_firebase/interclasse/football/screen/createMatch.dart';
+import 'package:tuto_firebase/interclasse/football/screen/detail_match_en_cours.dart';
 import 'package:tuto_firebase/interclasse/home/homeInterClasse.dart';
-import 'package:tuto_firebase/interclasse/model/match.dart';
-import 'package:tuto_firebase/interclasse/screen/createMatch.dart';
-import 'package:tuto_firebase/interclasse/screen/detail_match.dart';
-import 'package:tuto_firebase/interclasse/screen/detail_match_en_cours.dart';
-import 'package:tuto_firebase/interclasse/screen/homeFootball.dart';
 import 'package:tuto_firebase/interclasse/sidebar/nav_drawer_interclasse.dart';
 import 'package:intl/intl.dart';
 import 'package:tuto_firebase/interclasse/widget/match_card.dart';
@@ -19,15 +17,13 @@ class AdminFootball extends StatefulWidget {
   State<AdminFootball> createState() => _AdminFootballState();
 }
 
-DateTime date1 = DateTime.now();
-
 class _AdminFootballState extends State<AdminFootball> {
   @override
   Widget build(BuildContext context) {
     Stream<QuerySnapshot> products = FirebaseFirestore.instance
         .collection('Matchs')
         .where("date",
-            isGreaterThanOrEqualTo: date1.subtract(Duration(days: 1)))
+            isGreaterThanOrEqualTo: DateTime.now().subtract(Duration(days: 1)))
         .snapshots();
     return Scaffold(
       appBar: AppBar(
@@ -75,7 +71,8 @@ class _AdminFootballState extends State<AdminFootball> {
                                                 DetailMatchEnCours(
                                                   e.id,
                                                 )))
-                                  }))
+                                  },
+                              "Matchs"))
                           .toList());
                 } else {
                   return Center(

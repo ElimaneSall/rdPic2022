@@ -221,7 +221,7 @@ Future OpenDialogBut(
                     rounderButton(
                         collection, id, champ, ancienValue, -2, context),
                     rounderButton(
-                        collection, id, champ, ancienValue, 3, context),
+                        collection, id, champ, ancienValue, -3, context),
                   ],
                 ),
               ),

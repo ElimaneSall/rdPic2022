@@ -52,7 +52,8 @@ class _DetailEvenementState extends State<DetailEvenement> {
   bool _isDownloading = false;
   String downloadMessage = "Cliquer pour telecharger";
   double _pourcentage = 0.0;
-
+  CollectionReference _evenement =
+      FirebaseFirestore.instance.collection('Evenement');
   late double progression;
   @override
   void initState() {
@@ -114,15 +115,12 @@ class _DetailEvenementState extends State<DetailEvenement> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Center(child: Text("Détail Evenement")),
+          title: Center(child: Text("Détail Evénement")),
           backgroundColor: AppColors.primary,
         ),
         body: SingleChildScrollView(
             child: FutureBuilder<DocumentSnapshot>(
-                future: FirebaseFirestore.instance
-                    .collection('Evenement')
-                    .doc(_id)
-                    .get(),
+                future: _evenement.doc(_id).get(),
                 builder: (BuildContext context,
                     AsyncSnapshot<DocumentSnapshot> snapshot) {
                   if (snapshot.hasError) {
@@ -146,7 +144,7 @@ class _DetailEvenementState extends State<DetailEvenement> {
                             dataEvenement["image"],
                             width: MediaQuery.of(context).size.width,
                             height: MediaQuery.of(context).size.height / 2,
-                            fit: BoxFit.cover,
+                            fit: BoxFit.fill,
                           ),
                           Column(
                             children: [
@@ -158,13 +156,43 @@ class _DetailEvenementState extends State<DetailEvenement> {
                                     fontWeight: FontWeight.bold,
                                     decoration: TextDecoration.none),
                               ),
-                              Text(
-                                "Posté par " + dataEvenement["auteur"],
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 15,
-                                    decoration: TextDecoration.none),
-                              ),
+                              FutureBuilder<DocumentSnapshot>(
+                                  future: FirebaseFirestore.instance
+                                      .collection("Users")
+                                      .doc(dataEvenement["idUser"])
+                                      .get(),
+                                  builder: (BuildContext context,
+                                      AsyncSnapshot<DocumentSnapshot>
+                                          snapshot) {
+                                    if (snapshot.hasError) {
+                                      return Text("Something went wrong");
+                                    }
+
+                                    if (snapshot.hasData &&
+                                        !snapshot.data!.exists) {
+                                      return Text("Document does not exist");
+                                    }
+
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.done) {
+                                      Map<String, dynamic> dataUser =
+                                          snapshot.data!.data()
+                                              as Map<String, dynamic>;
+
+                                      return Container(
+                                          alignment: Alignment.center,
+                                          child: Text(
+                                            'Posté par: ${dataUser["prenom"]} ${dataUser["nom"]}',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 15,
+                                                decoration:
+                                                    TextDecoration.none),
+                                          ));
+                                    }
+                                    return Text("");
+                                  }),
                               Text(
                                 dateCustomformat(DateTime.parse(
                                     dataEvenement["date"].toDate().toString())),
@@ -181,6 +209,7 @@ class _DetailEvenementState extends State<DetailEvenement> {
                                 style: TextStyle(
                                     color: Colors.black,
                                     fontSize: 15,
+                                    fontWeight: FontWeight.bold,
                                     decoration: TextDecoration.none),
                               ),
                               if (dataEvenement["description"] != "")
@@ -217,6 +246,11 @@ class _DetailEvenementState extends State<DetailEvenement> {
                                               onTap: () {
                                                 addLikes(_id, "Evenement",
                                                     dataEvenement["likes"]);
+                                                setState(() {
+                                                  _evenement = FirebaseFirestore
+                                                      .instance
+                                                      .collection('Evenement');
+                                                });
                                               },
                                               child: Icon(
                                                 Icons.thumb_up,
@@ -235,6 +269,11 @@ class _DetailEvenementState extends State<DetailEvenement> {
                                               onTap: () {
                                                 undLike(_id, "Evenement",
                                                     dataEvenement["unlikes"]);
+                                                setState(() {
+                                                  _evenement = FirebaseFirestore
+                                                      .instance
+                                                      .collection('Evenement');
+                                                });
                                               },
                                               child: Icon(
                                                 Icons.thumb_down,
@@ -263,6 +302,12 @@ class _DetailEvenementState extends State<DetailEvenement> {
                                           onTap: () {
                                             commentOpenDiallog(context,
                                                 controller, _id, "Evenement");
+
+                                            setState(() {
+                                              _evenement = FirebaseFirestore
+                                                  .instance
+                                                  .collection('Evenement');
+                                            });
                                           }),
                                       SizedBox(
                                         width:
@@ -277,12 +322,10 @@ class _DetailEvenementState extends State<DetailEvenement> {
                                                 fontSize: 15),
                                           ),
                                           onTap: () async {
-                                            print("tappp");
-
                                             _downloadAndSaveFileToStorage(
                                                 context,
                                                 dataEvenement["image"],
-                                                "${dataEvenement["titre"]}.pdf");
+                                                "${dataEvenement["titre"]}.${dataEvenement["extension"]}");
                                             final snackBar = SnackBar(
                                               content: const Text(
                                                   'Téléchargement en cours!'),

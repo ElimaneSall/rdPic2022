@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +7,7 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:tuto_firebase/EPTChat/screen/status/AddStatus.dart';
 import 'package:tuto_firebase/EPTChat/screen/status/ViewStatus.dart';
+import 'package:tuto_firebase/homeApp.dart';
 import 'package:tuto_firebase/utils/method.dart';
 
 class HomeStatus extends StatefulWidget {
@@ -19,8 +22,21 @@ class _HomeStatusState extends State<HomeStatus> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.indigo,
-          title: Text("Statut"),
+          backgroundColor: Colors.white,
+          centerTitle: true,
+          title: Text(
+            "Statut",
+            style: TextStyle(color: Colors.black),
+          ),
+          leading: GestureDetector(
+            onTap: () {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => HomeApp()));
+            },
+            child: Icon(
+              Icons.home, color: Colors.black, // add custom icons also
+            ),
+          ),
         ),
         body: SingleChildScrollView(
             child: Column(

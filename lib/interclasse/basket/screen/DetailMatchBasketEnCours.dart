@@ -7,6 +7,8 @@ import 'package:tuto_firebase/services/notification.dart';
 import 'package:tuto_firebase/utils/color/color.dart';
 import 'package:tuto_firebase/utils/method.dart';
 
+import '../../handball/screen/DetailMatchHandballEnCours.dart';
+
 class DetailMatchBasketEnCours extends StatefulWidget {
   String id;
 
@@ -26,8 +28,20 @@ class _DetailMatchBasketEnCoursState extends State<DetailMatchBasketEnCours> {
     this._id,
   );
   TextEditingController controller = TextEditingController();
-  final Stream<QuerySnapshot> _articleStream =
-      FirebaseFirestore.instance.collection('Basket').snapshots();
+
+  List<String> _quart_temps = [
+    'Premier quart-temps',
+    "Deuxième quart-temps",
+    'Troisième quart-temps',
+    ' Quatrième quart-temps',
+  ];
+  String? selectedRubrique = "Premier quart-temps";
+  TextEditingController scorecontroller1 = TextEditingController();
+  TextEditingController scorecontroller2 = TextEditingController();
+  TextEditingController nomButeurController = TextEditingController();
+  TextEditingController nomButeurController2 = TextEditingController();
+  TextEditingController controller2 = TextEditingController();
+
   List userTokens = [];
   @override
   void initState() {
@@ -38,8 +52,10 @@ class _DetailMatchBasketEnCoursState extends State<DetailMatchBasketEnCours> {
 
   @override
   Widget build(BuildContext context) {
+    DocumentReference documentReference =
+        FirebaseFirestore.instance.collection('Basket').doc(_id);
     return FutureBuilder<DocumentSnapshot>(
-        future: FirebaseFirestore.instance.collection('Basket').doc(_id).get(),
+        future: documentReference.get(),
         builder:
             (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
           if (snapshot.hasError) {
@@ -58,7 +74,8 @@ class _DetailMatchBasketEnCoursState extends State<DetailMatchBasketEnCours> {
             return Scaffold(
                 appBar: AppBar(
                     centerTitle: true,
-                    title: Center(child: Text("Détail du match de basket")),
+                    title: Center(
+                        child: Text("Détail du match en cours de basket")),
                     backgroundColor: AppColors.primary),
                 body: SingleChildScrollView(
                     child: Padding(
@@ -103,15 +120,20 @@ class _DetailMatchBasketEnCoursState extends State<DetailMatchBasketEnCours> {
                                   // ButtonAdd(_id, dataMatch["score1"], "score1",
                                   //     "Basket", 1),
                                   GestureDetector(
-                                    child: Icon(Icons.add),
-                                    onTap: () => OpenDialogBut(
-                                        context,
-                                        controller,
-                                        _id,
-                                        "Match",
-                                        "score1",
-                                        dataMatch["score1"]),
-                                  ),
+                                      child: Icon(Icons.add),
+                                      onTap: () {
+                                        OpenDialogBut(
+                                            context,
+                                            controller,
+                                            _id,
+                                            "Basket",
+                                            "score1",
+                                            dataMatch["score1"]);
+                                        documentReference = FirebaseFirestore
+                                            .instance
+                                            .collection('Basket')
+                                            .doc(_id);
+                                      }),
                                   Text(dataMatch["score1"].toString(),
                                       style: TextStyle(
                                           color: Colors.black,
@@ -134,15 +156,22 @@ class _DetailMatchBasketEnCoursState extends State<DetailMatchBasketEnCours> {
                                           fontSize: 30,
                                           fontWeight: FontWeight.bold)),
                                   GestureDetector(
-                                    child: Icon(Icons.add),
-                                    onTap: () => OpenDialogBut(
-                                        context,
-                                        controller,
-                                        _id,
-                                        "Match",
-                                        "score2",
-                                        dataMatch["score2"]),
-                                  ),
+                                      child: Icon(Icons.add),
+                                      onTap: () {
+                                        OpenDialogBut(
+                                            context,
+                                            controller,
+                                            _id,
+                                            "Basket",
+                                            "score2",
+                                            dataMatch["score2"]);
+                                        setState(() {
+                                          documentReference = FirebaseFirestore
+                                              .instance
+                                              .collection('Basket')
+                                              .doc(_id);
+                                        });
+                                      }),
                                 ],
                               ),
                               Row(
@@ -185,15 +214,46 @@ class _DetailMatchBasketEnCoursState extends State<DetailMatchBasketEnCours> {
                                   )
                                 ],
                               ),
-                              Row(
+                              SizedBox(height: 10),
+                              Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.5),
-                                  Row(
-                                    children: [],
-                                  ),
+                                  for (var set in dataMatch["quarts"])
+                                    Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(set["quart"]),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(set["quartScore1"].toString(),
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 15,
+                                                )),
+                                            SizedBox(
+                                              width: 2,
+                                            ),
+                                            Text("-",
+                                                style: TextStyle(
+                                                    color: AppColors.blue,
+                                                    fontSize: 25,
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                            SizedBox(
+                                              width: 2,
+                                            ),
+                                            Text(set["quartScore1"].toString(),
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 15,
+                                                )),
+                                          ],
+                                        )
+                                      ],
+                                    )
                                 ],
                               ),
                               Row(
@@ -204,69 +264,117 @@ class _DetailMatchBasketEnCoursState extends State<DetailMatchBasketEnCours> {
                                 ],
                               ),
                               SizedBox(
-                                height: 10,
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              for (var quart in dataMatch["quarts"])
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(quart["nomQuart"]),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(quart["score1"].toString(),
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.bold)),
-                                        ButtonBut(
-                                          userTokens,
-                                          _id,
-                                          quart["score1"],
-                                          "score1",
-                                          context,
-                                          controller,
-                                        ),
-                                        SizedBox(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.1),
-                                        Text("-",
-                                            style: TextStyle(
-                                                color: AppColors.blue,
-                                                fontSize: 25,
-                                                fontWeight: FontWeight.bold)),
-                                        SizedBox(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.1),
-                                        Text(quart["score2"].toString(),
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.bold)),
-                                        ButtonBut(
-                                          userTokens,
-                                          _id,
-                                          quart["score1"],
-                                          "score1",
-                                          context,
-                                          controller,
-                                        )
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              SizedBox(
                                 height: 30,
                               ),
+                              Center(
+                                  child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                          primary: Colors.black),
+                                      onPressed: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) => AlertDialog(
+                                            title: Text("Fin quart-temps"),
+                                            content: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                ListTile(
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              4),
+                                                      side: BorderSide(
+                                                          color: Colors.white)),
+                                                  title: Row(children: [
+                                                    // Text('Quart-temps: '),
+                                                    DropdownButton(
+                                                      value: selectedRubrique,
+                                                      items: _quart_temps
+                                                          .map((item) =>
+                                                              DropdownMenuItem<
+                                                                  String>(
+                                                                child:
+                                                                    Text(item),
+                                                                value: item,
+                                                              ))
+                                                          .toList(),
+                                                      onChanged: (item) =>
+                                                          setState(() =>
+                                                              selectedRubrique =
+                                                                  item
+                                                                      as String),
+                                                    )
+                                                  ]),
+                                                ),
+                                                TextField(
+                                                  controller: scorecontroller1,
+                                                  decoration: InputDecoration(
+                                                      hintText:
+                                                          "Score de l'équipe 1"),
+                                                ),
+                                                TextField(
+                                                  controller: scorecontroller2,
+                                                  decoration: InputDecoration(
+                                                      hintText:
+                                                          "Score de l'équipe 2"),
+                                                ),
+                                              ],
+                                            ),
+                                            actions: [
+                                              TextButton(
+                                                  onPressed: () {
+                                                    try {
+                                                      FirebaseFirestore.instance
+                                                          .collection("Basket")
+                                                          .doc(_id)
+                                                          .update({
+                                                        "quarts": FieldValue
+                                                            .arrayUnion([
+                                                          {
+                                                            "quartScore1":
+                                                                int.parse(
+                                                                    scorecontroller1
+                                                                        .value
+                                                                        .text),
+                                                            "quartScore2":
+                                                                int.parse(
+                                                                    scorecontroller2
+                                                                        .value
+                                                                        .text),
+                                                            "quart":
+                                                                selectedRubrique
+                                                          }
+                                                        ]),
+                                                      }).then((value) {
+                                                        print("données à jour");
+                                                        Navigator.pop(context);
+                                                      });
+                                                    } catch (e) {
+                                                      print(e.toString());
+                                                    }
+                                                  },
+                                                  child:
+                                                      Text("Fin quart-temps"))
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                      child: Text("Fin quart-temps"))),
+                              Center(
+                                  child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                          primary: Colors.black),
+                                      onPressed: () {
+                                        MeilleurButteurDialog(
+                                            context,
+                                            controller,
+                                            nomButeurController,
+                                            controller2,
+                                            nomButeurController2,
+                                            _id,
+                                            "Basket");
+                                      },
+                                      child: Text("Fin du Match"))),
                               Center(
                                   child: Text("Statistique",
                                       style: TextStyle(

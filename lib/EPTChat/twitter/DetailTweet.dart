@@ -267,10 +267,12 @@ class _DetailTweetState extends State<DetailTweet> {
                                 for (final reponse in data["commentaires"])
                                   Column(children: [
                                     Container(
+                                        padding:
+                                            EdgeInsets.only(top: 7, bottom: 10),
                                         decoration: BoxDecoration(
                                           color: Colors.white,
                                           border: Border(
-                                              bottom: BorderSide(
+                                              top: BorderSide(
                                                   width: 0.5,
                                                   color: Colors.grey)),
                                           // borderRadius:
@@ -372,6 +374,9 @@ class _DetailTweetState extends State<DetailTweet> {
                                                 Text(reponse['commentaire']),
                                               ],
                                             ),
+                                            SizedBox(
+                                              height: 5,
+                                            ),
                                             Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.start,
@@ -383,14 +388,8 @@ class _DetailTweetState extends State<DetailTweet> {
                                                             .toString())))
                                               ],
                                             ),
-                                            SizedBox(
-                                              height: 10,
-                                            )
                                           ],
                                         )),
-                                    SizedBox(
-                                      height: 10,
-                                    )
                                   ])
                               ],
                             )

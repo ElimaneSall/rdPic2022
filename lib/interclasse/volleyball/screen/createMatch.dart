@@ -3,7 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:tuto_firebase/interclasse/screen/adminFootball.dart';
+import 'package:tuto_firebase/interclasse/football/screen/adminFootball.dart';
+import 'package:tuto_firebase/interclasse/volleyball/screen/adminVolleyball.dart';
 import 'package:tuto_firebase/utils/color/color.dart';
 import 'package:tuto_firebase/widget/reusableTextField.dart';
 
@@ -113,9 +114,9 @@ class _CreateVolleyMatchState extends State<CreateVolleyMatch> {
                           "idEquipe2": _adversaireTextController.value.text,
                           "score1": 0,
                           "score2": 0,
-                          "meilleurbuteurs1": {},
-                          "meilleurbuteurs2": {},
-                          "Meilleurbuteurs": "",
+                          "sets": [],
+                          "meilleurbuteurs1": {"nom": "", "points": 0},
+                          "meilleurbuteurs2": {"nom": "", "points": 0},
                           "phase": selectedPhase,
                           "idUser": FirebaseAuth.instance.currentUser!.uid,
                           "date": selectedDate,
@@ -126,37 +127,11 @@ class _CreateVolleyMatchState extends State<CreateVolleyMatch> {
                         });
                       } else
                         (showAboutDialog(context: context));
-                      /* String id_match = "";
-                      FirebaseFirestore.instance
-                          .collection("Matchs")
-                          .limit(1)
-                          .get()
-                          .then((QuerySnapshot querySnapshot) {
-                        querySnapshot.docs.forEach((doc) {
-                          id_match = doc.id;
-                          print("datebi" + doc["date"].toString());
-                        });
-                      });
-                      print("idbi" + id_match);
 
-                      FirebaseFirestore.instance
-                          .collection('Equipes')
-                          .doc(_equipeTextController.value.text)
-                          .update({
-                        'match': FieldValue.arrayUnion([id_match]),
-                      });
-
-                      FirebaseFirestore.instance
-                          .collection('Equipes')
-                          .doc(_adversaireTextController.value.text)
-                          .update({
-                        'match': FieldValue.arrayUnion([id_match]),
-                      });
-                      */
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => AdminFootball()));
+                              builder: (context) => AdminVolleyball()));
                     }),
                   ])))),
     );

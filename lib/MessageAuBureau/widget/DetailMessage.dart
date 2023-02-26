@@ -6,6 +6,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:tuto_firebase/SOSEPT/model/SOSModel.dart';
 import 'package:tuto_firebase/SOSEPT/widget/RepondreSOS.dart';
 import 'package:tuto_firebase/SOSEPT/widget/SOSCard.dart';
+import 'package:tuto_firebase/utils/color/color.dart';
 import 'package:tuto_firebase/utils/method.dart';
 
 class DetailMessage extends StatefulWidget {
@@ -20,39 +21,14 @@ class _DetailMessageState extends State<DetailMessage> {
   String _id;
   late String role;
   _DetailMessageState(this._id);
-  void addLikes(String docID, int likes) {
-    var newLikes = likes + 1;
-    try {
-      FirebaseFirestore.instance
-          .collection('MessageAuBureau')
-          .doc(docID)
-          .update({
-        'likes': newLikes,
-      }).then((value) => print("données à jour"));
-    } catch (e) {
-      print(e.toString());
-    }
-  }
-
-  void _delete(String docID) {
-    try {
-      FirebaseFirestore.instance
-          .collection('SOS')
-          .doc(docID)
-          .delete()
-          .then((value) => print("données à jour"));
-    } catch (e) {
-      print(e.toString());
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
-    CollectionReference xoss =
-        FirebaseFirestore.instance.collection('MessageAuBureau');
+    DocumentReference xoss =
+        FirebaseFirestore.instance.collection('MessageAuBureau').doc(_id);
     CollectionReference users = FirebaseFirestore.instance.collection('Users');
     return FutureBuilder<DocumentSnapshot>(
-      future: xoss.doc(_id).get(),
+      future: xoss.get(),
       builder:
           (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
         if (snapshot.hasError) {
@@ -68,13 +44,13 @@ class _DetailMessageState extends State<DetailMessage> {
               snapshot.data!.data() as Map<String, dynamic>;
           return Scaffold(
               appBar: AppBar(
-                title: Text("Detail Message au bureau"),
+                title: Text("Détail message au bureau"),
                 centerTitle: true,
-                backgroundColor: Colors.blue,
+                backgroundColor: AppColors.primary,
               ),
               body: SingleChildScrollView(
                   child: Container(
-                      margin: EdgeInsets.all(10),
+                      margin: EdgeInsets.only(top: 10, bottom: 10),
                       height: MediaQuery.of(context).size.height,
                       color: Color.fromRGBO(217, 217, 217, 0.36),
                       child: Column(
@@ -85,7 +61,7 @@ class _DetailMessageState extends State<DetailMessage> {
                               Center(
                                 child: Container(
                                   width:
-                                      MediaQuery.of(context).size.width * 0.9,
+                                      MediaQuery.of(context).size.width * 0.98,
                                   decoration: BoxDecoration(
                                     color: Colors.white,
                                   ),
@@ -118,7 +94,7 @@ class _DetailMessageState extends State<DetailMessage> {
                             Container(
                                 padding: EdgeInsets.all(10),
                                 height: 40,
-                                color: Colors.blue,
+                                color: Colors.black,
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -136,7 +112,15 @@ class _DetailMessageState extends State<DetailMessage> {
                                           children: [
                                             GestureDetector(
                                               onTap: () {
-                                                addLikes(_id, data["likes"]);
+                                                addLikes(_id, "MessageAuBureau",
+                                                    data["likes"]);
+                                                setState(() {
+                                                  xoss = FirebaseFirestore
+                                                      .instance
+                                                      .collection(
+                                                          'MessageAuBureau')
+                                                      .doc(_id);
+                                                });
                                               },
                                               child: Icon(
                                                 Icons.favorite,
@@ -155,7 +139,7 @@ class _DetailMessageState extends State<DetailMessage> {
                                     ),
                                     InkWell(
                                         child: Text(
-                                          "Repondre",
+                                          "Répondre",
                                           style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 15),
@@ -178,7 +162,8 @@ class _DetailMessageState extends State<DetailMessage> {
                                                 fontSize: 15),
                                           ),
                                           onTap: () {
-                                            _delete(_id);
+                                            deleteFunction(
+                                                _id, "MessageAuBureau");
                                             Navigator.pop(context);
                                           }),
                                   ],
@@ -190,7 +175,7 @@ class _DetailMessageState extends State<DetailMessage> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text("Reponses",
+                                Text("Réponses",
                                     style: TextStyle(fontSize: 20)),
                                 SizedBox(
                                   height: 10,
@@ -322,9 +307,15 @@ class _DetailMessageState extends State<DetailMessage> {
                           ]))));
         }
 
-        return Center(
-          child: CircularProgressIndicator(),
-        );
+        return Scaffold(
+            appBar: AppBar(
+              title: Text("Détail message au bureau"),
+              centerTitle: true,
+              backgroundColor: AppColors.primary,
+            ),
+            body: Center(
+              child: CircularProgressIndicator(),
+            ));
       },
     );
   }

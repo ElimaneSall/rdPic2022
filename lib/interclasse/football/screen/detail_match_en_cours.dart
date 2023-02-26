@@ -86,9 +86,10 @@ class _DetailMatchEnCoursState extends State<DetailMatchEnCours> {
   @override
   Widget build(BuildContext context) {
     // ignore: unnecessary_new
-    CollectionReference users = FirebaseFirestore.instance.collection('Matchs');
+    DocumentReference match =
+        FirebaseFirestore.instance.collection('Matchs').doc(_id);
     return FutureBuilder<DocumentSnapshot>(
-        future: FirebaseFirestore.instance.collection('Matchs').doc(_id).get(),
+        future: match.get(),
         builder:
             (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
           if (snapshot.hasError) {
@@ -558,6 +559,7 @@ ButtonBut(
                           sendPushMessage(e, "Veuillez consulter le match",
                               "Interclasse: Un nouveau but");
                         }
+
                         Navigator.pop(context);
                       });
                     } catch (e) {

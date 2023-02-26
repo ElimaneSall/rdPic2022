@@ -10,9 +10,8 @@ import 'package:tuto_firebase/interclasse/basket/screen/createMatch.dart';
 import 'package:tuto_firebase/interclasse/basket/screen/homeBasket.dart';
 import 'package:tuto_firebase/interclasse/genieEnHerbe/screen/adminGenieEnHerbe.dart';
 import 'package:tuto_firebase/interclasse/genieEnHerbe/screen/homeGenieEnHerbe.dart';
-import 'package:tuto_firebase/interclasse/screen/adminFootball.dart';
-import 'package:tuto_firebase/interclasse/screen/classementMatch.dart';
-import 'package:tuto_firebase/interclasse/screen/homeFootball.dart';
+
+import '../genieEnHerbe/screen/classementMatch.dart';
 
 class NavBarGenieEnHerbeball extends StatelessWidget {
   String role;

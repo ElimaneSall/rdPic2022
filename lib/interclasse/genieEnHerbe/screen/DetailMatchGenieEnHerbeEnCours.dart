@@ -3,47 +3,61 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:tuto_firebase/interclasse/handball/screen/DetailMatchHandballEnCours.dart';
+import 'package:tuto_firebase/services/notification.dart';
 import 'package:tuto_firebase/utils/color/color.dart';
 import 'package:tuto_firebase/utils/method.dart';
 
-class DetailMatchVolleyEnCours extends StatefulWidget {
+class DetailMatchGenieEnHerbeEnCours extends StatefulWidget {
   String id;
 
-  DetailMatchVolleyEnCours(this.id, {Key? key}) : super(key: key);
+  DetailMatchGenieEnHerbeEnCours(this.id, {Key? key}) : super(key: key);
 
   @override
-  State<DetailMatchVolleyEnCours> createState() =>
-      _DetailMatchVolleyEnCoursState(
+  State<DetailMatchGenieEnHerbeEnCours> createState() =>
+      _DetailMatchGenieEnHerbeEnCoursState(
         id,
       );
 }
 
-class _DetailMatchVolleyEnCoursState extends State<DetailMatchVolleyEnCours> {
+class _DetailMatchGenieEnHerbeEnCoursState
+    extends State<DetailMatchGenieEnHerbeEnCours> {
   String _id;
 
-  _DetailMatchVolleyEnCoursState(
+  _DetailMatchGenieEnHerbeEnCoursState(
     this._id,
   );
   TextEditingController controller = TextEditingController();
+  final Stream<QuerySnapshot> _articleStream =
+      FirebaseFirestore.instance.collection('GenieEnHerbe').snapshots();
+  List userTokens = [];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    userTokens = getUsersId()[1];
+    // _match = FirebaseFirestore.instance.collection('GenieEnHerbe').doc(_id);
+  }
+
+  List<String> _rubirque = [
+    'Rubrique 1',
+    "Rubrique 2",
+    'Rubrique 3',
+    'Rubrique 4',
+    "Rubrique 5"
+  ];
+  String? selectedRubrique = "Rubrique 1";
   TextEditingController scorecontroller1 = TextEditingController();
   TextEditingController scorecontroller2 = TextEditingController();
-
   TextEditingController nomButeurController = TextEditingController();
   TextEditingController nomButeurController2 = TextEditingController();
   TextEditingController controller2 = TextEditingController();
-  List<String> _set = [
-    'Premier set',
-    "Deuxième set",
-    'Troisième set',
-    'Quatrième set',
-    "Cinquième set"
-  ];
-  String? selectedSet = "Premier set";
-
   @override
   Widget build(BuildContext context) {
+    DocumentReference _match =
+        FirebaseFirestore.instance.collection('GenieEnHerbe').doc(_id);
     return FutureBuilder<DocumentSnapshot>(
-        future: FirebaseFirestore.instance.collection('Volley').doc(_id).get(),
+        future: _match!.get(),
         builder:
             (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
           if (snapshot.hasError) {
@@ -63,7 +77,7 @@ class _DetailMatchVolleyEnCoursState extends State<DetailMatchVolleyEnCours> {
                 appBar: AppBar(
                     centerTitle: true,
                     title: Center(
-                        child: Text("Détail du match en cours de volley")),
+                        child: Text("Détail du match de Génie En Herbe")),
                     backgroundColor: AppColors.primary),
                 body: SingleChildScrollView(
                     child: Padding(
@@ -84,20 +98,6 @@ class _DetailMatchVolleyEnCoursState extends State<DetailMatchVolleyEnCours> {
                                     Image.asset("equipe1.jpg",
                                         width: 100, height: 40),
                                   ]),
-
-                              // Text(dataMatch["idEquipe1"],
-                              //     style: TextStyle(
-                              //         color: AppColors.blue,
-                              //         fontSize: 30,
-                              //         fontWeight: FontWeight.bold)),
-                              // SizedBox(
-                              //   height: 30,
-                              // ),
-                              // Text("Cartons",
-                              //     style: TextStyle(
-                              //       color: AppColors.blue,
-                              //       fontSize: 20,
-                              //     )),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -119,8 +119,24 @@ class _DetailMatchVolleyEnCoursState extends State<DetailMatchVolleyEnCours> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  ButtonAdd(_id, dataMatch["score1"], "score1",
-                                      "Volley", 1),
+                                  GestureDetector(
+                                    child: Icon(Icons.add),
+                                    onTap: () {
+                                      OpenDialogBut(
+                                          context,
+                                          controller,
+                                          _id,
+                                          "GenieEnHerbe",
+                                          "score1",
+                                          dataMatch["score1"]);
+                                      // initState();
+                                      // setState(() {
+                                      //   _match = FirebaseFirestore.instance
+                                      //       .collection('GenieEnHerbe')
+                                      //       .doc(_id);
+                                      // });
+                                    },
+                                  ),
                                   Text(dataMatch["score1"].toString(),
                                       style: TextStyle(
                                           color: Colors.black,
@@ -142,60 +158,64 @@ class _DetailMatchVolleyEnCoursState extends State<DetailMatchVolleyEnCours> {
                                           color: Colors.black,
                                           fontSize: 30,
                                           fontWeight: FontWeight.bold)),
-                                  ButtonAdd(_id, dataMatch["score2"], "score2",
-                                      "Volley", 1),
+                                  GestureDetector(
+                                    child: Icon(Icons.add),
+                                    onTap: () => OpenDialogBut(
+                                        context,
+                                        controller,
+                                        _id,
+                                        "GenieEnHerbe",
+                                        "score2",
+                                        dataMatch["score2"]),
+                                  ),
                                 ],
                               ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Column(
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Text(dataMatch["meilleurbuteurs1"]
-                                              ["nom"]),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Text(dataMatch["meilleurbuteurs1"]
-                                                  ["points"]
-                                              .toString()),
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                  SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.1),
-                                  Column(
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Text(dataMatch["meilleurbuteurs2"]
-                                              ["nom"]),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Text(dataMatch["meilleurbuteurs2"]
-                                                  ["points"]
-                                              .toString()),
-                                        ],
-                                      )
-                                    ],
-                                  )
-                                ],
+                              SizedBox(
+                                height: 10,
                               ),
-
-                              Row(
+                              Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.5),
-                                  Row(
-                                    children: [],
-                                  ),
+                                  for (var set in dataMatch["rubriques"])
+                                    Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(set["nomRubrique"]),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                                set["scoreRubrique1"]
+                                                    .toString(),
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 15,
+                                                )),
+                                            SizedBox(
+                                              width: 2,
+                                            ),
+                                            Text("-",
+                                                style: TextStyle(
+                                                    color: AppColors.blue,
+                                                    fontSize: 25,
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                            SizedBox(
+                                              width: 2,
+                                            ),
+                                            Text(
+                                                set["scoreRubrique2"]
+                                                    .toString(),
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 15,
+                                                )),
+                                          ],
+                                        )
+                                      ],
+                                    )
                                 ],
                               ),
                               Row(
@@ -206,18 +226,15 @@ class _DetailMatchVolleyEnCoursState extends State<DetailMatchVolleyEnCours> {
                                 ],
                               ),
                               SizedBox(
-                                height: 10,
+                                height: 30,
                               ),
-
                               Center(
                                   child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                          primary: Colors.black),
                                       onPressed: () {
                                         showDialog(
                                           context: context,
                                           builder: (context) => AlertDialog(
-                                            title: Text("Fin d'un set"),
+                                            title: Text("Fin Rubrique"),
                                             content: Column(
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
@@ -229,23 +246,31 @@ class _DetailMatchVolleyEnCoursState extends State<DetailMatchVolleyEnCours> {
                                                       side: BorderSide(
                                                           color: Colors.white)),
                                                   title: Row(children: [
-                                                    Text('Set: '),
-                                                    DropdownButton(
-                                                      value: selectedSet,
-                                                      items: _set
-                                                          .map((item) =>
-                                                              DropdownMenuItem<
-                                                                  String>(
-                                                                child:
-                                                                    Text(item),
-                                                                value: item,
-                                                              ))
-                                                          .toList(),
-                                                      onChanged: (item) =>
-                                                          setState(() =>
-                                                              selectedSet = item
-                                                                  as String),
-                                                    )
+                                                    Text('Rubrique: '),
+                                                    SizedBox(
+                                                        width: MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width *
+                                                            0.3,
+                                                        child: DropdownButton(
+                                                          value:
+                                                              selectedRubrique,
+                                                          items: _rubirque
+                                                              .map((item) =>
+                                                                  DropdownMenuItem<
+                                                                      String>(
+                                                                    child: Text(
+                                                                        item),
+                                                                    value: item,
+                                                                  ))
+                                                              .toList(),
+                                                          onChanged: (item) =>
+                                                              setState(() =>
+                                                                  selectedRubrique =
+                                                                      item
+                                                                          as String),
+                                                        ))
                                                   ]),
                                                 ),
                                                 TextField(
@@ -267,22 +292,25 @@ class _DetailMatchVolleyEnCoursState extends State<DetailMatchVolleyEnCours> {
                                                   onPressed: () {
                                                     try {
                                                       FirebaseFirestore.instance
-                                                          .collection("Volley")
+                                                          .collection(
+                                                              "GenieEnHerbe")
                                                           .doc(_id)
                                                           .update({
-                                                        "sets": FieldValue
+                                                        "rubriques": FieldValue
                                                             .arrayUnion([
                                                           {
-                                                            "scoreSet1": int.parse(
-                                                                scorecontroller1
-                                                                    .value
-                                                                    .text),
-                                                            "scoreSet2": int.parse(
-                                                                scorecontroller2
-                                                                    .value
-                                                                    .text),
-                                                            "nomSet":
-                                                                selectedSet
+                                                            "scoreRubrique1":
+                                                                int.parse(
+                                                                    scorecontroller1
+                                                                        .value
+                                                                        .text),
+                                                            "scoreRubrique2":
+                                                                int.parse(
+                                                                    scorecontroller2
+                                                                        .value
+                                                                        .text),
+                                                            "nomRubrique":
+                                                                selectedRubrique
                                                           }
                                                         ]),
                                                       }).then((value) {
@@ -293,16 +321,14 @@ class _DetailMatchVolleyEnCoursState extends State<DetailMatchVolleyEnCours> {
                                                       print(e.toString());
                                                     }
                                                   },
-                                                  child: Text("Fin d'un set"))
+                                                  child: Text("Fin rubrique"))
                                             ],
                                           ),
                                         );
                                       },
-                                      child: Text("Fin d'un set"))),
+                                      child: Text("Fin rubrique"))),
                               Center(
                                   child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                          primary: Colors.black),
                                       onPressed: () {
                                         MeilleurButteurDialog(
                                             context,
@@ -311,14 +337,20 @@ class _DetailMatchVolleyEnCoursState extends State<DetailMatchVolleyEnCours> {
                                             controller2,
                                             nomButeurController2,
                                             _id,
-                                            "Volley");
+                                            "GenieEnHerbe");
                                       },
                                       child: Text("Fin du Match"))),
                             ]))));
           }
-          return Center(
-            child: CircularProgressIndicator(),
-          );
+          return Scaffold(
+              appBar: AppBar(
+                  centerTitle: true,
+                  title:
+                      Center(child: Text("Détail du match de Génie En Herbe")),
+                  backgroundColor: AppColors.primary),
+              body: Center(
+                child: CircularProgressIndicator(),
+              ));
         });
   }
 }

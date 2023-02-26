@@ -237,7 +237,7 @@ class _DetailSOSState extends State<DetailSOS> {
                                     if (FirebaseAuth
                                             .instance.currentUser!.uid ==
                                         data["idAuteur"])
-                                      InkWell(
+                                      GestureDetector(
                                           child: Text(
                                             "Supprimer",
                                             style: TextStyle(
@@ -251,7 +251,7 @@ class _DetailSOSState extends State<DetailSOS> {
                                                 "SOS",
                                                 "SOS",
                                                 "Voulez vous supprimer ce SOS");
-                                            Navigator.pop(context);
+                                            // Navigator.pop(context);
                                           }),
                                   ],
                                 )),

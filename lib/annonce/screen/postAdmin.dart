@@ -33,11 +33,18 @@ class _PostAdminState extends State<PostAdmin> {
   final statuscontroller = TextEditingController();
 
   List<String> postes = [
-    'Commission Pédagogique',
-    'Commission Culturelle',
+    'Présidence',
     'Sécrétariat général',
+    'Commission Pédagogique',
+    'Commission Sociale',
+    'Commission Finance',
+    'Commission Relation Extérieure',
+    'Commission Restauration',
+    'Commission Culturelle',
+    'Commission Sport',
+    'Trésorie Générale',
   ];
-  String? selectedPoste = "Commission Pédagogique";
+  String? selectedPoste = 'Sécrétariat général';
 
   List<String> status = ['urgent', 'moins urgent', 'facultatif'];
   String? selectedStatus = "urgent";
@@ -199,6 +206,7 @@ class _PostAdminState extends State<PostAdmin> {
                     ],
                   ),
                   Text(filename),
+                  //  Text("extension${filename.split(".")[1]}"),
                   SizedBox(
                     height: 10,
                   ),
@@ -215,6 +223,9 @@ class _PostAdminState extends State<PostAdmin> {
                       'status': selectedStatus,
                       "idUser": FirebaseAuth.instance.currentUser!.uid,
                       "urlFile": urlFile == null ? "" : urlFile,
+                      'extension': filename == "No select file"
+                          ? ""
+                          : filename.split(".")[1],
                       'commentaires': [],
                       'likes': 0,
                       'unlikes': 0,

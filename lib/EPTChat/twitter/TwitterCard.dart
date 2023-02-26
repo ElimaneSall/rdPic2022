@@ -65,6 +65,7 @@ class TweetView extends StatelessWidget {
                             dataUser1["urlProfile"],
                           ),
                         );
+                        ;
                       }
                       return Center(
                         child: CircularProgressIndicator(),
@@ -156,7 +157,7 @@ class TweetView extends StatelessWidget {
                             style: TextStyle(fontSize: 16.0),
                           ),
                         ),
-                        tweets.urlFile != ''
+                        tweets.urlFile != ""
                             ? Material(
                                 borderRadius: BorderRadius.circular(10.0),
                                 child: ClipRRect(
